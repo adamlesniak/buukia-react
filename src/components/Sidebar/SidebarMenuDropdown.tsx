@@ -44,9 +44,8 @@ export function SidebarMenuDropdown({
 
   return (
     <SidebarMenuButtonDropdownButton ref={dropdownButtonRef}
-      onClick={($event) => {
-        setOpened((prev) => true);
-        console.log($event);
+      onClick={() => {
+        setOpened(true);
       }}
       onBlur={() => {
         console.log("onblur");
