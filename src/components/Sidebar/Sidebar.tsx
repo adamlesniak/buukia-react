@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import {  useRouterState } from "@tanstack/react-router";
 import {
   Banknote,
   Bell,
@@ -8,19 +8,9 @@ import {
   UsersRound,
 } from "lucide-react";
 import styled from "styled-components";
-
-const StyledLink = styled(Link)`
-  margin: .8em 0em;
-  border-radius: 12px;
-
-  &:hover {
-    background: #fbfbfb;
-  }
-
-  &.active {
-    background: #f4f4f4;
-  }
-`;
+import { SidebarMenuButton } from "./SidebarMenuButton";
+import { DropdownExpand, SidebarMenuDropdown } from "./SidebarMenuDropdown";
+import { SidebarStyledLink } from "./SidebarStyledLink";
 
 const SidebarContainer = styled.div`
   color: var(--primary);
@@ -34,19 +24,6 @@ const SidebarContainer = styled.div`
 
 const SidebarTitle = styled.h3`
   margin: .2em 0;
-`;
-
-const SidebarMenuButton = styled.div`
-  padding: .4em;
-  cursor: pointer;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-
-  span {
-    margin: 0px 10px;
-  }
 `;
 
 const SidebarTop = styled.div`
@@ -89,16 +66,17 @@ export function Sidebar() {
   return (
     <SidebarContainer>
       <SidebarTop>
-        <SidebarMenuButton style={{ justifyContent: "space-between" }}>
+        <SidebarMenuDropdown dropdownExpand={DropdownExpand.Top}>
           <div>
             <SidebarTitle>Buukia</SidebarTitle>
             <small>El Prat</small>
           </div>
           <ChevronsUpDown size={16} />
-        </SidebarMenuButton>
+        </SidebarMenuDropdown>
 
         {items.map((item) => (
-          <StyledLink
+          <SidebarStyledLink
+            style={{ margin: ".8em 0em" }}
             to={item.url}
             data-active={selected === item.url}
             key={item.title}
@@ -107,17 +85,17 @@ export function Sidebar() {
               <item.icon size={24} />
               <span>{item.title}</span>
             </SidebarMenuButton>
-          </StyledLink>
+          </SidebarStyledLink>
         ))}
       </SidebarTop>
 
-      <SidebarMenuButton style={{ justifyContent: "space-between" }}>
+      <SidebarMenuDropdown dropdownExpand={DropdownExpand.Bottom}>
         <div>
           <SidebarTitle>Adam Lesniak</SidebarTitle>
           <small>adam@alesniak.com</small>
         </div>
         <ChevronsUpDown size={16} />
-      </SidebarMenuButton>
+      </SidebarMenuDropdown>
     </SidebarContainer>
   );
 }

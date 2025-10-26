@@ -13,7 +13,7 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     viteReact(),
-    analyzer(),
+    process.env.ANALYZE_DEBUG ? analyzer() : null,
   ],
   test: {
     include: ['**/*.test.tsx'],

@@ -3,7 +3,8 @@ import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import styled from "styled-components";
-import { GlobalStyles, Sidebar } from "../components";
+import { GlobalStyles } from "@/components/GlobalStyles";
+import { Sidebar } from "../components/Sidebar";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
 const AppContainer = styled.div`
