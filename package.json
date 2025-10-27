@@ -11,15 +11,18 @@
     "lint": "biome lint --write",
     "check": "biome check --write",
     "bundle": "ANALYZE_DEBUG=true pnpm run build",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install",
+    "generate-mocks": "npx tsx scripts/mocks.ts"
   },
   "dependencies": {
+    "@tanstack/query-core": "^5.90.5",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-query": "^5.66.5",
     "@tanstack/react-query-devtools": "^5.84.2",
     "@tanstack/react-router": "^1.132.0",
     "@tanstack/react-router-devtools": "^1.132.0",
     "@tanstack/router-plugin": "^1.132.0",
+    "i18next": "^25.6.0",
     "lucide-react": "^0.545.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -36,6 +39,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "jsdom": "^27.0.0",
     "lefthook": "^2.0.1",
+    "msw": "^2.11.6",
     "typescript": "^5.7.2",
     "vite": "^7.1.7",
     "vite-bundle-analyzer": "^1.2.3",
