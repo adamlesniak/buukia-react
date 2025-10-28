@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+
 import { assistantQueryKeys } from "./assistants-query-keys";
+
 import type { Assistant } from "@/types";
 
 export const useAssistants = () => {
