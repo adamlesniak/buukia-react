@@ -18,3 +18,9 @@ a {
   display: flex;
   flex: 1;
 }
+
+button {
+  background: none;
+  outline: none;
+  border: none;
+}

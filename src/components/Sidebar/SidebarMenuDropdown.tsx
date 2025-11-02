@@ -24,7 +24,6 @@ export function SidebarMenuDropdown({
   const dropdownButtonRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick(dropdownButtonRef, () => {
-    console.log("Clicked outside");
     setOpened(false);
   });
 

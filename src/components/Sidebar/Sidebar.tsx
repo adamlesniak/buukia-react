@@ -1,4 +1,4 @@
-import {  useRouterState } from "@tanstack/react-router";
+import { useRouterState } from "@tanstack/react-router";
 import {
   Banknote,
   Bell,
@@ -9,27 +9,25 @@ import {
 } from "lucide-react";
 import styled from "styled-components";
 
-import { SidebarMenuButton } from "./SidebarMenuButton";
+import { SidebarMenuButtonWrapper } from "./SidebarMenuButtonWrapper";
 import { DropdownExpand, SidebarMenuDropdown } from "./SidebarMenuDropdown";
-import { SidebarStyledLink } from "./SidebarStyledLink";
+import { SidebarMenuItem } from "./SidebarMenuItem";
 
 const SidebarContainer = styled.div`
   color: var(--primary);
   border-right: 1px solid #f5f5f5;
   width: 14rem;
-  padding: .8em;
+  padding: 0.8em;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
 
 const SidebarTitle = styled.h3`
-  margin: .2em 0;
+  margin: 0.2em 0;
 `;
 
-const SidebarTop = styled.div`
-
-`;
+const SidebarTop = styled.div``;
 
 const items = [
   {
@@ -67,36 +65,36 @@ export function Sidebar() {
   return (
     <SidebarContainer>
       <SidebarTop>
-        <SidebarMenuDropdown dropdownExpand={DropdownExpand.Top}>
-          <div>
-            <SidebarTitle>Buukia</SidebarTitle>
-            <small>El Prat</small>
-          </div>
-          <ChevronsUpDown size={16} />
-        </SidebarMenuDropdown>
-
+        <SidebarMenuButtonWrapper>
+          <SidebarMenuDropdown dropdownExpand={DropdownExpand.Top}>
+            <div>
+              <SidebarTitle>Buukia</SidebarTitle>
+              <small>El Prat</small>
+            </div>
+            <ChevronsUpDown size={16} />
+          </SidebarMenuDropdown>
+        </SidebarMenuButtonWrapper>
         {items.map((item) => (
-          <SidebarStyledLink
-            style={{ margin: ".8em 0em" }}
+          <SidebarMenuItem
             to={item.url}
             data-active={selected === item.url}
             key={item.title}
           >
-            <SidebarMenuButton>
-              <item.icon size={24} />
-              <span>{item.title}</span>
-            </SidebarMenuButton>
-          </SidebarStyledLink>
+            <item.icon size={24} />
+            <span>{item.title}</span>
+          </SidebarMenuItem>
         ))}
       </SidebarTop>
 
-      <SidebarMenuDropdown dropdownExpand={DropdownExpand.Bottom}>
-        <div>
-          <SidebarTitle>Adam Lesniak</SidebarTitle>
-          <small>adam@alesniak.com</small>
-        </div>
-        <ChevronsUpDown size={16} />
-      </SidebarMenuDropdown>
+      <SidebarMenuButtonWrapper>
+        <SidebarMenuDropdown dropdownExpand={DropdownExpand.Bottom}>
+          <div>
+            <SidebarTitle>Adam Lesniak</SidebarTitle>
+            <small>adam@alesniak.com</small>
+          </div>
+          <ChevronsUpDown size={16} />
+        </SidebarMenuDropdown>
+      </SidebarMenuButtonWrapper>
     </SidebarContainer>
   );
 }

@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
 import styled from "styled-components";
 
@@ -31,35 +32,56 @@ const CalendarHeaderContainer = styled.div`
   max-height: 120px;
 `;
 
-
 const CalendarHeaderItem = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 0em 1em;
 
   h2 {
-    margin: .2em 0px;
+    margin: 0.2em 0px;
   }
 `;
 
-export function CalendarHeader() {
+type CalendarHeaderProps = {
+  date: Date;
+  nextDaySelect?: (date: Date) => void;
+  previousDaySelect?: (date: Date) => void;
+  viewToggle?: () => void;
+};
+
+export function CalendarHeader({
+  date,
+  nextDaySelect,
+  previousDaySelect,
+  viewToggle,
+}: CalendarHeaderProps) {
   return (
     <CalendarHeaderContainer>
       <CalendarHeaderItem>
-        <Button type="button">
-          <ChevronLeft />
-        </Button>
-        <Button type="button">
-          <ChevronRight />
-        </Button>
-        <CalendarHeaderItem>
+        {previousDaySelect && (
+          <Button type="button" onClick={() => previousDaySelect?.(date)}>
+            <ChevronLeft />
+          </Button>
+        )}
+        {nextDaySelect && (
+          <Button type="button" onClick={() => nextDaySelect?.(date)}>
+            <ChevronRight />
+          </Button>
+        )}
+        <CalendarHeaderItem style={{ marginLeft: "1em" }}>
           <div>
-            <h2>October 2025</h2>
-            <small>Oct 26, 2025</small>
+            <h2>{format(date, "MMMM yyyy")}</h2>
+            <small>{format(date, "MMM dd, yyyy")}</small>
           </div>
-          <OutlineButton style={{ marginLeft: "1em" }} type="button">
+          <OutlineButton
+            onClick={() => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+              viewToggle && viewToggle();
+            }}
+            style={{ marginLeft: "2em" }}
+            type="button"
+          >
             <Users size={18} />
           </OutlineButton>
         </CalendarHeaderItem>
