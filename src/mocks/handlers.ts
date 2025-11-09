@@ -1,7 +1,6 @@
 import { HttpResponse, http } from "msw";
 
-import data from '../routes/data.json'
-
+import data from "../routes/data.json";
 
 // Account Wide
 // /api/appointments
@@ -12,6 +11,16 @@ import data from '../routes/data.json'
 export const handlers = [
   http.get("/api/services", () => HttpResponse.json(data.services)),
   http.get("/api/assistants", () => HttpResponse.json(data.assistants)),
+  http.get("/api/assistants/:id", (req) => {
+    const { id } = req.params;
+    const assistant = data.assistants.find((a) => a.id === id);
+    if (assistant) {
+      return HttpResponse.json(assistant);
+    } else {
+      return new HttpResponse(null, { status: 404 });
+    }
+  }),
+
   // http.get("/api/appointments", () => HttpResponse.json(data.appointments)),
   // http.get("/api/payments", () => HttpResponse.json(data.payments)),
   // http.get("/api/settings", () => HttpResponse.json(data.settings)),

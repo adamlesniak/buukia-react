@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
+import { Route as AppointmentsAssistantIdIndexRouteImport } from './routes/appointments/$assistantId/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,58 @@ const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   path: '/demo/tanstack-query',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppointmentsAssistantIdIndexRoute =
+  AppointmentsAssistantIdIndexRouteImport.update({
+    id: '/appointments/$assistantId/',
+    path: '/appointments/$assistantId/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/appointments': typeof AppointmentsIndexRoute
+  '/appointments/$assistantId': typeof AppointmentsAssistantIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/appointments': typeof AppointmentsIndexRoute
+  '/appointments/$assistantId': typeof AppointmentsAssistantIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/appointments/': typeof AppointmentsIndexRoute
+  '/appointments/$assistantId/': typeof AppointmentsAssistantIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/tanstack-query' | '/appointments'
+  fullPaths:
+    | '/'
+    | '/demo/tanstack-query'
+    | '/appointments'
+    | '/appointments/$assistantId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/tanstack-query' | '/appointments'
-  id: '__root__' | '/' | '/demo/tanstack-query' | '/appointments/'
+  to:
+    | '/'
+    | '/demo/tanstack-query'
+    | '/appointments'
+    | '/appointments/$assistantId'
+  id:
+    | '__root__'
+    | '/'
+    | '/demo/tanstack-query'
+    | '/appointments/'
+    | '/appointments/$assistantId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   AppointmentsIndexRoute: typeof AppointmentsIndexRoute
+  AppointmentsAssistantIdIndexRoute: typeof AppointmentsAssistantIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/appointments/$assistantId/': {
+      id: '/appointments/$assistantId/'
+      path: '/appointments/$assistantId'
+      fullPath: '/appointments/$assistantId'
+      preLoaderRoute: typeof AppointmentsAssistantIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +120,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   AppointmentsIndexRoute: AppointmentsIndexRoute,
+  AppointmentsAssistantIdIndexRoute: AppointmentsAssistantIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -5,7 +5,7 @@
 export const assistantQueryKeys = {
   all: ['assistants'],
   details: () => [...assistantQueryKeys.all, 'detail'],
-  detail: (id: number) => [...assistantQueryKeys.details(), id],
+  detail: (id: string) => [...assistantQueryKeys.details(), id],
   pagination: (page: number) => [...assistantQueryKeys.all, 'pagination', page],
   infinite: () => [...assistantQueryKeys.all, 'infinite'],
 };

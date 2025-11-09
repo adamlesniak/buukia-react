@@ -10,7 +10,7 @@ import {
 } from "date-fns";
 import styled from "styled-components";
 
-import { ViewType } from "@/routes/appointments";
+import { ViewType } from "@/constants.ts";
 
 const CalendarBodyContainer = styled.div`
   display: flex;
@@ -42,6 +42,14 @@ const CalendarBodyColumnHeader = styled.div`
 
 const CalendarBodyColumnHeaderAvatar = styled.div`
   cursor: pointer;
+  border-radius: 100px;
+  padding: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #e0e0e0;
 `;
 
 const CalendarBodyColumnHeaderDay = styled.div`
@@ -108,7 +116,8 @@ export type CalendarBodyProps = {
   endDate: Date;
   columns: { id: string; name: string }[];
   viewType: ViewType;
-  onFieldSelect: (data: unknown) => void;
+  onFieldSelect: (data: { assistantId: string; time: string }) => void;
+  headerSelect?: (id: string) => void;
 };
 
 export function CalendarBody({
@@ -117,9 +126,13 @@ export function CalendarBody({
   onFieldSelect,
   startDate,
   viewType,
+  headerSelect,
 }: CalendarBodyProps) {
   const hoursOpen = differenceInHours(endDate, startDate);
-  const weekStart = startOfWeek(startDate, { weekStartsOn: 0 });
+  const weekStart = addHours(
+    startOfWeek(startDate, { weekStartsOn: 0 }),
+    startDate.getHours(),
+  );
 
   return (
     <CalendarBodyContainer>
@@ -140,38 +153,39 @@ export function CalendarBody({
           );
         })}
       </CalendarBodyColumn>
-      {viewType === ViewType.WEEK &&
-        Array.from({ length: 7 }, (_, index) => {
-          const columnDate = formatISO(addDays(weekStart, index), {
+      {viewType === ViewType.DAY &&
+        columns.map((column, columnIndex) => {
+          const columnDate = formatISO(addDays(weekStart, columnIndex), {
             representation: "date",
           });
           const isToday =
             formatISO(new Date(), { representation: "date" }) === columnDate;
           return (
-            <CalendarBodyColumn key={index}>
+            <CalendarBodyColumn key={columnIndex}>
               <CalendarBodyColumnHeader>
-                <h4>{format(addDays(weekStart, index), "EEE")}</h4>
+                <h4>{format(addDays(weekStart, columnIndex), "EEE")}</h4>
                 <CalendarBodyColumnHeaderDay className={isToday ? "today" : ""}>
-                  {getDate(addDays(weekStart, index))}
+                  {getDate(addDays(weekStart, columnIndex))}
                 </CalendarBodyColumnHeaderDay>
               </CalendarBodyColumnHeader>
               {Array.from({ length: hoursOpen }, (_, hourIndex) => {
-                const hour = startDate.getHours() + hourIndex;
+                const hour = weekStart.getHours() + hourIndex;
 
                 return (
                   <CalendarBodyColumnItem key={hour}>
                     {Array.from({ length: 4 }, (_, index) => {
-                      const time = addMinutes(
-                        addHours(startDate, hourIndex),
-                        index * 15,
+                      const time = addDays(
+                        addMinutes(addHours(weekStart, hourIndex), index * 15),
+                        columnIndex,
                       );
+
                       return (
                         <div
                           onClick={($event) => {
                             if (onFieldSelect) {
                               onFieldSelect({
-                                time,
-                                id: "test-id",
+                                time: time.toISOString(),
+                                assistantId: column.id,
                               });
                             }
                             $event.preventDefault();
@@ -187,10 +201,12 @@ export function CalendarBody({
             </CalendarBodyColumn>
           );
         })}
-      {viewType === ViewType.DAY &&
+      {viewType === ViewType.WEEK &&
         columns?.map((column) => (
           <CalendarBodyColumn key={column.id}>
-            <CalendarBodyColumnHeader>
+            <CalendarBodyColumnHeader
+              onClick={() => headerSelect && headerSelect(column.id)}
+            >
               <CalendarBodyColumnHeaderAvatar>
                 {column.name}
               </CalendarBodyColumnHeaderAvatar>
@@ -210,8 +226,8 @@ export function CalendarBody({
                         onClick={($event) => {
                           if (onFieldSelect) {
                             onFieldSelect({
-                              time,
-                              id: column.id,
+                              time: time.toISOString(),
+                              assistantId: column.id,
                             });
                           }
                           $event.preventDefault();
