@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
+import type { Service } from "@/types";
+
 import { serviceQueryKeys } from "./services-query-keys";
 
-import type { Service } from "@/types";
 
 export const useServices = () => {
   const { isLoading, error, data, isFetching } = useQuery<Service[]>({

@@ -1,8 +1,8 @@
 import * as fs from "node:fs";
 import path from "node:path";
-import prettier from "prettier";
 
 import { faker } from "@faker-js/faker";
+import prettier from "prettier";
 
 const serviceNames = ["Haircut", "Manicure", "Pedicure", "Massage"];
 

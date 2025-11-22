@@ -21,7 +21,7 @@ export function SidebarMenuDropdown({
   dropdownExpand: DropdownExpand;
 }) {
   const [opened, setOpened] = useState(false);
-  const dropdownButtonRef = useRef<HTMLDivElement>(null);
+  const dropdownButtonRef = useRef<HTMLButtonElement>(null);
 
   useOutsideClick(dropdownButtonRef, () => {
     setOpened(false);

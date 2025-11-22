@@ -1,4 +1,5 @@
 import { Children, isValidElement } from "react";
+import { FocusScope } from "react-aria";
 import styled from "styled-components";
 
 import { DrawerContentBody } from "./DrawerContentBody";
@@ -32,9 +33,11 @@ export function DrawerContent(props: DrawerContentProps) {
   );
 
   return (
-    <DrawerContentContainer>
-      {DrawerContentHeaderChildren}
-      {DrawerContentBodyChildren}
-    </DrawerContentContainer>
+    <FocusScope contain restoreFocus autoFocus>
+      <DrawerContentContainer>
+        {DrawerContentHeaderChildren}
+        {DrawerContentBodyChildren}
+      </DrawerContentContainer>
+    </FocusScope>
   );
 }

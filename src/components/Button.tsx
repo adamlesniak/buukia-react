@@ -1,15 +1,14 @@
 import type { ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
 
-const StyledButton = styled.button<{ $variant?: string, $size?: string }>`
+const StyledButton = styled.button<{ $variant?: string; $size?: string }>`
   cursor: pointer;
   border-radius: 12px;
   font-size: 14px;
   text-align: center;
 
-    ${(props) => {
+  ${(props) => {
     if (props.$size === "sm") {
-
       return `padding: .6em;`;
     }
 
@@ -50,7 +49,7 @@ export function Button(
   return (
     <StyledButton
       {...props}
-      className={`${props.className}${props.active ? " active" : ""}`}
+      className={`${props.className}${props?.active ? " active" : ""}`}
       disabled={props.disabled}
       id={props.id}
       name={props.name}
