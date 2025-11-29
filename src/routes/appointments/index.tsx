@@ -83,6 +83,8 @@ function RouteComponent() {
                 onClick={() =>
                   setAppointmentDetail({ assistantId: "", time: "" })
                 }
+                aria-label="Close drawer"
+                tabIndex={0}
                 type="button"
               >
                 <X />

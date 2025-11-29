@@ -8,6 +8,7 @@ const StyledInput = styled.input`
   border-radius: 4px;
   border: 1px solid #e0e0e0;
   margin: 4px 0px;
+  font-size: 14px;
 `;
 
 type InputProps = {
