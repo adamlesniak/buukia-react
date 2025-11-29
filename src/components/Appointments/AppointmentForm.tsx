@@ -168,8 +168,6 @@ export function AppointmentForm(props: AppointmentFormProps) {
     console.log(data);
   };
 
-  console.log("currentServices", currentServices);
-
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Fieldset>
