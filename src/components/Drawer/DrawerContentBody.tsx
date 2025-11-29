@@ -5,6 +5,8 @@ const DrawerContentBodyContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex: 1;
+  overflow: hidden;
 `;
 
 export type DrawerContentBodyProps = {
@@ -12,5 +14,7 @@ export type DrawerContentBodyProps = {
 };
 
 export function DrawerContentBody(props: DrawerContentBodyProps) {
-  return <DrawerContentBodyContainer>{props.children}</DrawerContentBodyContainer>;
+  return (
+    <DrawerContentBodyContainer>{props.children}</DrawerContentBodyContainer>
+  );
 }

@@ -4,7 +4,7 @@ import path from "node:path";
 import { faker } from "@faker-js/faker";
 import prettier from "prettier";
 
-const serviceNames = ["Haircut", "Manicure", "Pedicure", "Massage"];
+const serviceNames = ["Haircut", "Manicure", "Pedicure", "Massage", "Facial", "Yoga Session"];
 
 const businessNames = [
   "Elegance Salon",

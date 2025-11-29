@@ -2,10 +2,12 @@ import type { ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
 
 const StyledButton = styled.button<{ $variant?: string; $size?: string }>`
+  display: flex;
   cursor: pointer;
   border-radius: 12px;
   font-size: 14px;
   text-align: center;
+  justify-content: center;
 
   ${(props) => {
     if (props.$size === "sm") {

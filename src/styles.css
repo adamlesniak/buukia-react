@@ -29,6 +29,13 @@ hr {
   height: 1px;
   border: 0;
   border-top: 1px solid #f4f4f4;
-  margin: 1em 0;
+  margin: 16px 0;
   padding: 0;
+  margin-bottom: 0px;
+}
+
+fieldset {
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
 }

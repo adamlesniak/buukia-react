@@ -8,7 +8,7 @@ import { DrawerContentHeader } from "./DrawerContentHeader";
 const DrawerContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex-basis: 400px;
+  flex-basis: 500px;
   background-color: #fff;
   padding: 16px;
   position: relative;

@@ -5,7 +5,7 @@ const StyledField = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-bottom: 0.4em;
+  margin-bottom: 16px;
 `;
 
 type FieldProps = {

@@ -27,6 +27,7 @@ export function AppointmentDetail(props: AppointmentDetailProps) {
         clientName: "",
         serviceName: "",
         time: format(new Date(props.time), "PPpp"),
+        services: [],
       }}
       onSubmit={(data) => {
         console.log(data);
