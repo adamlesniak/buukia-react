@@ -5,7 +5,7 @@
 export const serviceQueryKeys = {
   all: ['services'],
   details: () => [...serviceQueryKeys.all, 'detail'],
-  detail: (id: number) => [...serviceQueryKeys.details(), id],
+  detail: (id: string) => [...serviceQueryKeys.details(), id],
   pagination: (page: number) => [...serviceQueryKeys.all, 'pagination', page],
   infinite: () => [...serviceQueryKeys.all, 'infinite'],
 };

@@ -1,137 +1,155 @@
 {
   "assistants": [
     {
-      "id": "553237ea-6596-445d-9e33-46cd608ab6f2",
-      "firstName": "Jamar",
-      "lastName": "McLaughlin",
-      "name": "Jamar McLaughlin",
-      "initials": "JM",
+      "id": "1689aa09-a2ea-4f1e-a789-9abbf036693a",
+      "firstName": "Tressie",
+      "lastName": "Rowe-Stroman",
+      "name": "Tressie Rowe-Stroman",
+      "initials": "TR",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
       "business": "Urban Spa",
-      "type": "Beauty"
+      "type": "Health"
     },
     {
-      "id": "2a4886dc-d5d7-4cdb-b628-36e63180d597",
-      "firstName": "Dewitt",
-      "lastName": "Hoeger",
-      "name": "Dewitt Hoeger",
-      "initials": "DH",
+      "id": "9200de62-59ba-4b2f-8458-a9942254a72c",
+      "firstName": "Eunice",
+      "lastName": "King",
+      "name": "Eunice King",
+      "initials": "EK",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
-      "business": "Elegance Salon",
+      "business": "Relaxation Haven",
+      "type": "Health"
+    },
+    {
+      "id": "fa1feb9b-0dd2-4d71-b734-cd68804ecb30",
+      "firstName": "Sabryna",
+      "lastName": "Pfannerstill",
+      "name": "Sabryna Pfannerstill",
+      "initials": "SP",
+      "availability": { "regular": [], "exceptions": [], "holidays": [] },
+      "business": "Glamour Studio",
       "type": "Wellness"
     },
     {
-      "id": "9b163c1b-b3ac-4575-9396-71eae9325030",
-      "firstName": "Odessa",
-      "lastName": "Medhurst",
-      "name": "Odessa Medhurst",
-      "initials": "OM",
+      "id": "f42cee36-5101-4a10-96d0-cea1b3ea366d",
+      "firstName": "Fanny",
+      "lastName": "Rohan",
+      "name": "Fanny Rohan",
+      "initials": "FR",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
-      "business": "Glamour Studio",
-      "type": "Beauty"
+      "business": "Glamour Studio"
     },
     {
-      "id": "ee86c20c-7d62-431c-8d12-5f1cdc613c87",
-      "firstName": "Mckenna",
-      "lastName": "Gislason",
-      "name": "Mckenna Gislason",
-      "initials": "MG",
+      "id": "58723671-8611-4ae4-ae82-5e6e15a09008",
+      "firstName": "Erna",
+      "lastName": "Glover",
+      "name": "Erna Glover",
+      "initials": "EG",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
-      "business": "Glamour Studio",
-      "type": "Beauty"
+      "business": "Urban Spa",
+      "type": "Fitness"
     },
     {
-      "id": "d9c8b6c9-95c5-4499-985a-d742175d267c",
-      "firstName": "Elenora",
-      "lastName": "Buckridge",
-      "name": "Elenora Buckridge",
-      "initials": "EB",
+      "id": "6f053368-4637-48d6-9d16-4428193c9b0f",
+      "firstName": "Dolly",
+      "lastName": "Nitzsche",
+      "name": "Dolly Nitzsche",
+      "initials": "DN",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
       "business": "Elegance Salon",
       "type": "Health"
     },
     {
-      "id": "e263fb5c-b322-4632-9461-590b824d8955",
-      "firstName": "Colleen",
-      "lastName": "Will-Beatty",
-      "name": "Colleen Will-Beatty",
-      "initials": "CW",
-      "availability": { "regular": [], "exceptions": [], "holidays": [] }
-    },
-    {
-      "id": "5208258b-7895-4fbe-9bf7-fffe57d6d3fd",
-      "firstName": "Soledad",
-      "lastName": "Goyette",
-      "name": "Soledad Goyette",
-      "initials": "SG",
-      "availability": { "regular": [], "exceptions": [], "holidays": [] },
-      "business": "Elegance Salon",
-      "type": "Wellness"
-    },
-    {
-      "id": "325b7ccd-c8d1-4050-8b2d-65b07328b950",
-      "firstName": "Maverick",
-      "lastName": "Tillman",
-      "name": "Maverick Tillman",
-      "initials": "MT",
+      "id": "eee81c4c-3fd5-49e2-8edb-c4d8551cfef8",
+      "firstName": "Bernard",
+      "lastName": "Goldner",
+      "name": "Bernard Goldner",
+      "initials": "BG",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
       "business": "Urban Spa"
     },
     {
-      "id": "5504c0a4-9b90-429f-9e09-c67e8220d655",
-      "firstName": "Marcellus",
-      "lastName": "Altenwerth",
-      "name": "Marcellus Altenwerth",
-      "initials": "MA",
+      "id": "52952683-6e07-4106-a720-f0bfe7971f1c",
+      "firstName": "Rhea",
+      "lastName": "Herzog",
+      "name": "Rhea Herzog",
+      "initials": "RH",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
-      "business": "Elegance Salon",
-      "type": "Health"
+      "business": "Glamour Studio",
+      "type": "Beauty"
     },
     {
-      "id": "9cfc202d-a129-4c7d-a0b1-bd1c3da76fa4",
-      "firstName": "Carley",
-      "lastName": "Zulauf",
-      "name": "Carley Zulauf",
-      "initials": "CZ",
+      "id": "9d231d21-8cec-40e9-bc1d-9f96ed5c6d8d",
+      "firstName": "Kevin",
+      "lastName": "Legros-Grimes",
+      "name": "Kevin Legros-Grimes",
+      "initials": "KL",
       "availability": { "regular": [], "exceptions": [], "holidays": [] },
-      "business": "Urban Spa",
+      "business": "Urban Spa"
+    },
+    {
+      "id": "9a70e552-c846-41ff-b562-6913fbd5f05c",
+      "firstName": "Okey",
+      "lastName": "Brown",
+      "name": "Okey Brown",
+      "initials": "OB",
+      "availability": { "regular": [], "exceptions": [], "holidays": [] },
+      "business": "Relaxation Haven",
       "type": "Wellness"
     }
   ],
   "services": [
     {
-      "id": "27bed1cc-97e8-4a7d-89c3-2b150731aca3",
-      "description": "Color aliqua vomito voluptates.",
+      "id": "42e62278-20ec-41b6-a380-aefa156561c9",
+      "description": "Alienus canto vitiosus crapula ver voro crux earum.",
+      "business": "Elegance Salon",
+      "duration": 95,
+      "name": "Facial",
+      "price": 48
+    },
+    {
+      "id": "15bf334e-e497-46cb-9282-549fdb394c11",
+      "description": "Virgo anser ars clam abduco cunae commodo combibo.",
+      "business": "Urban Spa",
+      "category": "Fitness",
+      "duration": 80,
+      "name": "Yoga Session",
+      "price": 160
+    },
+    {
+      "id": "916ec79b-7aa4-495c-93fb-131b4d9e0269",
+      "description": "Subiungo animadverto conatus.",
       "business": "Glamour Studio",
       "category": "Wellness",
-      "duration": 104,
-      "name": "Manicure",
-      "price": 100
+      "duration": 45,
+      "name": "Pedicure",
+      "price": 152
     },
     {
-      "id": "b90fd075-5c5e-4f70-84f6-ecb4652047f4",
-      "description": "Expedita deleo tempore.",
+      "id": "a5501817-2ed7-49a6-934a-020cf97d16d4",
+      "description": "Aliquam studio tunc.",
+      "business": "Glamour Studio",
+      "category": "Beauty",
+      "duration": 52,
+      "price": 138
+    },
+    {
+      "id": "64c8ac2a-a6ab-4fed-8c26-36627e150b56",
+      "description": "Claustrum ocer sum adulatio.",
+      "business": "Glamour Studio",
+      "category": "Beauty",
+      "duration": 66,
+      "name": "Facial",
+      "price": 38
+    },
+    {
+      "id": "8acdd108-4331-449c-9173-4677fcf5cfcc",
+      "description": "Creptio rem subseco sufficio comitatus vicissitudo cultellus tredecim.",
       "business": "Urban Spa",
-      "category": "Beauty",
-      "duration": 63,
-      "name": "Manicure",
-      "price": 24
-    },
-    {
-      "id": "f3381588-dcb7-4c26-9306-e27ac63aa10d",
-      "description": "Vulgivagus curo quibusdam urbanus vos illo demum aeternus impedit sapiente.",
-      "business": "Elegance Salon",
-      "category": "Beauty",
-      "duration": 92,
-      "name": "Massage",
-      "price": 85
-    },
-    {
-      "id": "999e79ee-51db-4cd1-9e6d-670cd24f0b5d",
-      "description": "Theca votum creber tam arcesso thermae auditor cupiditas talus.",
-      "business": "Elegance Salon",
-      "duration": 35,
-      "price": 67
+      "category": "Health",
+      "duration": 113,
+      "name": "Yoga Session",
+      "price": 189
     }
   ]
 }

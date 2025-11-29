@@ -8,9 +8,10 @@ const DrawerContentHeaderContainer = styled.div`
   align-items: center;
   border-bottom: 1px solid #f4f4f4;
   padding-bottom: .4em;
+  margin-bottom: 16px;
 
   h2 {
-    margin: .2em 0;
+    margin: 8px 0;
   }
 `;
 
