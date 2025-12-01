@@ -1,3 +1,4 @@
+import './i18n/config';
 import type { QueryClient as queryClientCore } from "@tanstack/query-core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
