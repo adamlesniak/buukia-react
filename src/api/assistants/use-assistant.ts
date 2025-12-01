@@ -4,15 +4,22 @@ import type { Assistant } from "@/types";
 
 import { assistantQueryKeys } from "./assistants-query-keys";
 
-
 export const useAssistant = (assistantId: string) => {
-  const { isLoading, error, data, isFetching } = useQuery<Assistant>({
+  const { isLoading, error, data, isFetching, isError } = useQuery<Assistant>({
     queryKey: assistantQueryKeys.detail(assistantId),
     queryFn: async () => {
       const response = await fetch(`/api/assistants/${assistantId}`);
-      return response.json();
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      return data;
     },
+    retry: false,
   });
 
-  return { isLoading, error, data, isFetching };
+  return { isLoading, error, data, isFetching, isError };
 };

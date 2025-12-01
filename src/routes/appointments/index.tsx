@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { startOfDay, addDays, addHours, addMinutes, subDays } from "date-fns";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAssistants } from "@/api/assistants/use-assistants";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/appointments/")({
 });
 
 function RouteComponent() {
+  const { t } = useTranslation();
   const [todaysDate, setTodaysDate] = useState(startOfDay(new Date()));
 
   const { data, error, isLoading } = useAssistants();
@@ -31,11 +33,11 @@ function RouteComponent() {
   const navigate = useNavigate();
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>{t("common.error")}: {error.message}</div>;
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>{t("common.loading")}</div>;
   }
 
   const startDate = addMinutes(addHours(todaysDate, 8), 0);
@@ -77,13 +79,13 @@ function RouteComponent() {
         >
           <DrawerContent>
             <DrawerContentHeader>
-              <h2>New Appointment</h2>
+              <h2>{t("appointments.appointment")}</h2>
               <Button
                 variant="transparent"
                 onClick={() =>
                   setAppointmentDetail({ assistantId: "", time: "" })
                 }
-                aria-label="Close drawer"
+                aria-label={t("common.closeDrawer")}
                 tabIndex={0}
                 type="button"
               >
@@ -91,7 +93,10 @@ function RouteComponent() {
               </Button>
             </DrawerContentHeader>
             <DrawerContentBody>
-              <AppointmentDetail id={appointmentDetail.assistantId} time={appointmentDetail.time} />
+              <AppointmentDetail
+                id={appointmentDetail.assistantId}
+                time={appointmentDetail.time}
+              />
             </DrawerContentBody>
           </DrawerContent>
         </Drawer>

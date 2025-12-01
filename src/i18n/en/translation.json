@@ -1,0 +1,24 @@
+{
+  "appointments": {
+    "newAppointment": "New Appointment",
+    "appointment": "Appointment",
+    "detail": {
+      "assistantName": "Assistant Name",
+      "time": "Time",
+      "client": "Client",
+      "service": "Service",
+      "services": "Services",
+      "addService": "Add Service",
+      "totalPrice": "Total Price",
+      "totalDuration": "Total Duration"
+    }
+  },
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "min": "min",
+    "closeModal": "Close Modal",
+    "closeDrawer": "Close Drawer"
+  }
+}

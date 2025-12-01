@@ -3,6 +3,7 @@ import { PlusIcon, X, XIcon } from "lucide-react";
 import { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { useServices } from "@/api/services";
@@ -97,7 +98,7 @@ const FormSummaryItem = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin: 8px 0px;
-`
+`;
 
 interface IService {
   id: string;
@@ -110,7 +111,6 @@ interface IService {
 type AppointmentFormValues = {
   assistantName: string;
   clientName: string;
-  serviceName: string;
   time: string;
   services: IService[];
 };
@@ -121,6 +121,7 @@ type AppointmentFormProps = {
 };
 
 export function AppointmentForm(props: AppointmentFormProps) {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const { register, handleSubmit, setValue, watch } =
     useForm<AppointmentFormValues>({
@@ -173,35 +174,39 @@ export function AppointmentForm(props: AppointmentFormProps) {
       <Fieldset>
         <Field>
           <Label id={"assistant-name-label"} htmlFor="assistant-name-input">
-            Assistant Name
+            {t("appointments.detail.assistantName")}
           </Label>
           <Input
             {...register("assistantName", { required: true })}
             id="assistant-name-input"
             type="text"
+            data-testid="assistant-name-input"
             disabled
           />
         </Field>
 
         <Field>
           <Label id={"time-input-label"} htmlFor="time-input">
-            Time
+            {t("appointments.detail.time")}
           </Label>
           <Input
             {...register("time", { required: true })}
             id="time-input"
             name="time"
             type="text"
+            data-testid="time-input"
             disabled
           />
         </Field>
 
         <Field>
           <Label id={"client-name-label"} htmlFor="client-name-input">
-            Client
+            {t("appointments.detail.client")}
           </Label>
           <Combobox
-            {...register("clientName", { required: true })}
+            {...register("clientName", { required: true, value: "test" })}
+            id="client-name-input"
+            data-testid="client-name-input"
             items={Array.from({ length: 5 }).map((_) => {
               const value = faker.person.fullName();
               const item = {
@@ -216,7 +221,7 @@ export function AppointmentForm(props: AppointmentFormProps) {
         </Field>
 
         <Field>
-          <Label htmlFor="service-input">Service</Label>
+          <Label>{t("appointments.detail.service")}</Label>
           <Button
             size="sm"
             tabIndex={0}
@@ -225,7 +230,7 @@ export function AppointmentForm(props: AppointmentFormProps) {
             }}
             type="button"
           >
-            Add service
+            {t("appointments.detail.addService")}
           </Button>
 
           <hr />
@@ -234,10 +239,10 @@ export function AppointmentForm(props: AppointmentFormProps) {
 
       <ServicesContainer>
         {currentServices.map((service) => (
-          <Item key={service.id}>
+          <Item data-testid="services-container-list-item" key={service.id}>
             <ItemBody>
               <h3>
-                {service.name} ({service.duration}min)
+                {service.name} ({service.duration}{t("common.min")})
               </h3>
               <p>{service.description}</p>
               <b>€{service.price}</b>
@@ -268,22 +273,23 @@ export function AppointmentForm(props: AppointmentFormProps) {
                 $event.stopPropagation();
                 $event.preventDefault();
               }}
+              data-testid="services-modal"
             >
               <ModalHeader>
-                <h3>Services</h3>
+                <h3>{t("appointments.detail.services")}</h3>
                 <Button
                   variant="transparent"
                   onClick={() => setShowModal(false)}
-                  aria-label="Close drawer"
+                  aria-label={t("common.closeModal")}
                   tabIndex={0}
                   type="button"
                 >
                   <X />
                 </Button>
               </ModalHeader>
-              <ModalBody>
+              <ModalBody data-testid="services-list">
                 {services.map((service) => (
-                  <Item key={service.id}>
+                  <Item data-testid="services-list-item" key={service.id}>
                     <ItemBody>
                       <h3>
                         {service.name} ({service.duration}min)
@@ -327,16 +333,16 @@ export function AppointmentForm(props: AppointmentFormProps) {
         )}
 
       <FormSummary>
-        <FormSummaryItem>
-          <span>Total Duration:</span>
-          <b>{servicesDurationSum} min</b>
+        <FormSummaryItem data-testid="form-duration">
+          <span>{t("appointments.detail.totalDuration")}</span>
+          <b>{servicesDurationSum} {t("common.min")}</b>
         </FormSummaryItem>
-        <FormSummaryItem>
-          <span>Total Price:</span>
+        <FormSummaryItem data-testid="form-price">
+          <span>{t("appointments.detail.totalPrice")}</span>
           <b>€{servicesPriceSum}</b>
         </FormSummaryItem>
         <Button size="sm" tabIndex={0} type="submit">
-          Submit
+          {t("common.submit")}
         </Button>
       </FormSummary>
     </Form>

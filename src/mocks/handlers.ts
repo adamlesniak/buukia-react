@@ -13,11 +13,12 @@ export const handlers = [
   http.get("/api/assistants", () => HttpResponse.json(data.assistants)),
   http.get("/api/assistants/:id", (req) => {
     const { id } = req.params;
+
     const assistant = data.assistants.find((a) => a.id === id);
     if (assistant) {
       return HttpResponse.json(assistant);
     } else {
-      return new HttpResponse(null, { status: 404 });
+      return HttpResponse.json({ message: "Assistant not found" }, { status: 404 });
     }
   }),
 
