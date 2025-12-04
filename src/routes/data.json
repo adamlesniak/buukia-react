@@ -1,21 +1,21 @@
 {
   "appointments": [
     {
-      "id": "93971321-3265-4d03-8cec-de353a067367",
+      "id": "c4272d91-91ce-45e4-85fa-d67fd6e48ea8",
       "assistant": {
-        "id": "f7b7601a-d414-4c96-99df-6a7fa3c57281",
-        "firstName": "Camila",
-        "lastName": "Schimmel",
-        "name": "Camila Schimmel",
-        "initials": "CS",
+        "id": "4b8e500f-d99d-4096-abcb-2f6f9efcd289",
+        "firstName": "Emery",
+        "lastName": "Padberg",
+        "name": "Emery Padberg",
+        "initials": "EP",
         "availability": {
           "regular": [
-            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" }
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" }
           ],
           "exceptions": [],
           "holidays": []
@@ -23,53 +23,43 @@
         "business": "Elegance Salon",
         "type": "Health"
       },
-      "time": "2026-08-15T19:14:01.009Z",
+      "time": "2025-12-06T12:43:25.486Z",
       "client": {
-        "id": "fae46f08-b3f3-41a4-bc68-e8658ff15e6c",
-        "firstName": "Stefan",
-        "lastName": "Kunde",
-        "name": "Stefan Kunde",
-        "email": "Stefan.Kunde@yahoo.com",
-        "phone": "(869) 285-6354",
+        "id": "fa44318e-00b0-412a-abf7-a093001fe7a0",
+        "firstName": "Diego",
+        "lastName": "Smith",
+        "name": "Diego Smith",
+        "email": "Diego.Smith@yahoo.com",
+        "phone": "(362) 524-8062 x219",
         "appointments": []
       },
       "services": [
         {
-          "id": "22ce1776-c929-4f4d-bff2-833b294dd9e9",
-          "description": "Aliqua candidus texo adaugeo.",
-          "business": "Relaxation Haven",
+          "id": "0af74b44-6acf-43b0-9894-a51b53095f52",
+          "description": "Ciminatio universe adsum vester spes possimus.",
+          "business": "Urban Spa",
           "category": "Fitness",
-          "duration": 91,
-          "name": "Deep Tissue Massage",
-          "price": 107
-        },
-        {
-          "id": "236360e0-5aed-4531-a881-a7df63b6f949",
-          "description": "Urbs tempora conduco templum veritas volo.",
-          "business": "Elegance Salon",
-          "category": "Beauty",
-          "duration": 95,
-          "name": "Basic Haircut",
-          "price": 128
+          "duration": 49,
+          "name": "Yoga Session",
+          "price": 30
         }
       ]
     },
     {
-      "id": "ca7b9ce0-ccff-41b6-9bba-0e4ea394206d",
+      "id": "0e145612-eb9e-4dc7-bd25-738ca288b988",
       "assistant": {
-        "id": "99ef9ec8-9bd4-4ae8-863e-2209e6a038d2",
-        "firstName": "Gerda",
-        "lastName": "Feil",
-        "name": "Gerda Feil",
-        "initials": "GF",
+        "id": "59d055ae-8b12-4e86-9e2a-b97ed9f2962e",
+        "firstName": "Stuart",
+        "lastName": "Harber",
+        "name": "Stuart Harber",
+        "initials": "SH",
         "availability": {
           "regular": [
             { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" }
+            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
           ],
           "exceptions": [],
           "holidays": []
@@ -77,41 +67,210 @@
         "business": "Relaxation Haven",
         "type": "Wellness"
       },
-      "time": "2026-07-12T21:29:32.156Z",
+      "time": "2025-12-27T03:22:06.475Z",
       "client": {
-        "id": "fae46f08-b3f3-41a4-bc68-e8658ff15e6c",
-        "firstName": "Stefan",
-        "lastName": "Kunde",
-        "name": "Stefan Kunde",
-        "email": "Stefan.Kunde@yahoo.com",
-        "phone": "(869) 285-6354",
+        "id": "f6fd9c68-2f44-422b-b1f9-d2c09cea2fd8",
+        "firstName": "Destiny",
+        "lastName": "Franecki",
+        "name": "Destiny Franecki",
+        "email": "Destiny_Franecki@gmail.com",
+        "phone": "968.701.8466",
         "appointments": []
       },
       "services": [
         {
-          "id": "31e7eb8c-17d4-4d64-bf24-9232619e2560",
-          "description": "Deprimo arto canto tametsi defluo audentia suasoria repellendus vado.",
-          "business": "Relaxation Haven",
-          "category": "Beauty",
-          "duration": 75,
-          "name": "Yoga Session",
-          "price": 138
+          "id": "66677b75-90f8-47f8-a101-aad24de712be",
+          "description": "Cena arx conqueror testimonium umquam compello peccatus.",
+          "business": "Elegance Salon",
+          "category": "Wellness",
+          "duration": 109,
+          "name": "Relaxing Pedicure",
+          "price": 80
         }
       ]
     },
     {
-      "id": "43bc3e2b-6671-4492-89bf-10ffb2f319e9",
+      "id": "917c1497-ddad-4cb7-96b2-4a760b6aae48",
       "assistant": {
-        "id": "bc59d55b-d656-4072-b1ca-b2c190a6cbf0",
-        "firstName": "Maximus",
-        "lastName": "Bauch",
-        "name": "Maximus Bauch",
-        "initials": "MB",
+        "id": "55964792-a472-40a6-ae12-153ccdacef1a",
+        "firstName": "Deborah",
+        "lastName": "Marquardt",
+        "name": "Deborah Marquardt",
+        "initials": "DM",
+        "availability": {
+          "regular": [
+            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" }
+          ],
+          "exceptions": [],
+          "holidays": []
+        },
+        "business": "Glamour Studio",
+        "type": "Fitness"
+      },
+      "time": "2025-12-24T08:53:23.838Z",
+      "client": {
+        "id": "fa44318e-00b0-412a-abf7-a093001fe7a0",
+        "firstName": "Diego",
+        "lastName": "Smith",
+        "name": "Diego Smith",
+        "email": "Diego.Smith@yahoo.com",
+        "phone": "(362) 524-8062 x219",
+        "appointments": []
+      },
+      "services": [
+        {
+          "id": "28e018ce-dadb-4aa7-824a-46956a3056a9",
+          "description": "Demonstro audentia aeneus desparatus victus verumtamen adnuo advoco.",
+          "business": "Urban Spa",
+          "category": "Beauty",
+          "duration": 84,
+          "name": "Yoga Session",
+          "price": 126
+        },
+        {
+          "id": "bf0454ca-4047-4c32-84da-6a4271fc3ad4",
+          "description": "Iusto alveus reprehenderit spes.",
+          "business": "Elegance Salon",
+          "category": "Beauty",
+          "duration": 71,
+          "name": "Yoga Session",
+          "price": 147
+        },
+        {
+          "id": "f8ce87c1-ab32-4178-a089-a3a672c646ef",
+          "description": "Vobis candidus theca pax.",
+          "business": "Glamour Studio",
+          "category": "Wellness",
+          "duration": 92,
+          "name": "Yoga Session",
+          "price": 100
+        }
+      ]
+    },
+    {
+      "id": "6e2e3b35-0f4e-4233-adf7-fea083e80c7c",
+      "assistant": {
+        "id": "d2a6343b-b6c1-4fbb-889d-6dc05cf3f3e1",
+        "firstName": "Jaclyn",
+        "lastName": "Kemmer",
+        "name": "Jaclyn Kemmer",
+        "initials": "JK",
+        "availability": {
+          "regular": [
+            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" }
+          ],
+          "exceptions": [],
+          "holidays": []
+        },
+        "business": "Urban Spa",
+        "type": "Fitness"
+      },
+      "time": "2025-12-27T07:19:22.404Z",
+      "client": {
+        "id": "7991f066-3aed-424d-beda-aded38fb50d2",
+        "firstName": "Isac",
+        "lastName": "Zulauf",
+        "name": "Isac Zulauf",
+        "email": "Isac_Zulauf68@hotmail.com",
+        "phone": "260.895.6652 x8388",
+        "appointments": []
+      },
+      "services": [
+        {
+          "id": "4ca1aaa7-6319-473f-93da-f802e730ac2a",
+          "description": "Avaritia synagoga arca tripudio desidero.",
+          "business": "Urban Spa",
+          "category": "Wellness",
+          "duration": 50,
+          "name": "Rejuvenating Facial",
+          "price": 85
+        }
+      ]
+    },
+    {
+      "id": "2717f506-c0c4-498f-b3c6-b4895f75ec7e",
+      "assistant": {
+        "id": "d86eb68d-c31f-440c-9231-9d69079aa4c4",
+        "firstName": "Corrine",
+        "lastName": "Satterfield",
+        "name": "Corrine Satterfield",
+        "initials": "CS",
+        "availability": {
+          "regular": [
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" }
+          ],
+          "exceptions": [],
+          "holidays": []
+        },
+        "business": "Urban Spa",
+        "type": "Wellness"
+      },
+      "time": "2025-12-18T04:02:27.741Z",
+      "client": {
+        "id": "7991f066-3aed-424d-beda-aded38fb50d2",
+        "firstName": "Isac",
+        "lastName": "Zulauf",
+        "name": "Isac Zulauf",
+        "email": "Isac_Zulauf68@hotmail.com",
+        "phone": "260.895.6652 x8388",
+        "appointments": []
+      },
+      "services": [
+        {
+          "id": "4d43f8ba-f07f-443c-b724-60146cc4aea8",
+          "description": "Unde tergeo coruscus vitium admiratio tres clamo depopulo toties.",
+          "business": "Urban Spa",
+          "category": "Health",
+          "duration": 84,
+          "name": "Rejuvenating Facial",
+          "price": 105
+        },
+        {
+          "id": "bed966fa-a38a-4644-a692-ad3e89f6c785",
+          "description": "Vinco succedo tepidus at.",
+          "business": "Elegance Salon",
+          "category": "Fitness",
+          "duration": 34,
+          "name": "Yoga Session",
+          "price": 102
+        },
+        {
+          "id": "30a79ad4-3816-42f8-95bd-b7b188a47ccc",
+          "description": "Soleo aro summa vacuus.",
+          "business": "Urban Spa",
+          "category": "Fitness",
+          "duration": 118,
+          "name": "Deep Tissue Massage",
+          "price": 193
+        }
+      ]
+    },
+    {
+      "id": "dca89e8c-50b2-4b94-887d-05a617f0be5f",
+      "assistant": {
+        "id": "2f7f547d-e67b-4c69-b57a-5c159ed03f75",
+        "firstName": "Margot",
+        "lastName": "Koelpin",
+        "name": "Margot Koelpin",
+        "initials": "MK",
         "availability": {
           "regular": [
             { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
           ],
           "exceptions": [],
@@ -120,818 +279,700 @@
         "business": "Glamour Studio",
         "type": "Wellness"
       },
-      "time": "2026-01-13T14:12:15.339Z",
+      "time": "2025-12-15T13:49:43.667Z",
       "client": {
-        "id": "3c154e1f-dcb8-4b3e-a841-e46edf1497be",
-        "firstName": "Zachariah",
-        "lastName": "Yundt",
-        "name": "Zachariah Yundt",
-        "email": "Zachariah.Yundt94@gmail.com",
-        "phone": "(487) 323-5349 x6472",
+        "id": "fa44318e-00b0-412a-abf7-a093001fe7a0",
+        "firstName": "Diego",
+        "lastName": "Smith",
+        "name": "Diego Smith",
+        "email": "Diego.Smith@yahoo.com",
+        "phone": "(362) 524-8062 x219",
         "appointments": []
       },
       "services": [
         {
-          "id": "168bc04c-4c54-4496-9afc-88d5aaab46bc",
-          "description": "Paens corrumpo bis cervus audeo sol suus arma summisse alienus.",
+          "id": "48c32d6c-3cee-4782-b92f-38130633ee2f",
+          "description": "Valde curso utrum.",
           "business": "Urban Spa",
-          "category": "Health",
-          "duration": 45,
-          "name": "Rejuvenating Facial",
-          "price": 102
+          "category": "Beauty",
+          "duration": 50,
+          "name": "Basic Haircut",
+          "price": 121
+        },
+        {
+          "id": "abefc4b6-e20c-4acd-8402-edf6e0da8df6",
+          "description": "Cado terreo arto vulpes consequatur sed corona quod crebro.",
+          "business": "Relaxation Haven",
+          "category": "Wellness",
+          "duration": 83,
+          "name": "Relaxing Pedicure",
+          "price": 69
+        },
+        {
+          "id": "9502959a-b2cc-484a-948b-66b20939fe4b",
+          "description": "Eum calcar considero quis conturbo.",
+          "business": "Glamour Studio",
+          "category": "Wellness",
+          "duration": 71,
+          "name": "Professional Manicure",
+          "price": 91
         }
       ]
     },
     {
-      "id": "405794ca-4d12-4d56-b57a-f2defd2db813",
+      "id": "05f443b5-5367-4d8e-adec-8a6a8dc8208a",
       "assistant": {
-        "id": "bdb0bfd6-65b6-40af-9e9b-ab9c6576f821",
-        "firstName": "Taurean",
-        "lastName": "Rutherford",
-        "name": "Taurean Rutherford",
-        "initials": "TR",
+        "id": "d0fce2a4-52c9-4de6-aaaf-de68fd1627e5",
+        "firstName": "Trevion",
+        "lastName": "Lockman",
+        "name": "Trevion Lockman",
+        "initials": "TL",
         "availability": {
           "regular": [
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
-          ],
-          "exceptions": [],
-          "holidays": []
-        },
-        "business": "Urban Spa",
-        "type": "Beauty"
-      },
-      "time": "2026-01-23T23:56:48.910Z",
-      "client": {
-        "id": "3c154e1f-dcb8-4b3e-a841-e46edf1497be",
-        "firstName": "Zachariah",
-        "lastName": "Yundt",
-        "name": "Zachariah Yundt",
-        "email": "Zachariah.Yundt94@gmail.com",
-        "phone": "(487) 323-5349 x6472",
-        "appointments": []
-      },
-      "services": [
-        {
-          "id": "ee972722-a051-4566-81ed-6f9b42734f36",
-          "description": "Deficio conicio viduo.",
-          "business": "Urban Spa",
-          "category": "Beauty",
-          "duration": 52,
-          "name": "Yoga Session",
-          "price": 65
-        }
-      ]
-    },
-    {
-      "id": "62d79aac-a0b4-4acc-9962-b0fbd572b2b1",
-      "assistant": {
-        "id": "ac2df6e7-8ee3-4287-88a2-81a92cb5e8ea",
-        "firstName": "Katheryn",
-        "lastName": "Cummings",
-        "name": "Katheryn Cummings",
-        "initials": "KC",
-        "availability": {
-          "regular": [
             { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" }
           ],
           "exceptions": [],
           "holidays": []
         },
         "business": "Relaxation Haven",
-        "type": "Health"
-      },
-      "time": "2026-07-11T15:24:30.813Z",
-      "client": {
-        "id": "e0f4bc20-862d-4565-a8b6-ac0185f8bd89",
-        "firstName": "Carlee",
-        "lastName": "Reichel",
-        "name": "Carlee Reichel",
-        "email": "Carlee.Reichel@gmail.com",
-        "phone": "485-739-4824 x508",
-        "appointments": []
-      },
-      "services": [
-        {
-          "id": "ae83035a-13d1-4040-9ef7-c5bd7afa79fa",
-          "description": "Vester sono cura atrocitas vix valens aro agnitio.",
-          "business": "Glamour Studio",
-          "category": "Health",
-          "duration": 82,
-          "name": "Yoga Session",
-          "price": 43
-        },
-        {
-          "id": "01776a4a-8f6b-447d-baf6-1739bf8de2f9",
-          "description": "Derelinquo varietas trado avaritia accendo certe corpus contigo advenio tubineus.",
-          "business": "Glamour Studio",
-          "category": "Wellness",
-          "duration": 86,
-          "name": "Relaxing Pedicure",
-          "price": 157
-        },
-        {
-          "id": "bd8a6543-248e-452f-b9d2-30263691afd9",
-          "description": "Video vir votum vomito deripio volaticus arceo censura vesica.",
-          "business": "Relaxation Haven",
-          "category": "Wellness",
-          "duration": 89,
-          "name": "Relaxing Pedicure",
-          "price": 75
-        }
-      ]
-    },
-    {
-      "id": "bc58a076-cc54-462e-afaf-2c0abf4ca21d",
-      "assistant": {
-        "id": "f7b7601a-d414-4c96-99df-6a7fa3c57281",
-        "firstName": "Camila",
-        "lastName": "Schimmel",
-        "name": "Camila Schimmel",
-        "initials": "CS",
-        "availability": {
-          "regular": [
-            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" }
-          ],
-          "exceptions": [],
-          "holidays": []
-        },
-        "business": "Elegance Salon",
-        "type": "Health"
-      },
-      "time": "2026-01-02T01:17:59.396Z",
-      "client": {
-        "id": "5a68eba6-9e11-4936-8043-ce8b11723902",
-        "firstName": "Danial",
-        "lastName": "Macejkovic",
-        "name": "Danial Macejkovic",
-        "email": "Danial.Macejkovic81@yahoo.com",
-        "phone": "(710) 234-6936 x2097",
-        "appointments": []
-      },
-      "services": [
-        {
-          "id": "fe3d7f7d-6e51-4fc0-b862-2c0034ebb19b",
-          "description": "Demo quam benevolentia sumptus curto arceo strenuus usitas aedificium.",
-          "business": "Glamour Studio",
-          "category": "Health",
-          "duration": 74,
-          "name": "Professional Manicure",
-          "price": 140
-        }
-      ]
-    },
-    {
-      "id": "7774cee6-1333-493f-b669-a3400291ea2d",
-      "assistant": {
-        "id": "a73fb146-aff9-45af-a9a5-2cc272bdfb9e",
-        "firstName": "Orie",
-        "lastName": "Conn",
-        "name": "Orie Conn",
-        "initials": "OC",
-        "availability": {
-          "regular": [
-            { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" }
-          ],
-          "exceptions": [],
-          "holidays": []
-        },
-        "business": "Elegance Salon",
         "type": "Beauty"
       },
-      "time": "2026-04-19T05:54:25.519Z",
+      "time": "2025-12-08T11:58:23.969Z",
       "client": {
-        "id": "e0f4bc20-862d-4565-a8b6-ac0185f8bd89",
-        "firstName": "Carlee",
-        "lastName": "Reichel",
-        "name": "Carlee Reichel",
-        "email": "Carlee.Reichel@gmail.com",
-        "phone": "485-739-4824 x508",
+        "id": "c70142f6-9174-4f05-ab26-7055897eb71e",
+        "firstName": "Jason",
+        "lastName": "Upton",
+        "name": "Jason Upton",
+        "email": "Jason.Upton@gmail.com",
+        "phone": "1-439-216-7423",
         "appointments": []
       },
       "services": [
         {
-          "id": "373cb61f-1857-4968-939d-76c6c0fa1284",
-          "description": "Vehemens volubilis nostrum doloremque dolorem adsidue adversus.",
+          "id": "7af408eb-d1df-4102-9e9b-9867a5679a68",
+          "description": "Alo audeo vicissitudo demergo vestigium coepi alveus.",
           "business": "Glamour Studio",
           "category": "Beauty",
-          "duration": 86,
-          "name": "Deep Tissue Massage",
-          "price": 45
-        }
-      ]
-    },
-    {
-      "id": "6458b2d6-3e9d-466b-95fb-862449b91b02",
-      "assistant": {
-        "id": "77512533-256b-492c-b700-4c73daa191e2",
-        "firstName": "Liana",
-        "lastName": "Smith",
-        "name": "Liana Smith",
-        "initials": "LS",
-        "availability": {
-          "regular": [
-            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
-          ],
-          "exceptions": [],
-          "holidays": []
-        },
-        "business": "Relaxation Haven",
-        "type": "Fitness"
-      },
-      "time": "2026-07-02T02:43:59.040Z",
-      "client": {
-        "id": "3c154e1f-dcb8-4b3e-a841-e46edf1497be",
-        "firstName": "Zachariah",
-        "lastName": "Yundt",
-        "name": "Zachariah Yundt",
-        "email": "Zachariah.Yundt94@gmail.com",
-        "phone": "(487) 323-5349 x6472",
-        "appointments": []
-      },
-      "services": [
-        {
-          "id": "f2fb3c2e-d309-46a7-8b93-818977bcccc5",
-          "description": "Subiungo aestus cruentus quidem peior appello.",
-          "business": "Relaxation Haven",
-          "category": "Fitness",
-          "duration": 111,
+          "duration": 107,
           "name": "Rejuvenating Facial",
-          "price": 162
+          "price": 127
+        }
+      ]
+    },
+    {
+      "id": "a611142f-8d13-4d10-a3b9-671c23c7a815",
+      "assistant": {
+        "id": "4b8e500f-d99d-4096-abcb-2f6f9efcd289",
+        "firstName": "Emery",
+        "lastName": "Padberg",
+        "name": "Emery Padberg",
+        "initials": "EP",
+        "availability": {
+          "regular": [
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" }
+          ],
+          "exceptions": [],
+          "holidays": []
+        },
+        "business": "Elegance Salon",
+        "type": "Health"
+      },
+      "time": "2025-12-29T20:00:09.942Z",
+      "client": {
+        "id": "c70142f6-9174-4f05-ab26-7055897eb71e",
+        "firstName": "Jason",
+        "lastName": "Upton",
+        "name": "Jason Upton",
+        "email": "Jason.Upton@gmail.com",
+        "phone": "1-439-216-7423",
+        "appointments": []
+      },
+      "services": [
+        {
+          "id": "e545f755-3547-495d-97ce-f085df4847c5",
+          "description": "Virga eum tibi subvenio.",
+          "business": "Glamour Studio",
+          "category": "Fitness",
+          "duration": 82,
+          "name": "Professional Manicure",
+          "price": 49
         },
         {
-          "id": "1c76ded5-712f-42ce-b9e0-393c7fbfc7a2",
-          "description": "Benevolentia confero creta venustas theca tempora.",
+          "id": "7c2fdd1f-0281-4108-9095-fc1abf4b8c75",
+          "description": "Cervus thesis repellat aufero alo virtus cogo derideo tergum porro.",
+          "business": "Urban Spa",
+          "category": "Health",
+          "duration": 79,
+          "name": "Yoga Session",
+          "price": 174
+        },
+        {
+          "id": "24a1cfae-cfc7-44fd-9eb7-3041e77eaf5b",
+          "description": "Aliquid volup brevis thorax vulnero.",
+          "business": "Urban Spa",
+          "category": "Health",
+          "duration": 118,
+          "name": "Rejuvenating Facial",
+          "price": 138
+        }
+      ]
+    },
+    {
+      "id": "de253af1-f3d3-425e-a114-c2574908bca2",
+      "assistant": {
+        "id": "2f7f547d-e67b-4c69-b57a-5c159ed03f75",
+        "firstName": "Margot",
+        "lastName": "Koelpin",
+        "name": "Margot Koelpin",
+        "initials": "MK",
+        "availability": {
+          "regular": [
+            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
+          ],
+          "exceptions": [],
+          "holidays": []
+        },
+        "business": "Glamour Studio",
+        "type": "Wellness"
+      },
+      "time": "2025-12-27T07:12:56.687Z",
+      "client": {
+        "id": "087cf518-75f4-4bb9-8955-d5ca5521e6a0",
+        "firstName": "Lucious",
+        "lastName": "Jenkins",
+        "name": "Lucious Jenkins",
+        "email": "Lucious_Jenkins@yahoo.com",
+        "phone": "460.802.7949",
+        "appointments": []
+      },
+      "services": [
+        {
+          "id": "291264f5-0a39-4469-82c7-042acdcaa79e",
+          "description": "Caste thema desino cognomen campana.",
+          "business": "Glamour Studio",
+          "category": "Fitness",
+          "duration": 51,
+          "name": "Relaxing Pedicure",
+          "price": 192
+        },
+        {
+          "id": "619715a7-d102-4514-8c39-98aac6ce610a",
+          "description": "Curo tabella sapiente.",
           "business": "Elegance Salon",
           "category": "Health",
-          "duration": 33,
-          "name": "Yoga Session",
-          "price": 162
-        }
-      ]
-    },
-    {
-      "id": "e305ac6f-c49a-43f9-8813-13ec0a2c2c83",
-      "assistant": {
-        "id": "bdb0bfd6-65b6-40af-9e9b-ab9c6576f821",
-        "firstName": "Taurean",
-        "lastName": "Rutherford",
-        "name": "Taurean Rutherford",
-        "initials": "TR",
-        "availability": {
-          "regular": [
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
-          ],
-          "exceptions": [],
-          "holidays": []
+          "duration": 47,
+          "name": "Relaxing Pedicure",
+          "price": 98
         },
-        "business": "Urban Spa",
-        "type": "Beauty"
-      },
-      "time": "2026-08-08T03:38:13.081Z",
-      "client": {
-        "id": "3c154e1f-dcb8-4b3e-a841-e46edf1497be",
-        "firstName": "Zachariah",
-        "lastName": "Yundt",
-        "name": "Zachariah Yundt",
-        "email": "Zachariah.Yundt94@gmail.com",
-        "phone": "(487) 323-5349 x6472",
-        "appointments": []
-      },
-      "services": [
         {
-          "id": "67765fce-84fc-441a-ae17-aeef14b87c00",
-          "description": "Comprehendo mollitia adipiscor pel verbum appono.",
-          "business": "Glamour Studio",
-          "category": "Wellness",
-          "duration": 68,
+          "id": "4b3aebab-30a4-4f1f-a2a1-2ff72a14124f",
+          "description": "Tamquam sto conatus.",
+          "business": "Relaxation Haven",
+          "category": "Beauty",
+          "duration": 83,
           "name": "Rejuvenating Facial",
-          "price": 175
+          "price": 172
         }
       ]
     },
     {
-      "id": "4bac03cb-3357-43a2-925b-e7b91278c8ec",
+      "id": "c1863917-8872-405f-9d7f-daf61c6d277d",
       "assistant": {
-        "id": "99ef9ec8-9bd4-4ae8-863e-2209e6a038d2",
-        "firstName": "Gerda",
-        "lastName": "Feil",
-        "name": "Gerda Feil",
-        "initials": "GF",
+        "id": "55964792-a472-40a6-ae12-153ccdacef1a",
+        "firstName": "Deborah",
+        "lastName": "Marquardt",
+        "name": "Deborah Marquardt",
+        "initials": "DM",
         "availability": {
           "regular": [
+            { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-            { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
             { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" }
           ],
           "exceptions": [],
           "holidays": []
         },
-        "business": "Relaxation Haven",
-        "type": "Wellness"
+        "business": "Glamour Studio",
+        "type": "Fitness"
       },
-      "time": "2025-12-24T05:40:50.950Z",
+      "time": "2025-12-13T05:05:37.371Z",
       "client": {
-        "id": "e0f4bc20-862d-4565-a8b6-ac0185f8bd89",
-        "firstName": "Carlee",
-        "lastName": "Reichel",
-        "name": "Carlee Reichel",
-        "email": "Carlee.Reichel@gmail.com",
-        "phone": "485-739-4824 x508",
+        "id": "7991f066-3aed-424d-beda-aded38fb50d2",
+        "firstName": "Isac",
+        "lastName": "Zulauf",
+        "name": "Isac Zulauf",
+        "email": "Isac_Zulauf68@hotmail.com",
+        "phone": "260.895.6652 x8388",
         "appointments": []
       },
       "services": [
         {
-          "id": "7ae9a025-c791-4d51-a019-784ca262c765",
-          "description": "Velit conturbo calamitas eius degenero blandior demens.",
-          "business": "Relaxation Haven",
-          "category": "Fitness",
-          "duration": 53,
-          "name": "Rejuvenating Facial",
-          "price": 44
-        },
-        {
-          "id": "811a5d86-a9f1-4555-9e2d-de1e708d6f7a",
-          "description": "Expedita timor comprehendo beatus pectus adduco.",
+          "id": "bc69aa38-aecd-42e8-adc5-a916eb323516",
+          "description": "Cicuta deficio circumvenio blanditiis quam comprehendo.",
           "business": "Urban Spa",
-          "category": "Wellness",
-          "duration": 55,
-          "name": "Yoga Session",
-          "price": 94
+          "category": "Health",
+          "duration": 74,
+          "name": "Deep Tissue Massage",
+          "price": 128
         }
       ]
     }
   ],
   "assistants": [
     {
-      "id": "bc59d55b-d656-4072-b1ca-b2c190a6cbf0",
-      "firstName": "Maximus",
-      "lastName": "Bauch",
-      "name": "Maximus Bauch",
-      "initials": "MB",
+      "id": "97ce1da9-ca0d-48b3-9163-25b3e4325c6b",
+      "firstName": "Sophie",
+      "lastName": "Yost",
+      "name": "Sophie Yost",
+      "initials": "SY",
       "availability": {
         "regular": [
+          { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
+          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" }
         ],
         "exceptions": [],
         "holidays": []
       },
       "business": "Glamour Studio",
-      "type": "Wellness"
+      "type": "Beauty"
     },
     {
-      "id": "99024894-6d84-47cc-a159-bcde4df0b2bf",
-      "firstName": "Liam",
-      "lastName": "Schuster",
-      "name": "Liam Schuster",
-      "initials": "LS",
+      "id": "d0fce2a4-52c9-4de6-aaaf-de68fd1627e5",
+      "firstName": "Trevion",
+      "lastName": "Lockman",
+      "name": "Trevion Lockman",
+      "initials": "TL",
       "availability": {
         "regular": [
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" }
-        ],
-        "exceptions": [],
-        "holidays": []
-      },
-      "business": "Glamour Studio",
-      "type": "Fitness"
-    },
-    {
-      "id": "11dcc9cf-4c3c-4c6b-8c78-1359b089203a",
-      "firstName": "Madalyn",
-      "lastName": "Jones",
-      "name": "Madalyn Jones",
-      "initials": "MJ",
-      "availability": {
-        "regular": [
-          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" }
-        ],
-        "exceptions": [],
-        "holidays": []
-      },
-      "business": "Elegance Salon",
-      "type": "Wellness"
-    },
-    {
-      "id": "f7b7601a-d414-4c96-99df-6a7fa3c57281",
-      "firstName": "Camila",
-      "lastName": "Schimmel",
-      "name": "Camila Schimmel",
-      "initials": "CS",
-      "availability": {
-        "regular": [
-          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" }
+        ],
+        "exceptions": [],
+        "holidays": []
+      },
+      "business": "Relaxation Haven",
+      "type": "Beauty"
+    },
+    {
+      "id": "26433498-58e4-45ef-a739-fef1fc9638a1",
+      "firstName": "Chesley",
+      "lastName": "West",
+      "name": "Chesley West",
+      "initials": "CW",
+      "availability": {
+        "regular": [
           { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" }
         ],
         "exceptions": [],
         "holidays": []
       },
-      "business": "Elegance Salon",
-      "type": "Health"
-    },
-    {
-      "id": "a73fb146-aff9-45af-a9a5-2cc272bdfb9e",
-      "firstName": "Orie",
-      "lastName": "Conn",
-      "name": "Orie Conn",
-      "initials": "OC",
-      "availability": {
-        "regular": [
-          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" }
-        ],
-        "exceptions": [],
-        "holidays": []
-      },
-      "business": "Elegance Salon",
+      "business": "Relaxation Haven",
       "type": "Beauty"
     },
     {
-      "id": "ac2df6e7-8ee3-4287-88a2-81a92cb5e8ea",
-      "firstName": "Katheryn",
-      "lastName": "Cummings",
-      "name": "Katheryn Cummings",
-      "initials": "KC",
+      "id": "55964792-a472-40a6-ae12-153ccdacef1a",
+      "firstName": "Deborah",
+      "lastName": "Marquardt",
+      "name": "Deborah Marquardt",
+      "initials": "DM",
       "availability": {
         "regular": [
-          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" }
-        ],
-        "exceptions": [],
-        "holidays": []
-      },
-      "business": "Relaxation Haven",
-      "type": "Health"
-    },
-    {
-      "id": "bdb0bfd6-65b6-40af-9e9b-ab9c6576f821",
-      "firstName": "Taurean",
-      "lastName": "Rutherford",
-      "name": "Taurean Rutherford",
-      "initials": "TR",
-      "availability": {
-        "regular": [
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
-        ],
-        "exceptions": [],
-        "holidays": []
-      },
-      "business": "Urban Spa",
-      "type": "Beauty"
-    },
-    {
-      "id": "77512533-256b-492c-b700-4c73daa191e2",
-      "firstName": "Liana",
-      "lastName": "Smith",
-      "name": "Liana Smith",
-      "initials": "LS",
-      "availability": {
-        "regular": [
-          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
-        ],
-        "exceptions": [],
-        "holidays": []
-      },
-      "business": "Relaxation Haven",
-      "type": "Fitness"
-    },
-    {
-      "id": "59ef3cad-c674-4c65-83c1-6c807eddf1c9",
-      "firstName": "Ollie",
-      "lastName": "Collier",
-      "name": "Ollie Collier",
-      "initials": "OC",
-      "availability": {
-        "regular": [
-          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" }
-        ],
-        "exceptions": [],
-        "holidays": []
-      },
-      "business": "Urban Spa",
-      "type": "Wellness"
-    },
-    {
-      "id": "99ef9ec8-9bd4-4ae8-863e-2209e6a038d2",
-      "firstName": "Gerda",
-      "lastName": "Feil",
-      "name": "Gerda Feil",
-      "initials": "GF",
-      "availability": {
-        "regular": [
           { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
-          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
           { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" }
         ],
         "exceptions": [],
         "holidays": []
       },
+      "business": "Glamour Studio",
+      "type": "Fitness"
+    },
+    {
+      "id": "d2a6343b-b6c1-4fbb-889d-6dc05cf3f3e1",
+      "firstName": "Jaclyn",
+      "lastName": "Kemmer",
+      "name": "Jaclyn Kemmer",
+      "initials": "JK",
+      "availability": {
+        "regular": [
+          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" }
+        ],
+        "exceptions": [],
+        "holidays": []
+      },
+      "business": "Urban Spa",
+      "type": "Fitness"
+    },
+    {
+      "id": "4b8e500f-d99d-4096-abcb-2f6f9efcd289",
+      "firstName": "Emery",
+      "lastName": "Padberg",
+      "name": "Emery Padberg",
+      "initials": "EP",
+      "availability": {
+        "regular": [
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" }
+        ],
+        "exceptions": [],
+        "holidays": []
+      },
+      "business": "Elegance Salon",
+      "type": "Health"
+    },
+    {
+      "id": "d86eb68d-c31f-440c-9231-9d69079aa4c4",
+      "firstName": "Corrine",
+      "lastName": "Satterfield",
+      "name": "Corrine Satterfield",
+      "initials": "CS",
+      "availability": {
+        "regular": [
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 3, "startTime": "09:00", "endTime": "17:00" }
+        ],
+        "exceptions": [],
+        "holidays": []
+      },
+      "business": "Urban Spa",
+      "type": "Wellness"
+    },
+    {
+      "id": "59d055ae-8b12-4e86-9e2a-b97ed9f2962e",
+      "firstName": "Stuart",
+      "lastName": "Harber",
+      "name": "Stuart Harber",
+      "initials": "SH",
+      "availability": {
+        "regular": [
+          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
+        ],
+        "exceptions": [],
+        "holidays": []
+      },
       "business": "Relaxation Haven",
       "type": "Wellness"
+    },
+    {
+      "id": "2f7f547d-e67b-4c69-b57a-5c159ed03f75",
+      "firstName": "Margot",
+      "lastName": "Koelpin",
+      "name": "Margot Koelpin",
+      "initials": "MK",
+      "availability": {
+        "regular": [
+          { "dayOfWeek": 2, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 4, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
+        ],
+        "exceptions": [],
+        "holidays": []
+      },
+      "business": "Glamour Studio",
+      "type": "Wellness"
+    },
+    {
+      "id": "856e4af9-cab7-4e34-ae45-6ce0f67ad12e",
+      "firstName": "Ernesto",
+      "lastName": "Dickens",
+      "name": "Ernesto Dickens",
+      "initials": "ED",
+      "availability": {
+        "regular": [
+          { "dayOfWeek": 0, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 1, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 6, "startTime": "09:00", "endTime": "17:00" },
+          { "dayOfWeek": 5, "startTime": "09:00", "endTime": "17:00" }
+        ],
+        "exceptions": [],
+        "holidays": []
+      },
+      "business": "Urban Spa",
+      "type": "Beauty"
     }
   ],
   "clients": [
     {
-      "id": "7edabb8e-3eb6-4791-90a3-b7bd82e1a5ee",
-      "firstName": "Caleb",
-      "lastName": "Halvorson",
-      "name": "Caleb Halvorson",
-      "email": "Caleb.Halvorson92@yahoo.com",
-      "phone": "1-214-670-7784 x9618",
+      "id": "48f21951-2480-4544-b7a2-38b77d40485d",
+      "firstName": "Vivienne",
+      "lastName": "Kshlerin",
+      "name": "Vivienne Kshlerin",
+      "email": "Vivienne.Kshlerin@hotmail.com",
+      "phone": "1-567-651-4499",
       "appointments": []
     },
     {
-      "id": "3ab12ba5-e2dc-48a6-9525-da026af2311a",
-      "firstName": "Sasha",
-      "lastName": "Bergstrom-Jast",
-      "name": "Sasha Bergstrom-Jast",
-      "email": "Sasha_Bergstrom-Jast@hotmail.com",
-      "phone": "(517) 508-0668 x075",
+      "id": "c3f572e0-6349-4ca4-980c-27d1edf54a31",
+      "firstName": "Kaela",
+      "lastName": "Jacobi",
+      "name": "Kaela Jacobi",
+      "email": "Kaela_Jacobi@gmail.com",
+      "phone": "445.438.1931 x2893",
       "appointments": []
     },
     {
-      "id": "efb18798-7c01-45ea-9230-c90e0bdfa5a4",
-      "firstName": "Lori",
-      "lastName": "Stracke",
-      "name": "Lori Stracke",
-      "email": "Lori_Stracke15@yahoo.com",
-      "phone": "831-503-1395 x9519",
+      "id": "47afeffc-efa9-4b85-955a-ca3b0802abd2",
+      "firstName": "Krystal",
+      "lastName": "Mraz",
+      "name": "Krystal Mraz",
+      "email": "Krystal_Mraz@hotmail.com",
+      "phone": "(590) 989-4506 x347",
       "appointments": []
     },
     {
-      "id": "3d56b22e-5684-4082-9a90-62657fa7d5dc",
-      "firstName": "Eulalia",
-      "lastName": "Friesen",
-      "name": "Eulalia Friesen",
-      "email": "Eulalia.Friesen@hotmail.com",
-      "phone": "857.614.3140 x3516",
+      "id": "f9e256b9-3299-4fa6-94b7-ffb9fe53a4b1",
+      "firstName": "Kraig",
+      "lastName": "Ondricka",
+      "name": "Kraig Ondricka",
+      "email": "Kraig.Ondricka75@yahoo.com",
+      "phone": "702.721.4047 x77357",
       "appointments": []
     },
     {
-      "id": "3c154e1f-dcb8-4b3e-a841-e46edf1497be",
-      "firstName": "Zachariah",
-      "lastName": "Yundt",
-      "name": "Zachariah Yundt",
-      "email": "Zachariah.Yundt94@gmail.com",
-      "phone": "(487) 323-5349 x6472",
+      "id": "fd364f99-b7ab-43ad-84d9-5af185443b5e",
+      "firstName": "Carlo",
+      "lastName": "Kautzer",
+      "name": "Carlo Kautzer",
+      "email": "Carlo.Kautzer@hotmail.com",
+      "phone": "375-906-5103 x49233",
       "appointments": []
     },
     {
-      "id": "c107396d-b661-429d-a5d2-25c4b27d1ec4",
-      "firstName": "Joel",
-      "lastName": "Hartmann",
-      "name": "Joel Hartmann",
-      "email": "Joel.Hartmann15@gmail.com",
-      "phone": "481-647-4614 x726",
+      "id": "8f16a1d6-2b79-4d2a-a40d-3a939375d9e2",
+      "firstName": "Meda",
+      "lastName": "Cruickshank",
+      "name": "Meda Cruickshank",
+      "email": "Meda_Cruickshank62@yahoo.com",
+      "phone": "799-202-3293",
       "appointments": []
     },
     {
-      "id": "c4a91a83-2bc2-4dba-83ea-d5def3f9e788",
-      "firstName": "Philip",
-      "lastName": "Mohr",
-      "name": "Philip Mohr",
-      "email": "Philip_Mohr54@yahoo.com",
-      "phone": "292-257-6643 x584",
+      "id": "ed2cf2cc-5e88-4515-b5cc-cf77590a0ea1",
+      "firstName": "Veronica",
+      "lastName": "Baumbach",
+      "name": "Veronica Baumbach",
+      "email": "Veronica_Baumbach2@yahoo.com",
+      "phone": "(951) 790-2004 x686",
       "appointments": []
     },
     {
-      "id": "72e7bf1c-d99e-4a9a-b3e2-bbfcc97163dc",
-      "firstName": "Enrique",
-      "lastName": "Purdy",
-      "name": "Enrique Purdy",
-      "email": "Enrique.Purdy62@yahoo.com",
-      "phone": "829.817.6037 x738",
+      "id": "087cf518-75f4-4bb9-8955-d5ca5521e6a0",
+      "firstName": "Lucious",
+      "lastName": "Jenkins",
+      "name": "Lucious Jenkins",
+      "email": "Lucious_Jenkins@yahoo.com",
+      "phone": "460.802.7949",
       "appointments": []
     },
     {
-      "id": "7e08896a-4437-4e51-9af8-a2c97ea72b25",
-      "firstName": "Jake",
-      "lastName": "Brekke",
-      "name": "Jake Brekke",
-      "email": "Jake_Brekke36@gmail.com",
-      "phone": "(277) 648-9842",
+      "id": "1ec5097a-79c6-49df-a0b3-1f6e0cdbfdf5",
+      "firstName": "Nigel",
+      "lastName": "Homenick",
+      "name": "Nigel Homenick",
+      "email": "Nigel_Homenick@gmail.com",
+      "phone": "392-746-7327 x6066",
       "appointments": []
     },
     {
-      "id": "e0f4bc20-862d-4565-a8b6-ac0185f8bd89",
-      "firstName": "Carlee",
-      "lastName": "Reichel",
-      "name": "Carlee Reichel",
-      "email": "Carlee.Reichel@gmail.com",
-      "phone": "485-739-4824 x508",
+      "id": "c70142f6-9174-4f05-ab26-7055897eb71e",
+      "firstName": "Jason",
+      "lastName": "Upton",
+      "name": "Jason Upton",
+      "email": "Jason.Upton@gmail.com",
+      "phone": "1-439-216-7423",
       "appointments": []
     },
     {
-      "id": "8591b956-b7d5-440a-a840-d4711f97dfd1",
-      "firstName": "Kayli",
-      "lastName": "Rohan",
-      "name": "Kayli Rohan",
-      "email": "Kayli_Rohan@gmail.com",
-      "phone": "1-292-927-8287 x745",
+      "id": "90a6d33c-442c-486f-a1b8-4f9704b36556",
+      "firstName": "Ines",
+      "lastName": "Luettgen",
+      "name": "Ines Luettgen",
+      "email": "Ines.Luettgen@hotmail.com",
+      "phone": "860-308-8483 x425",
       "appointments": []
     },
     {
-      "id": "d36df58d-7551-4fbb-beb0-710c92daa0db",
-      "firstName": "Ashly",
+      "id": "d2fd35c2-62f1-4bde-910d-1f99f70f4a39",
+      "firstName": "Frances",
+      "lastName": "McGlynn",
+      "name": "Frances McGlynn",
+      "email": "Frances.McGlynn@gmail.com",
+      "phone": "1-719-444-5681 x551",
+      "appointments": []
+    },
+    {
+      "id": "b50af8c9-3a09-4b3a-8d13-07df82c9fa6f",
+      "firstName": "Georgette",
+      "lastName": "Daugherty",
+      "name": "Georgette Daugherty",
+      "email": "Georgette.Daugherty96@yahoo.com",
+      "phone": "(301) 893-5308",
+      "appointments": []
+    },
+    {
+      "id": "81307655-9bdb-4fc4-8d98-224b74624c6d",
+      "firstName": "Lucius",
+      "lastName": "Huels",
+      "name": "Lucius Huels",
+      "email": "Lucius.Huels4@yahoo.com",
+      "phone": "(539) 316-9583",
+      "appointments": []
+    },
+    {
+      "id": "f6fd9c68-2f44-422b-b1f9-d2c09cea2fd8",
+      "firstName": "Destiny",
+      "lastName": "Franecki",
+      "name": "Destiny Franecki",
+      "email": "Destiny_Franecki@gmail.com",
+      "phone": "968.701.8466",
+      "appointments": []
+    },
+    {
+      "id": "483d5ec5-2a7a-4bd5-bf7e-3c03bfeb7f18",
+      "firstName": "Odessa",
       "lastName": "Brown",
-      "name": "Ashly Brown",
-      "email": "Ashly.Brown33@hotmail.com",
-      "phone": "(235) 229-9546 x18659",
+      "name": "Odessa Brown",
+      "email": "Odessa.Brown56@gmail.com",
+      "phone": "691-964-3988",
       "appointments": []
     },
     {
-      "id": "f93a0f84-8196-4623-9902-145f551c7732",
-      "firstName": "Verla",
-      "lastName": "Schmidt",
-      "name": "Verla Schmidt",
-      "email": "Verla.Schmidt@gmail.com",
-      "phone": "(677) 850-0002",
+      "id": "4d4d2ac8-5e3c-4b66-bdb1-5b57bd641a58",
+      "firstName": "Else",
+      "lastName": "Paucek",
+      "name": "Else Paucek",
+      "email": "Else.Paucek@hotmail.com",
+      "phone": "1-445-840-8013 x84619",
       "appointments": []
     },
     {
-      "id": "fae46f08-b3f3-41a4-bc68-e8658ff15e6c",
-      "firstName": "Stefan",
-      "lastName": "Kunde",
-      "name": "Stefan Kunde",
-      "email": "Stefan.Kunde@yahoo.com",
-      "phone": "(869) 285-6354",
+      "id": "7991f066-3aed-424d-beda-aded38fb50d2",
+      "firstName": "Isac",
+      "lastName": "Zulauf",
+      "name": "Isac Zulauf",
+      "email": "Isac_Zulauf68@hotmail.com",
+      "phone": "260.895.6652 x8388",
       "appointments": []
     },
     {
-      "id": "5a68eba6-9e11-4936-8043-ce8b11723902",
-      "firstName": "Danial",
-      "lastName": "Macejkovic",
-      "name": "Danial Macejkovic",
-      "email": "Danial.Macejkovic81@yahoo.com",
-      "phone": "(710) 234-6936 x2097",
+      "id": "fa44318e-00b0-412a-abf7-a093001fe7a0",
+      "firstName": "Diego",
+      "lastName": "Smith",
+      "name": "Diego Smith",
+      "email": "Diego.Smith@yahoo.com",
+      "phone": "(362) 524-8062 x219",
       "appointments": []
     },
     {
-      "id": "8c3ea4fd-763e-4e3f-b54e-37b767fdca80",
-      "firstName": "Austyn",
-      "lastName": "Jast",
-      "name": "Austyn Jast",
-      "email": "Austyn_Jast@gmail.com",
-      "phone": "537-785-4621",
-      "appointments": []
-    },
-    {
-      "id": "5f402bc7-15dd-40b9-bade-a612ef331274",
-      "firstName": "Eino",
-      "lastName": "Schaden",
-      "name": "Eino Schaden",
-      "email": "Eino.Schaden89@gmail.com",
-      "phone": "664-991-5482 x4006",
-      "appointments": []
-    },
-    {
-      "id": "3963cfdd-8658-4d40-a2a7-ee19ce64437b",
-      "firstName": "Kris",
-      "lastName": "Von",
-      "name": "Kris Von",
-      "email": "Kris_Von64@hotmail.com",
-      "phone": "868-489-7315 x29851",
-      "appointments": []
-    },
-    {
-      "id": "4b64cf1d-9ebb-441f-b55f-a1b9ebda5142",
-      "firstName": "Michale",
-      "lastName": "Beer",
-      "name": "Michale Beer",
-      "email": "Michale_Beer2@gmail.com",
-      "phone": "1-988-203-5402 x2717",
-      "appointments": []
-    },
-    {
-      "id": "54dda8c5-4c53-4551-a5f8-82aed1cc30c6",
-      "firstName": "Justen",
-      "lastName": "Kovacek",
-      "name": "Justen Kovacek",
-      "email": "Justen_Kovacek@gmail.com",
-      "phone": "(201) 589-7638",
+      "id": "add057cf-6ce9-47da-845c-d7924ce546f9",
+      "firstName": "Abe",
+      "lastName": "Becker",
+      "name": "Abe Becker",
+      "email": "Abe_Becker63@yahoo.com",
+      "phone": "982.680.8673 x1445",
       "appointments": []
     }
   ],
   "services": [
     {
-      "id": "40b659f8-e17c-4eb5-ad7a-3a051dec8537",
-      "description": "Clamo crastinus itaque thema acceptus aperte complectus votum.",
-      "business": "Relaxation Haven",
-      "category": "Fitness",
-      "duration": 68,
-      "name": "Deep Tissue Massage",
-      "price": 148
-    },
-    {
-      "id": "2683230d-7837-4329-9927-0418756e03d8",
-      "description": "Laudantium vesco ea bestia assentator.",
-      "business": "Glamour Studio",
-      "category": "Wellness",
-      "duration": 30,
-      "name": "Deep Tissue Massage",
-      "price": 25
-    },
-    {
-      "id": "68329213-c419-4b34-99e3-a30a7c39b358",
-      "description": "Crustulum iste architecto ullus.",
-      "business": "Urban Spa",
-      "category": "Wellness",
-      "duration": 56,
-      "name": "Professional Manicure",
-      "price": 47
-    },
-    {
-      "id": "eef1827b-b32a-4c9b-b09f-7db02e762fd3",
-      "description": "Earum spiculum sub carmen cruentus acer sint.",
+      "id": "d65d61a8-89ab-4f87-a553-ef7dd11af42e",
+      "description": "Unde suppellex bibo crux.",
       "business": "Glamour Studio",
       "category": "Fitness",
-      "duration": 92,
-      "name": "Yoga Session",
+      "duration": 106,
+      "name": "Relaxing Pedicure",
       "price": 115
     },
     {
-      "id": "4f4c0655-80c2-4687-b4ac-5655987571d4",
-      "description": "Statim vel curo tondeo astrum velut.",
-      "business": "Elegance Salon",
-      "category": "Beauty",
-      "duration": 51,
-      "name": "Deep Tissue Massage",
-      "price": 34
+      "id": "b75746fd-5aa1-4caf-9c8e-232d4698e4f0",
+      "description": "Solitudo depopulo sumo suscipit.",
+      "business": "Urban Spa",
+      "category": "Health",
+      "duration": 105,
+      "name": "Relaxing Pedicure",
+      "price": 184
     },
     {
-      "id": "014b6f3f-e25f-4853-9232-1b0ec551618a",
-      "description": "Demulceo strenuus creber.",
-      "business": "Urban Spa",
+      "id": "dac799b5-a07c-4972-bd38-ac1d9bcd8722",
+      "description": "Venia peccatus acidus ex tabgo pecco certus cogito tabgo sed.",
+      "business": "Relaxation Haven",
       "category": "Beauty",
-      "duration": 111,
-      "name": "Basic Haircut",
-      "price": 193
+      "duration": 88,
+      "name": "Yoga Session",
+      "price": 78
+    },
+    {
+      "id": "fc7e28a3-a754-4c90-a88c-6522e0fc9bd8",
+      "description": "Tego cervus corpus aqua aeternus astrum debitis defero solium cuppedia.",
+      "business": "Urban Spa",
+      "category": "Wellness",
+      "duration": 87,
+      "name": "Yoga Session",
+      "price": 103
+    },
+    {
+      "id": "e04c2102-397c-4512-ac6c-dfdad8487705",
+      "description": "Complectus adficio abeo error varius qui torrens triumphus.",
+      "business": "Urban Spa",
+      "category": "Health",
+      "duration": 118,
+      "name": "Rejuvenating Facial",
+      "price": 135
+    },
+    {
+      "id": "5c28af96-9be6-4c6c-95c0-4eb95e6c8fb7",
+      "description": "Amitto conturbo usus corrupti videlicet subvenio.",
+      "business": "Glamour Studio",
+      "category": "Fitness",
+      "duration": 94,
+      "name": "Professional Manicure",
+      "price": 178
     }
   ]
 }

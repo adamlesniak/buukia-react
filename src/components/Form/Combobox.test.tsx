@@ -19,7 +19,7 @@ const user = userEvent.setup();
 
 describe("Combobox Component", () => {
   it("renders the initial dropdown", () => {
-    render(<Combobox items={mockItems} />);
+    render(<Combobox valueKey="name" items={mockItems} />);
 
     const inputElement = screen.getByRole("combobox");
 
@@ -27,7 +27,7 @@ describe("Combobox Component", () => {
   });
 
   it("renders initial prompt", () => {
-    render(<Combobox items={mockItems} />);
+    render(<Combobox valueKey="name" items={mockItems} />);
 
     const inputElement = screen.getByPlaceholderText("Please select an item.");
 
@@ -35,7 +35,7 @@ describe("Combobox Component", () => {
   });
 
   it("should not render the dropdown when it's closed", () => {
-    render(<Combobox items={mockItems} />);
+    render(<Combobox valueKey="name" items={mockItems} />);
 
     const dropdown = screen.queryByTestId("combobox-dropdown");
 
@@ -43,7 +43,7 @@ describe("Combobox Component", () => {
   });
 
   it("should render the dropdown with items when it's open", async () => {
-    render(<Combobox items={mockItems} />);
+    render(<Combobox valueKey="name" items={mockItems} />);
 
     await user.click(screen.getByTestId("combobox-container-input"));
 
@@ -57,7 +57,7 @@ describe("Combobox Component", () => {
   });
 
   it("should select the item when selected", async () => {
-    render(<Combobox items={mockItems} />);
+    render(<Combobox valueKey="name" items={mockItems} />);
 
     await user.click(screen.getByTestId("combobox-container-input"));
 
@@ -79,7 +79,7 @@ describe("Combobox Component", () => {
   });
 
   it("should render the search input", async () => {
-    render(<Combobox search={true} items={mockItems} />);
+    render(<Combobox valueKey="name" search={true} items={mockItems} />);
 
     await user.click(screen.getByTestId("combobox-container-input"));
 
