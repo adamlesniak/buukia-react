@@ -38,7 +38,7 @@ const items = [
   },
   {
     title: "Appointments",
-    url: "/appointments",
+    url: "/appointments/daily",
     icon: ClipboardClock,
   },
   {

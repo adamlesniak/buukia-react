@@ -1,32 +1,111 @@
-export type Assistant = {
+export interface CreateAppointmentBody {
+  assistantId: string;
+  clientId: string;
+  time: string;
+  serviceIds: string[];
+}
+
+export interface UpdateAppointmentBody {
+  id: string;
+  assistantId: string;
+  clientId: string;
+  time: string;
+  serviceIds: string[];
+}
+
+
+export type AppointmentFormValues = {
+  assistantName: string;
+  clientName: string;
+  time: string;
+  services: BuukiaService[];
+};
+
+export type BuukiaAssistant = {
   id: string;
   firstName: string;
   lastName: string;
   name: string;
   initials: string;
-  availability: {
-    regular: Array<{
-      dayOfWeek: number; // 0 (Sunday) to 6 (Saturday)
-      startTime: string; // "HH:MM" format
-      endTime: string; // "HH:MM" format
-    }>;
-    exceptions: Array<{
-      date: string; // "YYYY-MM-DD" format
-      startTime: string; // "HH:MM" format
-      endTime: string; // "HH:MM" format
-    }>;
-    holidays: Array<string>; // Array of dates in "YYYY-MM-DD" format
-  };
+  availability: Availability;
   business: string;
   type: string;
 };
 
-export type Service = {
+export type BuukiaService = {
   id: string;
   description: string;
   business: string;
-  categoy: string;
+  category: string;
   duration: number;
   name: string;
   price: number;
+};
+
+export type BuukiaClient = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  email: string;
+  phone: string;
+  appointments: BuukiaAppointment[];
+};
+
+export type BuukiaAppointment = {
+  id: string;
+  assistant: BuukiaAssistant;
+  time: string;
+  client: BuukiaClient;
+  services: BuukiaService[];
+};
+
+export type MockData = {
+  appointments: BuukiaAppointment[];
+  assistants: BuukiaAssistant[];
+  clients: BuukiaClient[];
+  services: BuukiaService[];
+};
+
+// API Response Types
+export type ApiResponse<T> = {
+  data: T;
+  message?: string;
+  status: "success" | "error";
+};
+
+export type PaginatedResponse<T> = ApiResponse<{
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}>;
+
+// Form Types
+export type ComboboxItem = {
+  id: string;
+  name: string;
+  value: string;
+};
+
+// Business Types
+export type BusinessCategory = "Beauty" | "Wellness" | "Health" | "Fitness";
+
+export type AvailabilitySlot = {
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+};
+
+export type AvailabilityException = {
+  date: string;
+  startTime: string;
+  endTime: string;
+};
+
+export type Availability = {
+  regular: AvailabilitySlot[];
+  exceptions: AvailabilityException[];
+  holidays: string[];
 };

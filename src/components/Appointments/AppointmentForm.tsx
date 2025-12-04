@@ -1,12 +1,19 @@
-import { faker } from "@faker-js/faker";
 import { PlusIcon, X, XIcon } from "lucide-react";
 import { useState, useMemo } from "react";
+import { FocusScope } from "react-aria";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { useServices } from "@/api/services";
+import { useCreateAppointment } from "@/api/services/use-create-appointment";
+import type {
+  BuukiaAssistant,
+  BuukiaClient,
+  BuukiaService,
+  CreateAppointmentBody,
+} from "@/types";
 
 import { Button } from "../Button";
 import { Combobox, Field, Form, Input, Label } from "../Form";
@@ -37,6 +44,7 @@ const ModalHeader = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid #f4f4f4;
   margin-bottom: 16px;
+  padding-bottom: 4px;
 `;
 
 const ModalBody = styled.div`
@@ -100,23 +108,19 @@ const FormSummaryItem = styled.div`
   margin: 8px 0px;
 `;
 
-interface IService {
-  id: string;
-  name: string;
-  price: number;
-  duration: number;
-  description: string;
-}
-
 type AppointmentFormValues = {
-  assistantName: string;
+  assistantName: BuukiaAssistant;
   clientName: string;
   time: string;
-  services: IService[];
+  services: BuukiaService[];
 };
 
 type AppointmentFormProps = {
   values: AppointmentFormValues;
+  assistant: BuukiaAssistant;
+  services: BuukiaService[];
+  clients: BuukiaClient[];
+  onClientsSearch: (query: string) => void;
   onSubmit: (data: AppointmentFormValues) => void;
 };
 
@@ -131,6 +135,8 @@ export function AppointmentForm(props: AppointmentFormProps) {
     });
 
   const { data: services = [] } = useServices();
+
+  const createAppointmentMutation = useCreateAppointment();
 
   // const [addAppointmentService, removeAppointmentService] = [
   //   (service: IService) => {
@@ -148,25 +154,28 @@ export function AppointmentForm(props: AppointmentFormProps) {
       [currentServices],
     ),
     useMemo(
-      () =>
-        currentServices.reduce((sum, next) => {
-          sum = sum + next.price;
-          return sum;
-        }, 0),
+      () => currentServices.reduce((sum, next) => sum + next.price, 0),
       [currentServices],
     ),
     useMemo(
-      () =>
-        currentServices.reduce((sum, next) => {
-          sum = sum + next.duration;
-          return sum;
-        }, 0),
+      () => currentServices.reduce((sum, next) => sum + next.duration, 0),
       [currentServices],
     ),
   ];
 
   const onSubmit = (data: AppointmentFormValues) => {
-    console.log(data);
+    const client = props.clients.find(
+      (client) => client.name === data.clientName,
+    );
+
+    const body: CreateAppointmentBody = {
+      assistantId: props.assistant.id,
+      clientId: client ? client.id : "",
+      time: data.time,
+      serviceIds: data.services.map((service) => service.id),
+    };
+
+    createAppointmentMutation.mutate(body);
   };
 
   return (
@@ -204,19 +213,11 @@ export function AppointmentForm(props: AppointmentFormProps) {
             {t("appointments.detail.client")}
           </Label>
           <Combobox
-            {...register("clientName", { required: true, value: "test" })}
+            {...register("clientName", { required: true })}
             id="client-name-input"
             data-testid="client-name-input"
-            items={Array.from({ length: 5 }).map((_) => {
-              const value = faker.person.fullName();
-              const item = {
-                id: faker.string.uuid(),
-                name: value,
-                value: value,
-              };
-
-              return item;
-            })}
+            valueKey="name"
+            items={props.clients}
           ></Combobox>
         </Field>
 
@@ -242,7 +243,8 @@ export function AppointmentForm(props: AppointmentFormProps) {
           <Item data-testid="services-container-list-item" key={service.id}>
             <ItemBody>
               <h3>
-                {service.name} ({service.duration}{t("common.min")})
+                {service.name} ({service.duration}
+                {t("common.min")})
               </h3>
               <p>{service.description}</p>
               <b>€{service.price}</b>
@@ -275,58 +277,62 @@ export function AppointmentForm(props: AppointmentFormProps) {
               }}
               data-testid="services-modal"
             >
-              <ModalHeader>
-                <h3>{t("appointments.detail.services")}</h3>
-                <Button
-                  variant="transparent"
-                  onClick={() => setShowModal(false)}
-                  aria-label={t("common.closeModal")}
-                  tabIndex={0}
-                  type="button"
-                >
-                  <X />
-                </Button>
-              </ModalHeader>
-              <ModalBody data-testid="services-list">
-                {services.map((service) => (
-                  <Item data-testid="services-list-item" key={service.id}>
-                    <ItemBody>
-                      <h3>
-                        {service.name} ({service.duration}min)
-                      </h3>
-                      <p>{service.description}</p>
-                      <b>€{service.price}</b>
-                    </ItemBody>
-                    {!servicesIds.includes(service.id) && (
-                      <Button
-                        size="sm"
-                        tabIndex={0}
-                        onClick={() => {
-                          setValue("services", [...currentServices, service]);
-                        }}
-                        type="button"
-                      >
-                        <PlusIcon />
-                      </Button>
-                    )}
-                    {servicesIds.includes(service.id) && (
-                      <Button
-                        size="sm"
-                        tabIndex={0}
-                        onClick={() => {
-                          setValue(
-                            "services",
-                            currentServices.filter((s) => s.id !== service.id),
-                          );
-                        }}
-                        type="button"
-                      >
-                        <XIcon />
-                      </Button>
-                    )}
-                  </Item>
-                ))}
-              </ModalBody>
+              <FocusScope autoFocus restoreFocus contain>
+                <ModalHeader>
+                  <h3>{t("appointments.detail.services")}</h3>
+                  <Button
+                    variant="transparent"
+                    onClick={() => setShowModal(false)}
+                    aria-label={t("common.closeModal")}
+                    tabIndex={0}
+                    type="button"
+                  >
+                    <X />
+                  </Button>
+                </ModalHeader>
+                <ModalBody tabIndex={-1} data-testid="services-list">
+                  {services.map((service) => (
+                    <Item data-testid="services-list-item" key={service.id}>
+                      <ItemBody>
+                        <h3>
+                          {service.name} ({service.duration}min)
+                        </h3>
+                        <p>{service.description}</p>
+                        <b>€{service.price}</b>
+                      </ItemBody>
+                      {!servicesIds.includes(service.id) && (
+                        <Button
+                          size="sm"
+                          tabIndex={0}
+                          onClick={() => {
+                            setValue("services", [...currentServices, service]);
+                          }}
+                          type="button"
+                        >
+                          <PlusIcon />
+                        </Button>
+                      )}
+                      {servicesIds.includes(service.id) && (
+                        <Button
+                          size="sm"
+                          tabIndex={0}
+                          onClick={() => {
+                            setValue(
+                              "services",
+                              currentServices.filter(
+                                (s) => s.id !== service.id,
+                              ),
+                            );
+                          }}
+                          type="button"
+                        >
+                          <XIcon />
+                        </Button>
+                      )}
+                    </Item>
+                  ))}
+                </ModalBody>
+              </FocusScope>
             </Modal>
           </Overlay>,
           document.body,
@@ -335,7 +341,9 @@ export function AppointmentForm(props: AppointmentFormProps) {
       <FormSummary>
         <FormSummaryItem data-testid="form-duration">
           <span>{t("appointments.detail.totalDuration")}</span>
-          <b>{servicesDurationSum} {t("common.min")}</b>
+          <b>
+            {servicesDurationSum} {t("common.min")}
+          </b>
         </FormSummaryItem>
         <FormSummaryItem data-testid="form-price">
           <span>{t("appointments.detail.totalPrice")}</span>
