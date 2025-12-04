@@ -2,7 +2,6 @@ import type { FormHTMLAttributes } from "react";
 import styled from "styled-components";
 
 const StyledForm = styled.form`
-  cursor: pointer;
   display: flex;
   flex: 1;
   margin: 12px 0px;

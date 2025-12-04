@@ -1,5 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { startOfDay, addDays, addHours, addMinutes, subDays } from "date-fns";
+import {
+  startOfDay,
+  addDays,
+  addHours,
+  addMinutes,
+  subDays,
+  getUnixTime,
+} from "date-fns";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,7 +40,11 @@ function RouteComponent() {
   const navigate = useNavigate();
 
   if (error) {
-    return <div>{t("common.error")}: {error.message}</div>;
+    return (
+      <div>
+        {t("common.error")}: {error.message}
+      </div>
+    );
   }
 
   if (isLoading) {
@@ -44,7 +55,9 @@ function RouteComponent() {
   const endDate = addMinutes(addHours(todaysDate, 21), 0);
 
   const handleFieldSelect = (data: { assistantId: string; time: string }) => {
-    setAppointmentDetail(data);
+    navigate({
+      to: `/appointments/${data.assistantId}/${getUnixTime(new Date(data.time)).toString()}/`,
+    });
   };
 
   const columns =

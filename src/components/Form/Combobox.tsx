@@ -51,6 +51,7 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
 
     li {
       padding: 8px;
+      cursor: pointer;
       &:hover,
       &.selected {
         background-color: #fbfbfb;
@@ -116,6 +117,12 @@ type ComboboxProps = {
   items: { id: string; name: string }[];
   loading?: boolean;
   search?: boolean;
+  /**
+   * The key in each item object whose value should be displayed in the combobox.
+   * For example, if items are objects like { id: string, name: string }, and you want to display the name,
+   * set valueKey to "name".
+   */
+  valueKey: string;
   ref?: RefCallback<HTMLInputElement>;
 };
 
@@ -138,7 +145,7 @@ export function Combobox(
     }
 
     if (comboboxContainerInputRef.current) {
-      comboboxContainerInputRef.current.value = (item as any).name;
+      comboboxContainerInputRef.current.value = (item as any)[props.valueKey];
     }
 
     if (props.onChange) {
@@ -229,6 +236,7 @@ export function Combobox(
           placeholder="Please select an item."
           type="text"
           id="client-name-input"
+          autoComplete="off"
           name={props.name}
           onChange={props.onChange}
           onBlur={props.onBlur}

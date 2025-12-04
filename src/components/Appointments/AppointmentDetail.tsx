@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
-import { useAssistant } from "@/api/assistants";
+import { useAssistant, useServices, useClients } from "@/api";
 
 import { AppointmentForm } from "./AppointmentForm";
 
@@ -13,16 +13,33 @@ type AppointmentDetailProps = {
 export function AppointmentDetail(props: AppointmentDetailProps) {
   const { t } = useTranslation();
 
-  const { data, error, isLoading } = useAssistant(props.id);
+  const {
+    data: assistant,
+    error: assistantError,
+    isLoading: assistantLoading,
+  } = useAssistant(props.id);
+  const {
+    data: services,
+    error: servicesError,
+    isLoading: servicesLoading,
+  } = useServices();
+  const {
+    data: clients,
+    error: clientsError,
+    isLoading: clientsLoading,
+  } = useClients({ limit: 10 });
 
-  if (isLoading) {
+  if (assistantLoading || servicesLoading || clientsLoading) {
     return <div>{t("common.loading")}</div>;
   }
 
-  if (error) {
+  if (assistantError || servicesError || clientsError) {
     return (
       <div>
-        {t("common.error")}: {error.message}
+        {t("common.error")}:{" "}
+        {assistantError?.message ||
+          servicesError?.message ||
+          clientsError?.message}
       </div>
     );
   }
@@ -31,11 +48,30 @@ export function AppointmentDetail(props: AppointmentDetailProps) {
     <AppointmentForm
       data-testid="appointment-form"
       values={{
-        assistantName: data?.name || "",
+        assistantName: assistant?.name || "",
         clientName: "",
-        time: format(new Date(props.time), "PPpp"),
+        time: format(new Date(parseInt(props.time) * 1000), "PPpp"),
         services: [],
       }}
+      assistant={
+        assistant || {
+          id: "",
+          firstName: "",
+          lastName: "",
+          name: "",
+          initials: "",
+          availability: {
+            regular: [],
+            exceptions: [],
+            holidays: [],
+          },
+          business: "",
+          type: "",
+        }
+      }
+      services={services || []}
+      clients={clients || []}
+      onClientsSearch={() => {}}
       onSubmit={(data) => {
         console.log(data);
       }}

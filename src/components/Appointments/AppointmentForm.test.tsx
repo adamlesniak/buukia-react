@@ -2,10 +2,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { createAssistant } from "../../../scripts/mocks";
 import { server } from "../../mocks/server";
 import data from "../../routes/data.json";
 
 import { AppointmentForm } from "./AppointmentForm";
+
 
 beforeAll(() => {
   server.listen();
@@ -35,12 +37,21 @@ describe("AppointmentForm", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <AppointmentForm values={testProps} onSubmit={() => {}} />
+        <AppointmentForm
+          assistant={createAssistant()}
+          clients={[]}
+          onClientsSearch={() => {}}
+          services={[]}
+          onSubmit={() => {}}
+          values={testProps}
+        />
       </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.queryByLabelText("appointments.detail.assistantName")).toBeInTheDocument();
+      expect(
+        screen.queryByLabelText("appointments.detail.assistantName"),
+      ).toBeInTheDocument();
       expect(screen.queryByTestId("assistant-name-input")).toBeDisabled();
       expect(screen.queryByTestId("assistant-name-input")).toHaveValue(
         testProps.assistantName,
@@ -53,12 +64,21 @@ describe("AppointmentForm", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <AppointmentForm values={testProps} onSubmit={() => {}} />
+        <AppointmentForm
+          assistant={createAssistant()}
+          clients={[]}
+          onClientsSearch={() => {}}
+          services={[]}
+          onSubmit={() => {}}
+          values={testProps}
+        />
       </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.queryByLabelText("appointments.detail.time")).toBeInTheDocument();
+      expect(
+        screen.queryByLabelText("appointments.detail.time"),
+      ).toBeInTheDocument();
       expect(screen.queryByTestId("time-input")).toBeDisabled();
       expect(screen.queryByTestId("time-input")).toHaveValue(testProps.time);
     });
@@ -69,12 +89,21 @@ describe("AppointmentForm", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <AppointmentForm values={testProps} onSubmit={() => {}} />
+        <AppointmentForm
+          assistant={createAssistant()}
+          clients={[]}
+          onClientsSearch={() => {}}
+          services={[]}
+          onSubmit={() => {}}
+          values={testProps}
+        />
       </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.queryByLabelText("appointments.detail.client")).toBeInTheDocument();
+      expect(
+        screen.queryByLabelText("appointments.detail.client"),
+      ).toBeInTheDocument();
       expect(screen.queryByTestId("client-name-input")).toBeInTheDocument();
       expect(
         screen.queryByTestId("client-name-input")?.querySelector("input"),
@@ -88,12 +117,23 @@ describe("AppointmentForm", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <AppointmentForm values={testProps} onSubmit={() => {}} />
+          <AppointmentForm
+            assistant={createAssistant()}
+            clients={[]}
+            onClientsSearch={() => {}}
+            services={[]}
+            onSubmit={() => {}}
+            values={testProps}
+          />
         </QueryClientProvider>,
       );
 
-      expect(screen.queryByText("appointments.detail.service")).toBeInTheDocument();
-      expect(screen.queryByText("appointments.detail.addService")).toBeInTheDocument();
+      expect(
+        screen.queryByText("appointments.detail.service"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("appointments.detail.addService"),
+      ).toBeInTheDocument();
     });
 
     it("should show modal with services list", async () => {
@@ -101,7 +141,14 @@ describe("AppointmentForm", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <AppointmentForm values={testProps} onSubmit={() => {}} />
+          <AppointmentForm
+            assistant={createAssistant()}
+            clients={[]}
+            onClientsSearch={() => {}}
+            services={[]}
+            onSubmit={() => {}}
+            values={testProps}
+          />
         </QueryClientProvider>,
       );
 
@@ -109,7 +156,9 @@ describe("AppointmentForm", () => {
 
       await waitFor(() => {
         expect(screen.getByTestId("services-modal")).toBeInTheDocument();
-        expect(screen.getByText("appointments.detail.services")).toBeInTheDocument();
+        expect(
+          screen.getByText("appointments.detail.services"),
+        ).toBeInTheDocument();
         expect(screen.queryAllByTestId("services-list-item").length).toEqual(
           data.services.length,
         );
@@ -121,7 +170,14 @@ describe("AppointmentForm", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <AppointmentForm values={testProps} onSubmit={() => {}} />
+          <AppointmentForm
+            assistant={createAssistant()}
+            clients={[]}
+            onClientsSearch={() => {}}
+            services={[]}
+            onSubmit={() => {}}
+            values={testProps}
+          />
         </QueryClientProvider>,
       );
 
@@ -132,7 +188,9 @@ describe("AppointmentForm", () => {
       await user.click(screen.getByText("appointments.detail.addService"));
 
       expect(screen.getByTestId("services-modal")).toBeInTheDocument();
-      expect(screen.getByText("appointments.detail.services")).toBeInTheDocument();
+      expect(
+        screen.getByText("appointments.detail.services"),
+      ).toBeInTheDocument();
 
       const item = screen.queryAllByTestId("services-list-item")[0];
       const button = item.querySelector("button");
