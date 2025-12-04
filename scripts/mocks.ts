@@ -112,7 +112,7 @@ export const createAppointment = (
     id: faker.string.uuid(),
     assistant:
       assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
-    time: faker.date.future().toISOString(),
+    time: faker.date.between({ from: new Date(), to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) }).toISOString(),
     client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
     services: Array.from({ length: faker.number.int({ min: 1, max: 3 }) }).map(
       () => createService(),
