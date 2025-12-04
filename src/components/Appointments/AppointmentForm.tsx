@@ -168,9 +168,15 @@ export function AppointmentForm(props: AppointmentFormProps) {
       (client) => client.name === data.clientName,
     );
 
+    if (!client) {
+      // Handle error - show message to user
+      console.error("Client not found");
+      return;
+    }
+
     const body: CreateAppointmentBody = {
       assistantId: props.assistant.id,
-      clientId: client ? client.id : "",
+      clientId: client.id,
       time: data.time,
       serviceIds: data.services.map((service) => service.id),
     };

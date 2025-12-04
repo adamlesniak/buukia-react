@@ -117,6 +117,11 @@ type ComboboxProps = {
   items: { id: string; name: string }[];
   loading?: boolean;
   search?: boolean;
+  /**
+   * The key in each item object whose value should be displayed in the combobox.
+   * For example, if items are objects like { id: string, name: string }, and you want to display the name,
+   * set valueKey to "name".
+   */
   valueKey: string;
   ref?: RefCallback<HTMLInputElement>;
 };

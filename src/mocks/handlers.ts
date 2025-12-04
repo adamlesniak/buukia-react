@@ -83,7 +83,9 @@ export const handlers = [
         id,
         assistant: assistants.get(body.assistantId),
         client: clients.get(body.clientId),
-        services: body.serviceIds.map((serviceId) => services.get(serviceId)),
+        services: body.serviceIds
+          .map((serviceId) => services.get(serviceId))
+          .filter((service): service is BuukiaService => service !== undefined),
       } as BuukiaAppointment;
       appointments.set(id, appointment);
 
@@ -91,9 +93,10 @@ export const handlers = [
     },
   ),
   http.put<never, UpdateAppointmentBody>(
-    "/api/appointments",
+    "/api/appointments/:id",
     async ({ request }) => {
       const body = await request.json();
+      // Use params.id or body.id
 
       if (!clients.get(body.clientId)) {
         throw Error("Client does not exist");
@@ -115,29 +118,27 @@ export const handlers = [
         id: body.id,
         assistant: assistants.get(body.assistantId),
         client: clients.get(body.clientId),
-        services: body.serviceIds.map((serviceId) => services.get(serviceId)),
+        services: body.serviceIds
+          .map((serviceId) => services.get(serviceId))
+          .filter((service): service is BuukiaService => service !== undefined),
       } as BuukiaAppointment;
       appointments.set(body.id, appointment);
 
       return HttpResponse.json(appointment);
     },
   ),
-  http.delete<never, UpdateAppointmentBody>(
-    "/api/appointments",
-    async ({ request }) => {
-      const body = await request.json();
 
-      const item = appointments.get(body.id);
+  http.delete<{ id: string }>("/api/appointments/:id", async ({ params }) => {
+    const item = appointments.get(params.id);
 
-      if (!item) {
-        throw Error("Appointment does not exist");
-      }
+    if (!item) {
+      throw Error("Appointment does not exist");
+    }
 
-      appointments.delete(body.id);
+    appointments.delete(params.id);
 
-      return HttpResponse.json(item);
-    },
-  ),
+    return HttpResponse.json(item);
+  }),
 
   http.get("/api/clients", ({ request }) => {
     const limitParam = new URL(request.url).searchParams.get("limit");
