@@ -53,7 +53,22 @@ export function AppointmentDetail(props: AppointmentDetailProps) {
         time: format(new Date(parseInt(props.time) * 1000), "PPpp"),
         services: [],
       }}
-      assistant={assistant || {}}
+      assistant={
+        assistant || {
+          id: "",
+          firstName: "",
+          lastName: "",
+          name: "",
+          initials: "",
+          availability: {
+            regular: [],
+            exceptions: [],
+            holidays: [],
+          },
+          business: "",
+          type: "",
+        }
+      }
       services={services || []}
       clients={clients || []}
       onClientsSearch={() => {}}
