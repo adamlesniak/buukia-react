@@ -109,7 +109,7 @@ const FormSummaryItem = styled.div`
 `;
 
 type AppointmentFormValues = {
-  assistantName: BuukiaAssistant;
+  assistantName: string;
   clientName: string;
   time: string;
   services: BuukiaService[];

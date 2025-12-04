@@ -29,6 +29,10 @@ export function AppointmentDetail(props: AppointmentDetailProps) {
     isLoading: clientsLoading,
   } = useClients({ limit: 10 });
 
+  if (!assistant) {
+    throw Error("Assistant not found");
+  }
+
   if (assistantLoading || servicesLoading || clientsLoading) {
     return <div>{t("common.loading")}</div>;
   }

@@ -58,7 +58,7 @@ function RouteComponent() {
           startDate={startDate}
           endDate={endDate}
           columns={Array.from({ length: 7 }).map((_) => ({
-            id: data.id,
+            id: data?.id || '',
             name: "",
           }))}
           onFieldSelect={handleFieldSelect}
