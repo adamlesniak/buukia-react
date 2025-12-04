@@ -32,6 +32,9 @@ function RouteComponent() {
             aria-label={t("common.closeDrawer")}
             tabIndex={0}
             type="button"
+            onClick={() => {
+              navigate({ to: `/appointments/weekly/${assistantId}` });
+            }}
           >
             <X />
           </Button>
