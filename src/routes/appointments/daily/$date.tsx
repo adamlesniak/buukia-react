@@ -36,7 +36,7 @@ function RouteComponent() {
     error: appointmentsError,
     isLoading: appointmentsLoading,
   } = useAppointments({ date: todaysDate.toISOString() });
-  console.log({ date: todaysDate.toISOString() });
+
   if (assistantsError || appointmentsError) {
     return (
       <div>Error: {assistantsError?.message || appointmentsError?.message}</div>
