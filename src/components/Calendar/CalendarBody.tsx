@@ -11,6 +11,8 @@ import {
 import styled from "styled-components";
 
 import { ViewType } from "@/constants.ts";
+import type { BuukiaAppointment } from "@/types";
+import { isoDateMatchDateTime } from "@/utils";
 
 const CalendarBodyContainer = styled.div`
   display: flex;
@@ -72,6 +74,7 @@ const CalendarBodyColumnItem = styled.div`
   flex-direction: column;
   flex: 1;
   justify-content: space-between;
+  position: relative;
 
   div {
     display: flex;
@@ -111,10 +114,27 @@ const CalendarBodyColumnItemPrimary = styled(CalendarBodyColumnItem)`
   }
 `;
 
+const AppointmentSlot = styled.div`
+  position: relative;
+  display: flex;
+`;
+
+const AppointmentItem = styled.div`
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin: 2px 0;
+  flex: 1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+`;
+
 export type CalendarBodyProps = {
   startDate: Date;
   endDate: Date;
   columns: { id: string; name: string }[];
+  items: BuukiaAppointment[];
   viewType: ViewType;
   onFieldSelect: (data: { assistantId: string; time: string }) => void;
   headerSelect?: (id: string) => void;
@@ -126,6 +146,7 @@ export function CalendarBody({
   onFieldSelect,
   startDate,
   viewType,
+  items,
   headerSelect,
 }: CalendarBodyProps) {
   const hoursOpen = differenceInHours(endDate, startDate);
@@ -153,7 +174,7 @@ export function CalendarBody({
           );
         })}
       </CalendarBodyColumn>
-      {viewType === ViewType.DAY &&
+      {viewType === ViewType.WEEK &&
         columns.map((column, columnIndex) => {
           const columnDate = formatISO(addDays(weekStart, columnIndex), {
             representation: "date",
@@ -201,7 +222,7 @@ export function CalendarBody({
             </CalendarBodyColumn>
           );
         })}
-      {viewType === ViewType.WEEK &&
+      {viewType === ViewType.DAY &&
         columns?.map((column) => (
           <CalendarBodyColumn key={column.id}>
             <CalendarBodyColumnHeader
@@ -221,8 +242,17 @@ export function CalendarBody({
                       addHours(startDate, hourIndex),
                       index * 15,
                     );
+
+                    const matchedAppointments = items.filter(
+                      (appointment) =>
+                        isoDateMatchDateTime(
+                          appointment.time,
+                          time.toISOString(),
+                        ) && column.id === appointment?.assistant?.id,
+                    );
+
                     return (
-                      <div
+                      <AppointmentSlot
                         onClick={($event) => {
                           if (onFieldSelect) {
                             onFieldSelect({
@@ -234,7 +264,25 @@ export function CalendarBody({
                           $event.stopPropagation();
                         }}
                         key={index}
-                      ></div>
+                      >
+                        {matchedAppointments.map((appointment) => (
+                          <AppointmentItem
+                            key={appointment.id}
+                            style={{
+                              height:
+                                (appointment.services.reduce(
+                                  (acc, service) => acc + service.duration,
+                                  0,
+                                ) /
+                                  15) *
+                                  100 +
+                                "%",
+                            }}
+                          >
+                            <strong>Appointment:</strong> {appointment.id}
+                          </AppointmentItem>
+                        ))}
+                      </AppointmentSlot>
                     );
                   })}
                 </CalendarBodyColumnItem>

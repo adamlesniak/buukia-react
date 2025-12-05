@@ -9,18 +9,20 @@ import { Drawer } from "@/components/Drawer/Drawer";
 import { DrawerContent } from "@/components/Drawer/DrawerContent";
 import { DrawerContentHeader } from "@/components/Drawer/DrawerContentHeader";
 
-export const Route = createFileRoute("/appointments/daily/$assistantId/$time")({
+export const Route = createFileRoute(
+  "/appointments/daily/$date/$assistantId/$time",
+)({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { assistantId, time } = Route.useParams();
+  const { assistantId, time, date } = Route.useParams();
   const navigate = useNavigate();
 
   return (
     <Drawer
       onOverlayClick={() => {
-        navigate({ to: `/appointments/daily` });
+        navigate({ to: `/appointments/daily/${date}` });
       }}
       drawer="right"
     >

@@ -9,6 +9,7 @@ import type {
   CreateAppointmentBody,
   UpdateAppointmentBody,
 } from "@/types";
+import { isoDateMatchDate } from "@/utils";
 
 import { createAppointment } from "../../scripts/mocks";
 import data from "../routes/data.json";
@@ -56,6 +57,22 @@ export const handlers = [
     }
   }),
 
+  http.get("/api/appointments", async ({ request }) => {
+    const url = new URL(request.url);
+
+    const date = url.searchParams.get("date");
+
+    if (date) {
+      const filteredAppointments = data.appointments.filter((appointment) =>
+        isoDateMatchDate(appointment.time, date),
+      );
+
+      return HttpResponse.json(filteredAppointments);
+    }
+
+    return HttpResponse.json(data.appointments);
+  }),
+
   http.post<never, CreateAppointmentBody>(
     "/api/appointments",
     async ({ request }) => {
@@ -77,7 +94,7 @@ export const handlers = [
         }
       }
 
-      const item = createAppointment(data.assistants, data.clients);
+      const item = createAppointment();
       const appointment = {
         ...item,
         id,
@@ -112,7 +129,7 @@ export const handlers = [
         }
       }
 
-      const item = createAppointment(data.assistants, data.clients);
+      const item = createAppointment();
       const appointment = {
         ...item,
         id: body.id,

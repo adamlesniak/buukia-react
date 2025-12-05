@@ -1,12 +1,15 @@
 import { useRouterState } from "@tanstack/react-router";
+import { startOfDay } from "date-fns";
+import { getUnixTime } from "date-fns/getUnixTime";
 import {
   Banknote,
   Bell,
   ChevronsUpDown,
   ClipboardClock,
   LayoutDashboard,
-  UsersRound,
+  UserRound,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { SidebarMenuButtonWrapper } from "./SidebarMenuButtonWrapper";
@@ -30,38 +33,11 @@ const SidebarTitle = styled.h3`
 
 const SidebarTop = styled.div``;
 
-const items = [
-  {
-    title: "Dashboard",
-    url: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Appointments",
-    url: "/appointments/daily",
-    icon: ClipboardClock,
-  },
-  {
-    title: "Services",
-    url: "/services",
-    icon: Bell,
-  },
-  {
-    title: "Assistants",
-    url: "/assistants",
-    icon: UsersRound,
-  },
-  {
-    title: "Payments",
-    url: "/payments",
-    icon: Banknote,
-  },
-];
-
 export function Sidebar() {
-  const selected = useRouterState({
+    const selected = useRouterState({
     select: (state) => state.location.href,
   });
+  const { t } = useTranslation();
 
   return (
     <SidebarContainer>
@@ -75,16 +51,50 @@ export function Sidebar() {
             <ChevronsUpDown size={16} />
           </SidebarMenuDropdown>
         </SidebarMenuButtonWrapper>
-        {items.map((item) => (
-          <SidebarMenuItem
-            to={item.url}
-            data-active={selected === item.url}
-            key={item.title}
-          >
-            <item.icon size={24} />
-            <span>{item.title}</span>
-          </SidebarMenuItem>
-        ))}
+        <SidebarMenuItem
+          to={"/"}
+          activeOptions={{ exact: true }}
+          key={t("nav.dashboard")}
+        >
+          <LayoutDashboard size={24} />
+          <span>{t("nav.dashboard")}</span>
+        </SidebarMenuItem>
+        <SidebarMenuItem
+          to={`/appointments/daily/$date`}
+          activeOptions={{ exact: false }}
+          key={t("nav.appointments")}
+          className={selected.includes("/appointments/") ? "active" : ""}
+          params={
+            { date: getUnixTime(startOfDay(new Date())).toString() } as never
+          }
+        >
+          <ClipboardClock size={24} />
+          <span>{t("nav.appointments")}</span>
+        </SidebarMenuItem>
+        <SidebarMenuItem
+          to={`/services`}
+          activeOptions={{ exact: true }}
+          key={t("nav.services")}
+        >
+          <Bell size={24} />
+          <span>{t("nav.services")}</span>
+        </SidebarMenuItem>
+        <SidebarMenuItem
+          to={`/assistants`}
+          activeOptions={{ exact: true }}
+          key={t("nav.assistants")}
+        >
+          <UserRound size={24} />
+          <span>{t("nav.assistants")}</span>
+        </SidebarMenuItem>
+        <SidebarMenuItem
+          to={`/payments`}
+          activeOptions={{ exact: true }}
+          key={t("nav.payments")}
+        >
+          <Banknote size={24} />
+          <span>{t("nav.payments")}</span>
+        </SidebarMenuItem>
       </SidebarTop>
 
       <SidebarMenuButtonWrapper>
