@@ -55,7 +55,6 @@ function RouteComponent() {
     );
   }
 
-  console.log((Number(time) * 1000).toString());
   return (
     <Drawer
       onOverlayClick={() => {
