@@ -52,6 +52,7 @@ const DrawerContainer = styled.div<{ $drawerPosition?: string }>`
   right: 0;
   left: 0;
   bottom: 0;
+  z-index: 5;
 
   ${(props) => {
     if (props.$drawerPosition === "top") {

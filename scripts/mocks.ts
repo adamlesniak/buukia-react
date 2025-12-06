@@ -2,6 +2,7 @@ import * as fs from "node:fs";
 import path from "node:path";
 
 import { faker } from "@faker-js/faker";
+import { addHours, addMinutes, roundToNearestMinutes } from "date-fns";
 import prettier from "prettier";
 
 import type {
@@ -100,20 +101,23 @@ export const createClient = (): BuukiaClient => {
     name: `${firstName} ${lastName}`,
     email: faker.internet.email({ firstName, lastName }),
     phone: faker.phone.number(),
-    appointments: []
+    appointments: [],
   };
 };
 
-export const createAppointment = (
-  assistants: BuukiaAssistant[],
-  clients: BuukiaClient[],
-): BuukiaAppointment => {
+export const createAppointment = (): BuukiaAppointment => {
   return {
     id: faker.string.uuid(),
-    assistant:
-      assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
-    time: faker.date.between({ from: new Date(), to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) }).toISOString(),
-    client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
+    assistant: createAssistant(),
+    time: roundToNearestMinutes(
+      faker.date.between({
+        from: new Date(),
+        to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      }),
+      { nearestTo: 15 },
+    ).toISOString(),
+
+    client: createClient(),
     services: Array.from({ length: faker.number.int({ min: 1, max: 3 }) }).map(
       () => createService(),
     ),
@@ -121,18 +125,40 @@ export const createAppointment = (
 };
 
 const [assistants, clients]: [BuukiaAssistant[], BuukiaClient[]] = [
-  Array.from({ length: 10 }).map(() => createAssistant()),
+  Array.from({ length: 4 }).map(() => createAssistant()),
   Array.from({ length: 20 }).map(() => createClient()),
 ];
 
-const [services, appointments]: [BuukiaService[], BuukiaAppointment[]] = [
+const startDate = addMinutes(addHours(new Date(), 8), 0);
+const endDate = addMinutes(addHours(new Date(), 21), 0);
+
+const [services, appointments, todaysAppointments]: [
+  BuukiaService[],
+  BuukiaAppointment[],
+  BuukiaAppointment[],
+] = [
   Array.from({ length: serviceNames.length }).map(() => createService()),
-  Array.from({ length: 10 }).map(() => createAppointment(assistants, clients)),
+  Array.from({ length: 10 }).map(() => ({
+    ...createAppointment(),
+    assistant:
+      assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
+    client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
+  })),
+  Array.from({ length: 10 }).map(() => ({
+    ...createAppointment(),
+    assistant:
+      assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
+    client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
+    time: roundToNearestMinutes(
+      faker.date.between({ from: startDate, to: endDate }),
+      { nearestTo: 15 },
+    ).toISOString(),
+  })),
 ];
 
 const main = async (): Promise<void> => {
   const data: MockData = {
-    appointments,
+    appointments: [...appointments, ...todaysAppointments],
     assistants,
     clients,
     services,

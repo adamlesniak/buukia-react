@@ -7,6 +7,7 @@ const DrawerContentBodyContainer = styled.div`
   align-items: center;
   flex: 1;
   overflow: hidden;
+  z-index: 10;
 `;
 
 export type DrawerContentBodyProps = {

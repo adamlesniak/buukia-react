@@ -1,4 +1,17 @@
 {
+  "nav": {
+    "dashboard": "Dashboard",
+    "appointments": "Appointments",
+    "services": "Services",
+    "clients": "Clients",
+    "staff": "Staff",
+    "settings": "Settings",
+    "assistants": "Assistants"
+  },
+  "calendar": {
+    "teamDayView": "Team Day View",
+    "teamWeekView": "Team Week View"
+  },
   "appointments": {
     "newAppointment": "New Appointment",
     "appointment": "Appointment",

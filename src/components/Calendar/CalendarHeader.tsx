@@ -1,6 +1,9 @@
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+
+import { ViewType } from "@/constants.ts";
 
 const Button = styled.button`
   border: 0px;
@@ -48,6 +51,7 @@ type CalendarHeaderProps = {
   nextDaySelect?: (date: Date) => void;
   previousDaySelect?: (date: Date) => void;
   viewToggle?: () => void;
+  viewType: ViewType;
 };
 
 export function CalendarHeader({
@@ -55,7 +59,10 @@ export function CalendarHeader({
   nextDaySelect,
   previousDaySelect,
   viewToggle,
+  viewType,
 }: CalendarHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <CalendarHeaderContainer>
       <CalendarHeaderItem>
@@ -87,7 +94,9 @@ export function CalendarHeader({
         </CalendarHeaderItem>
       </CalendarHeaderItem>
       <CalendarHeaderItem>
-        <h2>Team Day View</h2>
+        {viewType === ViewType.DAY
+          ? <h2>{t("calendar.teamDayView")}</h2>
+          : <h2>{t("calendar.teamWeekView")}</h2>}
       </CalendarHeaderItem>
     </CalendarHeaderContainer>
   );
