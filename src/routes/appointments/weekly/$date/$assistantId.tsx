@@ -76,6 +76,7 @@ function RouteComponent() {
             id: data?.id || "",
             name: "",
           }))}
+          onItemSelect={() => {}}
           onFieldSelect={handleFieldSelect}
           viewType={ViewType.WEEK}
           items={[]}
