@@ -55,13 +55,6 @@ function RouteComponent() {
     );
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error: {isError?.message}</div>;
-  }
   console.log((Number(time) * 1000).toString());
   return (
     <Drawer
