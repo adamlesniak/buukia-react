@@ -44,7 +44,7 @@ function RouteComponent() {
     return <div>{t("common.loading")}</div>;
   }
 
-  if (assistantError || servicesError || clientsError) {
+  if (isError) {
     return (
       <div>
         {t("common.error")}:{" "}

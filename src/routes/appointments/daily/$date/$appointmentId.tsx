@@ -23,7 +23,11 @@ function RouteComponent() {
   const { appointmentId, date } = Route.useParams();
   const navigate = useNavigate();
 
-  const { data: appointment, isLoading, error } = useAppointment(appointmentId);
+  const {
+    data: appointment,
+    isLoading: appointmentLoading,
+    error: appointmentError,
+  } = useAppointment(appointmentId);
   const {
     data: services,
     error: servicesError,
@@ -35,21 +39,23 @@ function RouteComponent() {
     isLoading: clientsLoading,
   } = useClients({ limit: 10 });
 
-  if (servicesLoading || clientsLoading) {
+  const isLoading = servicesLoading || clientsLoading || appointmentLoading;
+
+  const isError = servicesError || clientsError || appointmentError;
+
+  if (isLoading) {
     return <div>{t("common.loading")}</div>;
   }
 
-  if (servicesError || clientsError) {
+  if (isError) {
     return (
       <div>
-        {t("common.error")}: {servicesError?.message || clientsError?.message}
+        {t("common.error")}:{" "}
+        {servicesError?.message ||
+          clientsError?.message ||
+          appointmentError?.message}
       </div>
     );
-  }
-
-
-  if (error) {
-    return <div>Error: {error?.message}</div>;
   }
 
   return (
