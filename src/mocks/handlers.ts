@@ -73,6 +73,21 @@ export const handlers = [
     return HttpResponse.json(data.appointments);
   }),
 
+  http.get("/api/appointments/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = appointments.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Appointment not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
   http.post<never, CreateAppointmentBody>(
     "/api/appointments",
     async ({ request }) => {

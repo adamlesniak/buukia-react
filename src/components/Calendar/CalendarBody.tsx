@@ -8,6 +8,7 @@ import {
   getDate,
   format,
 } from "date-fns";
+import { CircleUserRound } from "lucide-react";
 import styled from "styled-components";
 
 import { ViewType } from "@/constants.ts";
@@ -79,8 +80,7 @@ const CalendarBodyColumnItem = styled.div`
   div {
     display: flex;
     text-align: right;
-    border-top: 1px solid #e0e0e0;
-    border-right: 1px solid #e0e0e0;
+
     flex-basis: 30px;
     cursor: pointer;
 
@@ -117,17 +117,33 @@ const CalendarBodyColumnItemPrimary = styled(CalendarBodyColumnItem)`
 const AppointmentSlot = styled.div`
   position: relative;
   display: flex;
+  border-top: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
 `;
 
 const AppointmentItem = styled.div`
-  background: #e0e0e0;
-  border-radius: 4px;
-  margin: 2px 0;
+  background: #fff0fa;
   flex: 1;
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: 2;
+  border-bottom: 1px solid #e0e0e0;
+  top: 0px;
+  flex-direction: column;
+`;
+
+const AppointmentItemClient = styled.div`
+  svg {
+    padding: 4px;
+    padding-left: 6px;
+  }
+
+  span {
+    padding: 4px;
+    padding-left: 0px;
+    font-size: 12px;
+  }
 `;
 
 export type CalendarBodyProps = {
@@ -137,6 +153,7 @@ export type CalendarBodyProps = {
   items: BuukiaAppointment[];
   viewType: ViewType;
   onFieldSelect: (data: { assistantId: string; time: string }) => void;
+  onItemSelect: (value: { id: string }) => void;
   headerSelect?: (id: string) => void;
 };
 
@@ -144,6 +161,7 @@ export function CalendarBody({
   columns,
   endDate,
   onFieldSelect,
+  onItemSelect,
   startDate,
   viewType,
   items,
@@ -201,7 +219,7 @@ export function CalendarBody({
                       );
 
                       return (
-                        <div
+                        <AppointmentSlot
                           onClick={($event) => {
                             if (onFieldSelect) {
                               onFieldSelect({
@@ -213,7 +231,7 @@ export function CalendarBody({
                             $event.stopPropagation();
                           }}
                           key={index}
-                        ></div>
+                        ></AppointmentSlot>
                       );
                     })}
                   </CalendarBodyColumnItem>
@@ -265,23 +283,44 @@ export function CalendarBody({
                         }}
                         key={index}
                       >
-                        {matchedAppointments.map((appointment) => (
-                          <AppointmentItem
-                            key={appointment.id}
-                            style={{
-                              height:
-                                (appointment.services.reduce(
-                                  (acc, service) => acc + service.duration,
-                                  0,
-                                ) /
-                                  15) *
-                                  100 +
-                                "%",
-                            }}
-                          >
-                            <strong>Appointment:</strong> {appointment.id}
-                          </AppointmentItem>
-                        ))}
+                        {matchedAppointments.map((appointment) => {
+                          const duration = appointment.services.reduce(
+                            (acc, service) => acc + service.duration,
+                            0,
+                          );
+                          const heightValue = duration / 15;
+
+                          return (
+                            <AppointmentItem
+                              key={appointment.id}
+                              style={{
+                                height: heightValue * 100 + "%",
+                                paddingBottom: heightValue - 1 + "px",
+                              }}
+                              onClick={($event) => {
+                                if (onItemSelect) {
+                                  onItemSelect({
+                                    id: appointment.id,
+                                  });
+                                }
+                                $event.preventDefault();
+                                $event.stopPropagation();
+                              }}
+                            >
+                              <AppointmentItemClient>
+                                <CircleUserRound size={16} />
+                                <span>{`${appointment.client.firstName} ${appointment.client.lastName}`}</span>
+                              </AppointmentItemClient>
+                              {/* <AppointmentItemMeta>
+                                <span>
+                                  {appointment.services
+                                    .map((service) => service.name)
+                                    .join(", ")}
+                                </span>
+                              </AppointmentItemMeta> */}
+                            </AppointmentItem>
+                          );
+                        })}
                       </AppointmentSlot>
                     );
                   })}

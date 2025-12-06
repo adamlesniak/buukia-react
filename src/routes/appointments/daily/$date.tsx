@@ -52,13 +52,19 @@ function RouteComponent() {
 
   const handleFieldSelect = (data: { assistantId: string; time: string }) => {
     navigate({
-      to: `/appointments/daily/${getUnixTime(startOfDay(todaysDate))}/${data.assistantId}/${getUnixTime(new Date(data.time)).toString()}/`,
+      to: `/appointments/daily/${getUnixTime(startOfDay(todaysDate))}/new/${data.assistantId}/${getUnixTime(new Date(data.time)).toString()}/`,
     });
   };
 
   const onHeaderSelect = (id: string) => {
     navigate({
       to: `/appointments/weekly/${getUnixTime(startOfWeek(todaysDate))}/${id}/`,
+    });
+  };
+
+  const onItemSelect = (value: { id: string }) => {
+    navigate({
+      to: `/appointments/daily/${getUnixTime(startOfDay(todaysDate))}/${value.id}/`,
     });
   };
 
@@ -98,6 +104,7 @@ function RouteComponent() {
           viewType={ViewType.DAY}
           items={appointments || []}
           headerSelect={onHeaderSelect}
+          onItemSelect={onItemSelect}
         />
       </Calendar>
       <Outlet />

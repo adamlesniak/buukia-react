@@ -9,7 +9,6 @@ import styled from "styled-components";
 import { useServices } from "@/api/services";
 import { useCreateAppointment } from "@/api/services/use-create-appointment";
 import type {
-  BuukiaAssistant,
   BuukiaClient,
   BuukiaService,
   CreateAppointmentBody,
@@ -28,6 +27,7 @@ const Overlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 5;
 `;
 
 const Modal = styled.div`
@@ -117,7 +117,7 @@ type AppointmentFormValues = {
 
 type AppointmentFormProps = {
   values: AppointmentFormValues;
-  assistant: BuukiaAssistant;
+  assistantId: string;
   services: BuukiaService[];
   clients: BuukiaClient[];
   onClientsSearch: (query: string) => void;
@@ -137,15 +137,6 @@ export function AppointmentForm(props: AppointmentFormProps) {
   const { data: services = [] } = useServices();
 
   const createAppointmentMutation = useCreateAppointment();
-
-  // const [addAppointmentService, removeAppointmentService] = [
-  //   (service: IService) => {
-  //     setServices([service, ...services]);
-  //   },
-  //   (service: IService) => {
-  //     setServices(services.filter((item) => item.id !== service.id));
-  //   },
-  // ];
 
   const currentServices = watch("services") || [];
   const [servicesIds, servicesPriceSum, servicesDurationSum] = [
@@ -175,7 +166,7 @@ export function AppointmentForm(props: AppointmentFormProps) {
     }
 
     const body: CreateAppointmentBody = {
-      assistantId: props.assistant.id,
+      assistantId: props.assistantId,
       clientId: client.id,
       time: data.time,
       serviceIds: data.services.map((service) => service.id),

@@ -18,8 +18,9 @@ const AppContainer = styled.div`
 const AppOutletContainer = styled.div`
   display: flex;
   flex: 1;
-  margin: 2em;
-  margin-top: 1em;
+  margin: 1em;
+  margin-left: 1em;
+  margin-left: 17rem;
 `;
 
 interface MyRouterContext {
