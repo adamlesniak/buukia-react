@@ -19,53 +19,21 @@ afterAll(() => {
 });
 
 describe("AppointmentDetail", () => {
-  it("display the loading", () => {
-    const queryClient = new QueryClient();
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <AppointmentDetail id="1" time={new Date().toISOString()} />
-      </QueryClientProvider>,
-    );
-
-    const text = screen.getByText("common.loading");
-
-    expect(text).toBeInTheDocument();
-  });
-
   it("display the appointment form", async () => {
     const queryClient = new QueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>
         <AppointmentDetail
-          id={data.assistants[0].id}
-          time={new Date().toISOString()}
+          appointment={data.appointments[0]}
+          services={data.services}
+          clients={data.clients}
         />
       </QueryClientProvider>,
     );
 
     await waitFor(() => {
       expect(screen.queryByText("common.loading")).not.toBeInTheDocument();
-    });
-  });
-
-  it("display the error message when assistant doesnt exist", async () => {
-    const queryClient = new QueryClient();
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <AppointmentDetail
-          id="non-existent-id"
-          time={new Date().toISOString()}
-        />
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.queryByText("common.error", { exact: false }),
-      ).toBeInTheDocument();
     });
   });
 });
