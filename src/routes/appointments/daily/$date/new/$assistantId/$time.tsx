@@ -12,7 +12,7 @@ import { DrawerContentHeader } from "@/components/Drawer/DrawerContentHeader";
 import type { BuukiaAppointment } from "@/types";
 
 export const Route = createFileRoute(
-  "/appointments/weekly/$date/$assistantId/$time",
+  "/appointments/daily/$date/new/$assistantId/$time",
 )({
   component: RouteComponent,
 });
@@ -38,22 +38,27 @@ function RouteComponent() {
   } = useClients({ limit: 10 });
 
   const isLoading = assistantLoading || servicesLoading || clientsLoading;
-  const error = assistantError || servicesError || clientsError;
+  const isError = assistantError || servicesError || clientsError;
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>{t("common.loading")}</div>;
   }
 
-  if (error) {
-    return <div>Error: {error?.message}</div>;
+  if (isError) {
+    return (
+      <div>
+        {t("common.error")}:{" "}
+        {assistantError?.message ||
+          servicesError?.message ||
+          clientsError?.message}
+      </div>
+    );
   }
 
   return (
     <Drawer
       onOverlayClick={() => {
-        navigate({
-          to: `/appointments/weekly/${date}/${assistantId}/`,
-        });
+        navigate({ to: `/appointments/daily/${date}` });
       }}
       drawer="right"
     >
@@ -66,7 +71,7 @@ function RouteComponent() {
             tabIndex={0}
             type="button"
             onClick={() => {
-              navigate({ to: `/appointments/weekly/${assistantId}` });
+              navigate({ to: `/appointments/daily/${date}` });
             }}
           >
             <X />

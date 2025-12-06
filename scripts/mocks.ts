@@ -2,7 +2,13 @@ import * as fs from "node:fs";
 import path from "node:path";
 
 import { faker } from "@faker-js/faker";
-import { addHours, addMinutes, roundToNearestMinutes } from "date-fns";
+import {
+  addHours,
+  addMinutes,
+  differenceInHours,
+  roundToNearestMinutes,
+  startOfDay,
+} from "date-fns";
 import prettier from "prettier";
 
 import type {
@@ -37,6 +43,30 @@ const serviceCategories: BusinessCategory[] = [
   "Fitness",
 ];
 
+export const createService = (): BuukiaService => {
+  return {
+    id: faker.string.uuid(),
+    description: faker.lorem.sentence(),
+    business:
+      businessNames[
+        faker.number.int({ min: 0, max: businessNames.length - 1 })
+      ],
+    category:
+      serviceCategories[
+        faker.number.int({ min: 0, max: serviceCategories.length - 1 })
+      ],
+    duration: faker.number.int({ min: 15, max: 30, multipleOf: 15 }),
+    name: serviceNames[
+      faker.number.int({ min: 0, max: serviceNames.length - 1 })
+    ],
+    price: faker.number.int({ min: 20, max: 200 }),
+  };
+};
+
+const services: BuukiaService[] = Array.from({
+  length: serviceNames.length,
+}).map(() => createService());
+
 export const createAssistant = (): BuukiaAssistant => {
   const [firstName, lastName] = [
     faker.person.firstName(),
@@ -70,26 +100,6 @@ export const createAssistant = (): BuukiaAssistant => {
   };
 };
 
-export const createService = (): BuukiaService => {
-  return {
-    id: faker.string.uuid(),
-    description: faker.lorem.sentence(),
-    business:
-      businessNames[
-        faker.number.int({ min: 0, max: businessNames.length - 1 })
-      ],
-    category:
-      serviceCategories[
-        faker.number.int({ min: 0, max: serviceCategories.length - 1 })
-      ],
-    duration: faker.number.int({ min: 30, max: 120 }),
-    name: serviceNames[
-      faker.number.int({ min: 0, max: serviceNames.length - 1 })
-    ],
-    price: faker.number.int({ min: 20, max: 200 }),
-  };
-};
-
 export const createClient = (): BuukiaClient => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
@@ -105,6 +115,7 @@ export const createClient = (): BuukiaClient => {
   };
 };
 
+
 export const createAppointment = (): BuukiaAppointment => {
   return {
     id: faker.string.uuid(),
@@ -116,11 +127,11 @@ export const createAppointment = (): BuukiaAppointment => {
       }),
       { nearestTo: 15 },
     ).toISOString(),
-
     client: createClient(),
-    services: Array.from({ length: faker.number.int({ min: 1, max: 3 }) }).map(
-      () => createService(),
-    ),
+    services: [...new Map(Array.from({ length: faker.number.int({ min: 1, max: 2 }) }).map(() => {
+      const service = services[faker.number.int({ min: 0, max: services.length - 1 })];
+      return [service.id, service];
+    })).values()],
   };
 };
 
@@ -129,31 +140,32 @@ const [assistants, clients]: [BuukiaAssistant[], BuukiaClient[]] = [
   Array.from({ length: 20 }).map(() => createClient()),
 ];
 
-const startDate = addMinutes(addHours(new Date(), 8), 0);
-const endDate = addMinutes(addHours(new Date(), 21), 0);
+const startDate = addMinutes(addHours(startOfDay(new Date()), 8), 0);
+const endDate = addMinutes(addHours(startOfDay(new Date()), 21), 0);
 
-const [services, appointments, todaysAppointments]: [
-  BuukiaService[],
+const hoursDiff = -differenceInHours(startDate, endDate);
+
+const [appointments, todaysAppointments]: [
   BuukiaAppointment[],
   BuukiaAppointment[],
 ] = [
-  Array.from({ length: serviceNames.length }).map(() => createService()),
   Array.from({ length: 10 }).map(() => ({
     ...createAppointment(),
     assistant:
       assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
     client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
   })),
-  Array.from({ length: 10 }).map(() => ({
-    ...createAppointment(),
-    assistant:
-      assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
-    client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
-    time: roundToNearestMinutes(
-      faker.date.between({ from: startDate, to: endDate }),
-      { nearestTo: 15 },
-    ).toISOString(),
-  })),
+  Array.from({ length: hoursDiff }).map((_, index) => {
+    return {
+      ...createAppointment(),
+      assistant:
+        assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
+      client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
+      time: roundToNearestMinutes(addHours(startDate, index), {
+        nearestTo: 15,
+      }).toISOString(),
+    };
+  }),
 ];
 
 const main = async (): Promise<void> => {

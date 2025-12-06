@@ -8,7 +8,6 @@ import data from "../../routes/data.json";
 
 import { AppointmentForm } from "./AppointmentForm";
 
-
 beforeAll(() => {
   server.listen();
 });
@@ -38,7 +37,7 @@ describe("AppointmentForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AppointmentForm
-          assistant={createAssistant()}
+          assistantId={createAssistant().id}
           clients={[]}
           onClientsSearch={() => {}}
           services={[]}
@@ -65,7 +64,7 @@ describe("AppointmentForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AppointmentForm
-          assistant={createAssistant()}
+          assistantId={createAssistant().id}
           clients={[]}
           onClientsSearch={() => {}}
           services={[]}
@@ -90,7 +89,7 @@ describe("AppointmentForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AppointmentForm
-          assistant={createAssistant()}
+          assistantId={createAssistant().id}
           clients={[]}
           onClientsSearch={() => {}}
           services={[]}
@@ -118,7 +117,7 @@ describe("AppointmentForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AppointmentForm
-            assistant={createAssistant()}
+            assistantId={createAssistant().id}
             clients={[]}
             onClientsSearch={() => {}}
             services={[]}
@@ -142,7 +141,7 @@ describe("AppointmentForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AppointmentForm
-            assistant={createAssistant()}
+            assistantId={createAssistant().id}
             clients={[]}
             onClientsSearch={() => {}}
             services={[]}
@@ -171,7 +170,7 @@ describe("AppointmentForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AppointmentForm
-            assistant={createAssistant()}
+            assistantId={createAssistant().id}
             clients={[]}
             onClientsSearch={() => {}}
             services={[]}

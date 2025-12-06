@@ -24,17 +24,29 @@ const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  position: sticky;
+  position: fixed;
+  top: 0px;
+  height: 100%;
 `;
 
 const SidebarTitle = styled.h3`
   margin: 0.2em 0;
 `;
 
-const SidebarTop = styled.div``;
+const SidebarTop = styled.div`
+  position: sticky;
+  top: 0px;
+`;
+
+const SidebarFixed = styled.div`
+  position: fixed;
+  bottom: 0px;
+  padding-bottom: 0.8em;
+  width: 14rem;
+`;
 
 export function Sidebar() {
-    const selected = useRouterState({
+  const selected = useRouterState({
     select: (state) => state.location.href,
   });
   const { t } = useTranslation();
@@ -97,15 +109,17 @@ export function Sidebar() {
         </SidebarMenuItem>
       </SidebarTop>
 
-      <SidebarMenuButtonWrapper>
-        <SidebarMenuDropdown dropdownExpand={DropdownExpand.Bottom}>
-          <div>
-            <SidebarTitle>Adam Lesniak</SidebarTitle>
-            <small>adam@alesniak.com</small>
-          </div>
-          <ChevronsUpDown size={16} />
-        </SidebarMenuDropdown>
-      </SidebarMenuButtonWrapper>
+      <SidebarFixed>
+        <SidebarMenuButtonWrapper>
+          <SidebarMenuDropdown dropdownExpand={DropdownExpand.Bottom}>
+            <div>
+              <SidebarTitle>Adam Lesniak</SidebarTitle>
+              <small>adam@alesniak.com</small>
+            </div>
+            <ChevronsUpDown size={16} />
+          </SidebarMenuDropdown>
+        </SidebarMenuButtonWrapper>
+      </SidebarFixed>
     </SidebarContainer>
   );
 }
