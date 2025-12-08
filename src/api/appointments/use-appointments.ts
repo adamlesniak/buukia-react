@@ -8,13 +8,15 @@ interface useAppointmentsParams {
   date: string;
 }
 
-
 export const useAppointments = (params: useAppointmentsParams) => {
   const { isLoading, error, data, isFetching } = useQuery<BuukiaAppointment[]>({
     queryKey: appointmentQueryKeys.all,
     queryFn: async () => {
       const response = await fetch(`/api/appointments?date=${params.date}`);
       return response.json();
+    },
+    select: (data) => {
+      return data as BuukiaAppointment[];
     },
   });
 

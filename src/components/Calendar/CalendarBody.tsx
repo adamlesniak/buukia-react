@@ -309,7 +309,7 @@ export function CalendarBody({
                             >
                               <AppointmentItemClient>
                                 <CircleUserRound size={16} />
-                                <span>{`${appointment.client.firstName} ${appointment.client.lastName}`}</span>
+                                <span>{`${appointment.client.name}`}</span>
                               </AppointmentItemClient>
                               {/* <AppointmentItemMeta>
                                 <span>

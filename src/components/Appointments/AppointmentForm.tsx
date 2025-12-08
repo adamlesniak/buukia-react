@@ -1,18 +1,26 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { PlusIcon, X, XIcon } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { FocusScope } from "react-aria";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
+import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { useServices } from "@/api/services";
-import { useCreateAppointment } from "@/api/services/use-create-appointment";
-import type {
-  BuukiaClient,
-  BuukiaService,
-  CreateAppointmentBody,
+import {
+  type BuukiaAppointment,
+  type BuukiaClient,
+  type BuukiaService,
+  type CreateAppointmentBody,
 } from "@/types";
+import {
+  createAppointment,
+  createAssistant,
+  createClient,
+  createService,
+} from "@/utils";
 
 import { Button } from "../Button";
 import { Combobox, Field, Form, Input, Label } from "../Form";
@@ -121,22 +129,20 @@ type AppointmentFormProps = {
   services: BuukiaService[];
   clients: BuukiaClient[];
   onClientsSearch: (query: string) => void;
-  onSubmit: (data: AppointmentFormValues) => void;
+  onSubmit: (data: CreateAppointmentBody) => void;
 };
 
 export function AppointmentForm(props: AppointmentFormProps) {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
-  const { register, handleSubmit, setValue, watch } =
+  const queryClient = useQueryClient();
+  const { register, handleSubmit, setValue, watch, getValues } =
     useForm<AppointmentFormValues>({
       defaultValues: {
         ...props.values,
       },
     });
-
   const { data: services = [] } = useServices();
-
-  const createAppointmentMutation = useCreateAppointment();
 
   const currentServices = watch("services") || [];
   const [servicesIds, servicesPriceSum, servicesDurationSum] = [
@@ -154,6 +160,47 @@ export function AppointmentForm(props: AppointmentFormProps) {
     ),
   ];
 
+  const setCurrentAppointment = useCallback(() => {
+    queryClient.setQueryData(
+      appointmentQueryKeys.all,
+      (old: BuukiaAppointment[] | undefined) => {
+        if (!Boolean(old?.find((item) => item.id === "current-appointment"))) {
+          return [
+            ...(old || []),
+            createAppointment({
+              id: "current-appointment",
+              assistant: createAssistant({ id: props.assistantId }),
+              client: createClient({ name: getValues("clientName") }),
+              services: [createService({ duration: 15 })],
+              time: new Date(props.values.time).toISOString(),
+            }),
+          ];
+        }
+
+        return [
+          ...(old?.filter((i) => i.id !== "current-appointment") || []),
+          createAppointment({
+            id: "current-appointment",
+            assistant: createAssistant({ id: props.assistantId }),
+            client: createClient({ name: getValues("clientName") }),
+            services: [
+              createService({
+                duration:
+                  getValues("services").reduce(
+                    (sum, next) => sum + next.duration,
+                    0,
+                  ) || 15,
+              }),
+            ],
+            time: new Date(props.values.time).toISOString(),
+          }),
+        ];
+      },
+    );
+  }, [watch("clientName"), watch("services")]);
+
+  setCurrentAppointment();
+
   const onSubmit = (data: AppointmentFormValues) => {
     const client = props.clients.find(
       (client) => client.name === data.clientName,
@@ -168,11 +215,11 @@ export function AppointmentForm(props: AppointmentFormProps) {
     const body: CreateAppointmentBody = {
       assistantId: props.assistantId,
       clientId: client.id,
-      time: data.time,
+      time: new Date(data.time).toISOString(),
       serviceIds: data.services.map((service) => service.id),
     };
 
-    createAppointmentMutation.mutate(body);
+    props.onSubmit(body);
   };
 
   return (

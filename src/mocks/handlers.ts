@@ -11,7 +11,6 @@ import type {
 } from "@/types";
 import { isoDateMatchDate } from "@/utils";
 
-import { createAppointment } from "../../scripts/mocks";
 import data from "../routes/data.json";
 
 // Account Wide
@@ -63,14 +62,14 @@ export const handlers = [
     const date = url.searchParams.get("date");
 
     if (date) {
-      const filteredAppointments = data.appointments.filter((appointment) =>
-        isoDateMatchDate(appointment.time, date),
+      const filteredAppointments = Array.from(appointments.values()).filter(
+        (appointment) => isoDateMatchDate(appointment.time, date),
       );
 
       return HttpResponse.json(filteredAppointments);
     }
 
-    return HttpResponse.json(data.appointments);
+    return HttpResponse.json(Array.from(appointments.values()));
   }),
 
   http.get("/api/appointments/:id", (req) => {
@@ -109,10 +108,9 @@ export const handlers = [
         }
       }
 
-      const item = createAppointment();
       const appointment = {
-        ...item,
         id,
+        time: body.time,
         assistant: assistants.get(body.assistantId),
         client: clients.get(body.clientId),
         services: body.serviceIds
@@ -144,7 +142,8 @@ export const handlers = [
         }
       }
 
-      const item = createAppointment();
+      const item = appointments.get(body.id);
+
       const appointment = {
         ...item,
         id: body.id,

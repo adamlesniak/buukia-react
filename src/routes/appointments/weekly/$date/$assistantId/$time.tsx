@@ -93,6 +93,12 @@ function RouteComponent() {
             }
             services={services || []}
             clients={clients || []}
+            onFormSubmit={(data) => {
+              console.log("data", data);
+            }}
+            onClientSearch={(query) => {
+              console.log("search query", query);
+            }}
           />
         </DrawerContentBody>
       </DrawerContent>

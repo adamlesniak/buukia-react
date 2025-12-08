@@ -1,15 +1,22 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { t } from "i18next";
 import { X } from "lucide-react";
 
-import { useAssistant, useClients, useServices } from "@/api";
+import {
+  useAssistant,
+  useClients,
+  useCreateAppointment,
+  useServices,
+} from "@/api";
+import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
 import { Button } from "@/components/Button";
 import { DrawerContentBody } from "@/components/Drawer";
 import { Drawer } from "@/components/Drawer/Drawer";
 import { DrawerContent } from "@/components/Drawer/DrawerContent";
 import { DrawerContentHeader } from "@/components/Drawer/DrawerContentHeader";
-import type { BuukiaAppointment } from "@/types";
+import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
 
 export const Route = createFileRoute(
   "/appointments/daily/$date/new/$assistantId/$time",
@@ -20,7 +27,9 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { assistantId, time, date } = Route.useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
+  const createAppointmentMutation = useCreateAppointment();
   const {
     data: assistant,
     error: assistantError,
@@ -40,6 +49,23 @@ function RouteComponent() {
   const isLoading = assistantLoading || servicesLoading || clientsLoading;
   const isError = assistantError || servicesError || clientsError;
 
+  const onClose = () => {
+    queryClient.setQueryData(
+      appointmentQueryKeys.all,
+      (old: BuukiaAppointment[]) => [
+        ...(old || []).filter((a) => !a.id.includes("current-appointment")),
+      ],
+    );
+    navigate({ to: `/appointments/daily/${date}` });
+  };
+
+  const onSubmit = async (data: CreateAppointmentBody) =>
+    createAppointmentMutation.mutate(data, {
+      onSuccess: () => {
+        navigate({ to: `/appointments/daily/${date}` });
+      },
+    });
+
   if (isLoading) {
     return <div>{t("common.loading")}</div>;
   }
@@ -56,12 +82,7 @@ function RouteComponent() {
   }
 
   return (
-    <Drawer
-      onOverlayClick={() => {
-        navigate({ to: `/appointments/daily/${date}` });
-      }}
-      drawer="right"
-    >
+    <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
         <DrawerContentHeader>
           <h2>{t("appointments.appointment")}</h2>
@@ -70,9 +91,7 @@ function RouteComponent() {
             aria-label={t("common.closeDrawer")}
             tabIndex={0}
             type="button"
-            onClick={() => {
-              navigate({ to: `/appointments/daily/${date}` });
-            }}
+            onClick={onClose}
           >
             <X />
           </Button>
@@ -98,6 +117,10 @@ function RouteComponent() {
             }
             services={services || []}
             clients={clients || []}
+            onFormSubmit={onSubmit}
+            onClientSearch={(query) => {
+              console.log("search query", query);
+            }}
           />
         </DrawerContentBody>
       </DrawerContent>

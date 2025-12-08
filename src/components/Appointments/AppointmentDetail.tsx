@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-import type { BuukiaAppointment, BuukiaClient, BuukiaService } from "@/types";
+import type { BuukiaAppointment, BuukiaClient, BuukiaService, CreateAppointmentBody } from "@/types";
 
 import { AppointmentForm } from "./AppointmentForm";
 
@@ -8,6 +8,8 @@ type AppointmentDetailProps = {
   appointment: BuukiaAppointment;
   clients: BuukiaClient[];
   services: BuukiaService[];
+  onFormSubmit: (data: CreateAppointmentBody) => void;
+  onClientSearch: (query: string) => void;
 };
 
 export function AppointmentDetail(props: AppointmentDetailProps) {
@@ -23,10 +25,8 @@ export function AppointmentDetail(props: AppointmentDetailProps) {
       assistantId={props.appointment.assistant.id}
       services={props.services || []}
       clients={props.clients || []}
-      onClientsSearch={() => {}}
-      onSubmit={(data) => {
-        console.log(data);
-      }}
+      onClientsSearch={props.onClientSearch}
+      onSubmit={props.onFormSubmit}
     />
   );
 }
