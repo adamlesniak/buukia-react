@@ -59,11 +59,32 @@ export const handlers = [
   http.get("/api/appointments", async ({ request }) => {
     const url = new URL(request.url);
 
-    const date = url.searchParams.get("date");
+    const [date, assistantId] = [
+      url.searchParams.get("date"),
+      url.searchParams.get("assistantId"),
+    ];
 
-    if (date) {
+    if (date && !assistantId) {
       const filteredAppointments = Array.from(appointments.values()).filter(
         (appointment) => isoDateMatchDate(appointment.time, date),
+      );
+
+      return HttpResponse.json(filteredAppointments);
+    }
+
+    if (assistantId && !date) {
+      const filteredAppointments = Array.from(appointments.values()).filter(
+        (appointment) => appointment.assistant?.id === assistantId,
+      );
+
+      return HttpResponse.json(filteredAppointments);
+    }
+
+    if (date && assistantId) {
+      const filteredAppointments = Array.from(appointments.values()).filter(
+        (appointment) =>
+          isoDateMatchDate(appointment.time, date) &&
+          appointment.assistant?.id === assistantId,
       );
 
       return HttpResponse.json(filteredAppointments);

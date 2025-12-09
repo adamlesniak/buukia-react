@@ -76,9 +76,7 @@ export function Sidebar() {
           activeOptions={{ exact: false }}
           key={t("nav.appointments")}
           className={selected.includes("/appointments/") ? "active" : ""}
-          params={
-            { date: getUnixTime(startOfDay(new Date())).toString() } as never
-          }
+          params={{ date: getUnixTime(startOfDay(new Date())) * 1000 } as never}
         >
           <ClipboardClock size={24} />
           <span>{t("nav.appointments")}</span>

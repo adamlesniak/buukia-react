@@ -17,13 +17,13 @@ import {
 import type { BuukiaAppointment, UpdateAppointmentBody } from "@/types";
 
 export const Route = createFileRoute(
-  "/appointments/daily/$date/$appointmentId",
+  "/appointments/weekly/$date/$assistantId/$appointmentId",
 )({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { appointmentId, date } = Route.useParams();
+  const { appointmentId, date, assistantId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -57,7 +57,7 @@ function RouteComponent() {
         }),
       ],
     );
-    navigate({ to: `/appointments/daily/${date}` });
+    navigate({ to: `/appointments/weekly/${date}/${assistantId}` });
   };
 
   const onSubmit = async (data: UpdateAppointmentBody) =>

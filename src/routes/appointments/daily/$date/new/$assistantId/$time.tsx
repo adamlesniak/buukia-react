@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { getUnixTime } from "date-fns/getUnixTime";
 import { t } from "i18next";
 import { X } from "lucide-react";
 
@@ -26,6 +27,12 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { assistantId, time, date } = Route.useParams();
+
+  const [unixDate, unixTime] = [
+    getUnixTime(new Date(Number(date))) * 1000,
+    getUnixTime(new Date(Number(time))) * 1000,
+  ];
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -56,13 +63,13 @@ function RouteComponent() {
         ...(old || []).filter((a) => !a.id.includes("current-appointment")),
       ],
     );
-    navigate({ to: `/appointments/daily/${date}` });
+    navigate({ to: `/appointments/daily/${unixDate}` });
   };
 
   const onSubmit = async (data: CreateAppointmentBody) =>
     createAppointmentMutation.mutate(data, {
       onSuccess: () => {
-        navigate({ to: `/appointments/daily/${date}` });
+        navigate({ to: `/appointments/daily/${unixDate}` });
       },
     });
 
@@ -101,7 +108,7 @@ function RouteComponent() {
             appointment={
               {
                 id: "",
-                time: new Date(Number(time) * 1000).toISOString(),
+                time: new Date(unixTime).toISOString(),
                 client: {
                   id: "",
                   firstName: "",

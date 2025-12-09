@@ -125,6 +125,7 @@ type AppointmentFormValues = {
 
 type AppointmentFormProps = {
   values: AppointmentFormValues;
+  appointmentId: string;
   assistantId: string;
   services: BuukiaService[];
   clients: BuukiaClient[];
@@ -143,6 +144,7 @@ export function AppointmentForm(props: AppointmentFormProps) {
       },
     });
   const { data: services = [] } = useServices();
+  const isExistingAppointment = props.appointmentId;
 
   const currentServices = watch("services") || [];
   const [servicesIds, servicesPriceSum, servicesDurationSum] = [
@@ -160,46 +162,83 @@ export function AppointmentForm(props: AppointmentFormProps) {
     ),
   ];
 
-  const setCurrentAppointment = useCallback(() => {
-    queryClient.setQueryData(
-      appointmentQueryKeys.all,
-      (old: BuukiaAppointment[] | undefined) => {
-        if (!Boolean(old?.find((item) => item.id === "current-appointment"))) {
+  if (!isExistingAppointment) {
+    const setCurrentAppointment = useCallback(() => {
+      queryClient.setQueryData(
+        appointmentQueryKeys.all,
+        (old: BuukiaAppointment[] | undefined) => {
+          if (
+            !Boolean(old?.find((item) => item.id === "current-appointment"))
+          ) {
+            return [
+              ...(old || []),
+              createAppointment({
+                id: "current-appointment",
+                assistant: createAssistant({ id: props.assistantId }),
+                client: createClient({ name: getValues("clientName") }),
+                services: [createService({ duration: 15 })],
+                time: new Date(props.values.time).toISOString(),
+              }),
+            ];
+          }
+
           return [
-            ...(old || []),
+            ...(old?.filter((i) => i.id !== "current-appointment") || []),
             createAppointment({
               id: "current-appointment",
               assistant: createAssistant({ id: props.assistantId }),
               client: createClient({ name: getValues("clientName") }),
-              services: [createService({ duration: 15 })],
+              services: [
+                createService({
+                  duration:
+                    getValues("services").reduce(
+                      (sum, next) => sum + next.duration,
+                      0,
+                    ) || 15,
+                }),
+              ],
               time: new Date(props.values.time).toISOString(),
             }),
           ];
-        }
+        },
+      );
+    }, [watch("clientName"), watch("services")]);
 
-        return [
-          ...(old?.filter((i) => i.id !== "current-appointment") || []),
-          createAppointment({
-            id: "current-appointment",
-            assistant: createAssistant({ id: props.assistantId }),
-            client: createClient({ name: getValues("clientName") }),
-            services: [
-              createService({
-                duration:
-                  getValues("services").reduce(
-                    (sum, next) => sum + next.duration,
-                    0,
-                  ) || 15,
-              }),
-            ],
-            time: new Date(props.values.time).toISOString(),
-          }),
-        ];
-      },
-    );
-  }, [watch("clientName"), watch("services")]);
+    setCurrentAppointment();
+  } else {
+    const updateExistingAppointment = useCallback(() => {
+      queryClient.setQueryData(
+        appointmentQueryKeys.all,
+        (old: BuukiaAppointment[] | undefined) => {
+          const result = old?.map((item) => {
+            if (item.id === props.appointmentId) {
+              return createAppointment({
+                id: props.appointmentId,
+                assistant: createAssistant({ id: props.assistantId }),
+                client: createClient({ name: getValues("clientName") }),
+                services: [
+                  createService({
+                    duration:
+                      getValues("services").reduce(
+                        (sum, next) => sum + next.duration,
+                        0,
+                      ) || 15,
+                  }),
+                ],
+                time: new Date(props.values.time).toISOString(),
+              });
+            }
 
-  setCurrentAppointment();
+            return item;
+          });
+
+          return result;
+        },
+      );
+    }, [watch("clientName"), watch("services")]);
+
+    updateExistingAppointment();
+  }
 
   const onSubmit = (data: AppointmentFormValues) => {
     const client = props.clients.find(

@@ -6,9 +6,10 @@ import {
   subDays,
   getUnixTime,
   startOfWeek,
+  startOfDay,
 } from "date-fns";
 
-import { useAssistant } from "@/api";
+import { useAppointments, useAssistant } from "@/api";
 import { Calendar } from "@/components/Calendar/Calendar";
 import { CalendarBody } from "@/components/Calendar/CalendarBody";
 import { CalendarHeader } from "@/components/Calendar/CalendarHeader";
@@ -22,9 +23,32 @@ export const Route = createFileRoute("/appointments/weekly/$date/$assistantId")(
 
 function RouteComponent() {
   const { assistantId, date } = Route.useParams();
-  const todaysDate = startOfWeek(new Date(Number(date) * 1000));
-  const { data, error, isLoading } = useAssistant(assistantId);
+
+  const weeksDate = getUnixTime(startOfWeek(new Date(Number(date)))) * 1000;
+  const [todaysDate, prevWeekStart, nextWeekStart] = [
+    getUnixTime(startOfDay(new Date().getTime())) * 1000,
+    getUnixTime(subDays(weeksDate, 7)) * 1000,
+    getUnixTime(addDays(weeksDate, 7)) * 1000,
+  ];
+
   const navigate = useNavigate();
+  const {
+    data: assistant,
+    error: assistantError,
+    isLoading: assistantLoading,
+  } = useAssistant(assistantId);
+  const {
+    data: appointments,
+    error: appointmentsError,
+    isLoading: appointmentsLoading,
+  } = useAppointments({
+    assistantId,
+    startDate: new Date(weeksDate).toISOString(),
+    endDate: new Date(nextWeekStart).toISOString(),
+  });
+
+  const error = assistantError || appointmentsError;
+  const isLoading = assistantLoading || appointmentsLoading;
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -35,17 +59,23 @@ function RouteComponent() {
   }
 
   const [startDate, endDate] = [
-    addMinutes(addHours(todaysDate, 8), 0),
-    addMinutes(addHours(todaysDate, 21), 0),
+    addMinutes(addHours(weeksDate, 8), 0),
+    addMinutes(addHours(weeksDate, 21), 0),
   ];
 
   const handleFieldSelect = (data: { assistantId: string; time: string }) => {
     navigate({
-      to: `/appointments/weekly/${getUnixTime(todaysDate)}/${data.assistantId}/${getUnixTime(new Date(data.time)).toString()}/`,
+      to: `/appointments/weekly/${todaysDate}/${data.assistantId}/new/${getUnixTime(new Date(data.time)) * 1000}/`,
     });
   };
 
-  if (!data) {
+  const onItemSelect = (value: { id: string }) => {
+    navigate({
+      to: `/appointments/weekly/${todaysDate}/${assistantId}/${value.id}/`,
+    });
+  };
+
+  if (!assistant) {
     throw Error("Assistant not found");
   }
 
@@ -53,19 +83,21 @@ function RouteComponent() {
     <>
       <Calendar>
         <CalendarHeader
-          previousDaySelect={(date) => {
+          previousDaySelect={() => {
             navigate({
-              to: `/appointments/weekly/${getUnixTime(subDays(date, 7))}/${data.id}/`,
+              to: `/appointments/weekly/${prevWeekStart}/${assistant.id}/`,
             });
           }}
-          nextDaySelect={(date) => {
+          nextDaySelect={() => {
             navigate({
-              to: `/appointments/weekly/${getUnixTime(addDays(date, 7))}/${data.id}/`,
+              to: `/appointments/weekly/${nextWeekStart}/${assistant.id}/`,
             });
           }}
-          date={todaysDate}
+          date={new Date(weeksDate)}
           viewToggle={() => {
-            navigate({ to: `/appointments/daily/${date}` });
+            navigate({
+              to: `/appointments/daily/${todaysDate}/`,
+            });
           }}
           viewType={ViewType.WEEK}
         />
@@ -73,13 +105,13 @@ function RouteComponent() {
           startDate={startDate}
           endDate={endDate}
           columns={Array.from({ length: 7 }).map((_) => ({
-            id: data?.id || "",
+            id: assistant?.id || "",
             name: "",
           }))}
-          onItemSelect={() => {}}
+          onItemSelect={onItemSelect}
           onFieldSelect={handleFieldSelect}
           viewType={ViewType.WEEK}
-          items={[]}
+          items={appointments || []}
         />
       </Calendar>
       <Outlet />

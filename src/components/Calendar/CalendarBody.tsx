@@ -218,6 +218,14 @@ export function CalendarBody({
                         columnIndex,
                       );
 
+                      const matchedAppointments = items.filter(
+                        (appointment) =>
+                          isoDateMatchDateTime(
+                            appointment.time,
+                            time.toISOString(),
+                          ) && column.id === appointment?.assistant?.id,
+                      );
+
                       return (
                         <AppointmentSlot
                           onClick={($event) => {
@@ -231,7 +239,46 @@ export function CalendarBody({
                             $event.stopPropagation();
                           }}
                           key={index}
-                        ></AppointmentSlot>
+                        >
+                          {matchedAppointments.map((appointment) => {
+                            const duration = appointment.services.reduce(
+                              (acc, service) => acc + service.duration,
+                              0,
+                            );
+                            const heightValue = duration / 15;
+
+                            return (
+                              <AppointmentItem
+                                key={appointment.id}
+                                style={{
+                                  height: heightValue * 100 + "%",
+                                  paddingBottom: heightValue - 1 + "px",
+                                }}
+                                onClick={($event) => {
+                                  if (onItemSelect) {
+                                    onItemSelect({
+                                      id: appointment.id,
+                                    });
+                                  }
+                                  $event.preventDefault();
+                                  $event.stopPropagation();
+                                }}
+                              >
+                                <AppointmentItemClient>
+                                  <CircleUserRound size={16} />
+                                  <span>{`${appointment.client.name}`}</span>
+                                </AppointmentItemClient>
+                                {/* <AppointmentItemMeta>
+                                <span>
+                                  {appointment.services
+                                    .map((service) => service.name)
+                                    .join(", ")}
+                                </span>
+                              </AppointmentItemMeta> */}
+                              </AppointmentItem>
+                            );
+                          })}
+                        </AppointmentSlot>
                       );
                     })}
                   </CalendarBodyColumnItem>

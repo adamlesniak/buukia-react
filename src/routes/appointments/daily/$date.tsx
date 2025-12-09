@@ -6,7 +6,6 @@ import {
   addMinutes,
   subDays,
   getUnixTime,
-  startOfWeek,
 } from "date-fns";
 
 import { useAppointments } from "@/api/appointments";
@@ -24,7 +23,11 @@ function RouteComponent() {
   const { date } = Route.useParams();
   const navigate = useNavigate();
 
-  const todaysDate = startOfDay(new Date(Number(date) * 1000));
+  const [previousDay, nextDay, todaysDate] = [
+    getUnixTime(subDays(startOfDay(new Date(Number(date))), 1)) * 1000,
+    getUnixTime(addDays(startOfDay(new Date(Number(date))), 1)) * 1000,
+    getUnixTime(startOfDay(new Date(Number(date)))) * 1000,
+  ];
 
   const {
     data: assistants,
@@ -35,7 +38,7 @@ function RouteComponent() {
     data: appointments,
     error: appointmentsError,
     isLoading: appointmentsLoading,
-  } = useAppointments({ date: todaysDate.toISOString() });
+  } = useAppointments({ date: new Date(todaysDate).toISOString() });
 
   if (assistantsError || appointmentsError) {
     return (
@@ -52,19 +55,19 @@ function RouteComponent() {
 
   const handleFieldSelect = (data: { assistantId: string; time: string }) => {
     navigate({
-      to: `/appointments/daily/${getUnixTime(startOfDay(todaysDate))}/new/${data.assistantId}/${getUnixTime(new Date(data.time)).toString()}/`,
+      to: `/appointments/daily/${todaysDate}/new/${data.assistantId}/${getUnixTime(new Date(data.time)) * 1000}/`,
     });
   };
 
   const onHeaderSelect = (id: string) => {
     navigate({
-      to: `/appointments/weekly/${getUnixTime(startOfWeek(todaysDate))}/${id}/`,
+      to: `/appointments/weekly/${todaysDate}/${id}/`,
     });
   };
 
   const onItemSelect = (value: { id: string }) => {
     navigate({
-      to: `/appointments/daily/${getUnixTime(startOfDay(todaysDate))}/${value.id}/`,
+      to: `/appointments/daily/${todaysDate}/${value.id}/`,
     });
   };
 
@@ -78,20 +81,20 @@ function RouteComponent() {
     <>
       <Calendar>
         <CalendarHeader
-          previousDaySelect={(date) => {
+          previousDaySelect={() => {
             navigate({
-              to: `/appointments/daily/${getUnixTime(subDays(date, 1))}/`,
+              to: `/appointments/daily/${previousDay}/`,
             });
           }}
-          nextDaySelect={(date) => {
+          nextDaySelect={() => {
             navigate({
-              to: `/appointments/daily/${getUnixTime(addDays(date, 1))}/`,
+              to: `/appointments/daily/${nextDay}/`,
             });
           }}
-          date={todaysDate}
+          date={new Date(todaysDate)}
           viewToggle={() => {
             navigate({
-              to: `/appointments/daily/${getUnixTime(startOfDay(todaysDate))}`,
+              to: `/appointments/daily/${todaysDate}`,
             });
           }}
           viewType={ViewType.DAY}
