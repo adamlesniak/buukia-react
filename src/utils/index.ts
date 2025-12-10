@@ -1,5 +1,7 @@
+import type { QueryClient } from "@tanstack/query-core";
 import { parseISO } from "date-fns";
 
+import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import type {
   BuukiaAppointment,
   BuukiaAssistant,
@@ -91,3 +93,78 @@ export const createClient = (item: Partial<BuukiaClient>) => ({
   appointments: [],
   ...item,
 });
+
+export const createCurrentAppointment = (
+  queryClient: QueryClient,
+  assistantId: string,
+  clientName: string,
+  time: string,
+  servicesDuration: number,
+) => {
+  queryClient.setQueryData(
+    appointmentQueryKeys.all,
+    (old: BuukiaAppointment[] | undefined) => {
+      if (!Boolean(old?.find((item) => item.id === "current-appointment"))) {
+        return [
+          ...(old || []),
+          createAppointment({
+            id: "current-appointment",
+            assistant: createAssistant({ id: assistantId }),
+            client: createClient({ name: clientName }),
+            services: [createService({ duration: 15 })],
+            time: new Date(time).toISOString(),
+          }),
+        ];
+      }
+
+      return [
+        ...(old?.filter((i) => i.id !== "current-appointment") || []),
+        createAppointment({
+          id: "current-appointment",
+          assistant: createAssistant({ id: assistantId }),
+          client: createClient({ name: clientName }),
+          services: [
+            createService({
+              duration: servicesDuration || 15,
+            }),
+          ],
+          time: new Date(time).toISOString(),
+        }),
+      ];
+    },
+  );
+};
+
+export const updateExistingAppointment = (
+  queryClient: QueryClient,
+  appointmentId: string,
+  assistantId: string,
+  clientName: string,
+  time: string,
+  servicesDuration: number,
+) => {
+  queryClient.setQueryData(
+    appointmentQueryKeys.all,
+    (old: BuukiaAppointment[] | undefined) => {
+      const result = old?.map((item) => {
+        if (item.id === appointmentId) {
+          return createAppointment({
+            id: appointmentId,
+            assistant: createAssistant({ id: assistantId }),
+            client: createClient({ name: clientName }),
+            services: [
+              createService({
+                duration: servicesDuration || 15,
+              }),
+            ],
+            time: new Date(time).toISOString(),
+          });
+        }
+
+        return item;
+      });
+
+      return result;
+    },
+  );
+};

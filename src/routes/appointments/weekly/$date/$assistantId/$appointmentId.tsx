@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { endOfDay, startOfDay } from "date-fns";
 import { t } from "i18next";
 import { X } from "lucide-react";
 
@@ -15,6 +16,7 @@ import {
   DrawerContentHeader,
 } from "@/components/Drawer";
 import type { BuukiaAppointment, UpdateAppointmentBody } from "@/types";
+import { isoDateMatchDate } from "@/utils";
 
 export const Route = createFileRoute(
   "/appointments/weekly/$date/$assistantId/$appointmentId",
@@ -42,7 +44,24 @@ function RouteComponent() {
     data: clients,
     error: clientsError,
     isLoading: clientsLoading,
-  } = useClients({ limit: 10 });
+  } = useClients({ limit: 100 });
+
+  const appointmentDaysAppointments = queryClient
+    .getQueryData<BuukiaAppointment[]>(appointmentQueryKeys.all)
+    ?.filter(
+      (item) =>
+        appointment?.time &&
+        item.assistant.id === appointment?.assistant.id &&
+        isoDateMatchDate(item.time, appointment?.time)
+    )
+    ?.filter((item) => {
+      const appointmentDate = new Date(item.time);
+      return (
+        appointmentDate >= startOfDay(appointmentDate) &&
+        appointmentDate <= endOfDay(appointmentDate) &&
+        item.assistant.id === appointment?.assistant.id
+      );
+    });
 
   const onClose = () => {
     queryClient.setQueryData(
@@ -115,6 +134,10 @@ function RouteComponent() {
             onClientSearch={(query) => {
               console.log("search query", query);
             }}
+            onServicesSearch={(query) => {
+              console.log("search query", query);
+            }}
+            todaysAppointments={appointmentDaysAppointments || []}
           />
         </DrawerContentBody>
       </DrawerContent>

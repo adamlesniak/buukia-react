@@ -1,13 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { PlusIcon, X, XIcon } from "lucide-react";
+import { X } from "lucide-react";
 import { useState, useMemo, useCallback } from "react";
 import { FocusScope } from "react-aria";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 
-import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { useServices } from "@/api/services";
 import {
   type BuukiaAppointment,
@@ -15,106 +13,24 @@ import {
   type BuukiaService,
   type CreateAppointmentBody,
 } from "@/types";
-import {
-  createAppointment,
-  createAssistant,
-  createClient,
-  createService,
-} from "@/utils";
+import { createCurrentAppointment, updateExistingAppointment } from "@/utils";
+import { appointmentFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
-import { Combobox, Field, Form, Input, Label } from "../Form";
-
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-`;
-
-const Modal = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 1px solid #f4f4f4;
-  margin-bottom: 16px;
-  padding-bottom: 4px;
-`;
-
-const ModalBody = styled.div`
-  max-height: 400px;
-  overflow-y: auto;
-`;
-
-const Item = styled.div`
-  padding: 10px;
-  border: 1px solid #f4f4f4;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 12px;
-  margin: 12px 0px;
-  margin-top: 0px;
-`;
-
-const ItemBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-right: 24px;
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 0px;
-  }
-`;
-
-const ServicesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-  flex: 1;
-`;
-
-const Fieldset = styled.fieldset`
-  border: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-`;
-
-const FormSummary = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 16px;
-  justify-content: end;
-  border-top: 1px solid #f4f4f4;
-`;
-
-const FormSummaryItem = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 8px 0px;
-`;
+import { Card, CardBody } from "../Card";
+import {
+  Combobox,
+  Field,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  FormSummary,
+  FormSummaryItem,
+  Fieldset,
+} from "../Form";
+import { Overlay, Modal, ModalBody, ModalHeader } from "../Modal";
+import { ServiceCardActions, ServicesContainer } from "../Services";
 
 type AppointmentFormValues = {
   assistantName: string;
@@ -129,7 +45,9 @@ type AppointmentFormProps = {
   assistantId: string;
   services: BuukiaService[];
   clients: BuukiaClient[];
+  todaysAppointments: BuukiaAppointment[];
   onClientsSearch: (query: string) => void;
+  onServicesSearch: (query: string) => void;
   onSubmit: (data: CreateAppointmentBody) => void;
 };
 
@@ -137,12 +55,19 @@ export function AppointmentForm(props: AppointmentFormProps) {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const queryClient = useQueryClient();
-  const { register, handleSubmit, setValue, watch, getValues } =
-    useForm<AppointmentFormValues>({
-      defaultValues: {
-        ...props.values,
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    getValues,
+    formState: { errors },
+  } = useForm<AppointmentFormValues>({
+    resolver: validateResolver(appointmentFormSchema),
+    defaultValues: {
+      ...props.values,
+    },
+  });
   const { data: services = [] } = useServices();
   const isExistingAppointment = props.appointmentId;
 
@@ -162,82 +87,32 @@ export function AppointmentForm(props: AppointmentFormProps) {
     ),
   ];
 
+  // Add opened appointment to calendar view.
   if (!isExistingAppointment) {
     const setCurrentAppointment = useCallback(() => {
-      queryClient.setQueryData(
-        appointmentQueryKeys.all,
-        (old: BuukiaAppointment[] | undefined) => {
-          if (
-            !Boolean(old?.find((item) => item.id === "current-appointment"))
-          ) {
-            return [
-              ...(old || []),
-              createAppointment({
-                id: "current-appointment",
-                assistant: createAssistant({ id: props.assistantId }),
-                client: createClient({ name: getValues("clientName") }),
-                services: [createService({ duration: 15 })],
-                time: new Date(props.values.time).toISOString(),
-              }),
-            ];
-          }
-
-          return [
-            ...(old?.filter((i) => i.id !== "current-appointment") || []),
-            createAppointment({
-              id: "current-appointment",
-              assistant: createAssistant({ id: props.assistantId }),
-              client: createClient({ name: getValues("clientName") }),
-              services: [
-                createService({
-                  duration:
-                    getValues("services").reduce(
-                      (sum, next) => sum + next.duration,
-                      0,
-                    ) || 15,
-                }),
-              ],
-              time: new Date(props.values.time).toISOString(),
-            }),
-          ];
-        },
+      createCurrentAppointment(
+        queryClient,
+        props.assistantId,
+        getValues("clientName"),
+        getValues("time"),
+        servicesDurationSum,
       );
     }, [watch("clientName"), watch("services")]);
 
     setCurrentAppointment();
   } else {
-    const updateExistingAppointment = useCallback(() => {
-      queryClient.setQueryData(
-        appointmentQueryKeys.all,
-        (old: BuukiaAppointment[] | undefined) => {
-          const result = old?.map((item) => {
-            if (item.id === props.appointmentId) {
-              return createAppointment({
-                id: props.appointmentId,
-                assistant: createAssistant({ id: props.assistantId }),
-                client: createClient({ name: getValues("clientName") }),
-                services: [
-                  createService({
-                    duration:
-                      getValues("services").reduce(
-                        (sum, next) => sum + next.duration,
-                        0,
-                      ) || 15,
-                  }),
-                ],
-                time: new Date(props.values.time).toISOString(),
-              });
-            }
-
-            return item;
-          });
-
-          return result;
-        },
+    const updateCachedAppointment = useCallback(() => {
+      updateExistingAppointment(
+        queryClient,
+        props.appointmentId,
+        props.assistantId,
+        getValues("clientName"),
+        getValues("time"),
+        servicesDurationSum,
       );
     }, [watch("clientName"), watch("services")]);
 
-    updateExistingAppointment();
+    updateCachedAppointment();
   }
 
   const onSubmit = (data: AppointmentFormValues) => {
@@ -269,7 +144,7 @@ export function AppointmentForm(props: AppointmentFormProps) {
             {t("appointments.detail.assistantName")}
           </Label>
           <Input
-            {...register("assistantName", { required: true })}
+            {...register("assistantName")}
             id="assistant-name-input"
             type="text"
             data-testid="assistant-name-input"
@@ -282,7 +157,7 @@ export function AppointmentForm(props: AppointmentFormProps) {
             {t("appointments.detail.time")}
           </Label>
           <Input
-            {...register("time", { required: true })}
+            {...register("time")}
             id="time-input"
             name="time"
             type="text"
@@ -296,12 +171,17 @@ export function AppointmentForm(props: AppointmentFormProps) {
             {t("appointments.detail.client")}
           </Label>
           <Combobox
-            {...register("clientName", { required: true })}
+            {...register("clientName")}
             id="client-name-input"
             data-testid="client-name-input"
             valueKey="name"
             items={props.clients}
           ></Combobox>
+          {errors.clientName && (
+            <FieldError role="alert">
+              {t("appointments.form.errors.clientNameError")}
+            </FieldError>
+          )}
         </Field>
 
         <Field>
@@ -322,31 +202,50 @@ export function AppointmentForm(props: AppointmentFormProps) {
       </Fieldset>
 
       <ServicesContainer>
+        {errors.services && (
+          <FieldError $textAlign="center" role="alert">
+            {t(`${errors.services.message}`)}
+          </FieldError>
+        )}
         {currentServices.map((service) => (
-          <Item data-testid="services-container-list-item" key={service.id}>
-            <ItemBody>
+          <Card data-testid="services-container-list-item" key={service.id}>
+            <CardBody>
               <h3>
                 {service.name} ({service.duration}
                 {t("common.min")})
               </h3>
               <p>{service.description}</p>
               <b>€{service.price}</b>
-            </ItemBody>
-
-            <Button
-              size="sm"
-              tabIndex={0}
-              onClick={() => {
+            </CardBody>
+            <ServiceCardActions
+              serviceIds={servicesIds}
+              servicesDurationSum={servicesDurationSum}
+              service={service}
+              appointments={props.todaysAppointments}
+              currentAppointment={{
+                id: props.appointmentId,
+                time: getValues("time"),
+              }}
+              onServiceAdd={(service) => {
+                setValue("services", [...currentServices, service], {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                });
+              }}
+              onServiceRemove={(serviceId) => {
                 setValue(
                   "services",
-                  currentServices.filter((s) => s.id !== service.id),
+                  currentServices.filter((s) => s.id !== serviceId),
+                  {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  },
                 );
               }}
-              type="button"
-            >
-              <XIcon />
-            </Button>
-          </Item>
+            />
+          </Card>
         ))}
       </ServicesContainer>
 
@@ -375,44 +274,44 @@ export function AppointmentForm(props: AppointmentFormProps) {
                 </ModalHeader>
                 <ModalBody tabIndex={-1} data-testid="services-list">
                   {services.map((service) => (
-                    <Item data-testid="services-list-item" key={service.id}>
-                      <ItemBody>
+                    <Card data-testid="services-list-item" key={service.id}>
+                      <CardBody>
                         <h3>
-                          {service.name} ({service.duration}min)
+                          {service.name} ({service.duration}
+                          {t("common.min")})
                         </h3>
                         <p>{service.description}</p>
                         <b>€{service.price}</b>
-                      </ItemBody>
-                      {!servicesIds.includes(service.id) && (
-                        <Button
-                          size="sm"
-                          tabIndex={0}
-                          onClick={() => {
-                            setValue("services", [...currentServices, service]);
-                          }}
-                          type="button"
-                        >
-                          <PlusIcon />
-                        </Button>
-                      )}
-                      {servicesIds.includes(service.id) && (
-                        <Button
-                          size="sm"
-                          tabIndex={0}
-                          onClick={() => {
-                            setValue(
-                              "services",
-                              currentServices.filter(
-                                (s) => s.id !== service.id,
-                              ),
-                            );
-                          }}
-                          type="button"
-                        >
-                          <XIcon />
-                        </Button>
-                      )}
-                    </Item>
+                      </CardBody>
+                      <ServiceCardActions
+                        serviceIds={servicesIds}
+                        servicesDurationSum={servicesDurationSum}
+                        service={service}
+                        currentAppointment={{
+                          id: props.appointmentId,
+                          time: getValues("time"),
+                        }}
+                        appointments={props.todaysAppointments}
+                        onServiceAdd={(service) => {
+                          setValue("services", [...currentServices, service], {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                            shouldTouch: true,
+                          });
+                        }}
+                        onServiceRemove={(serviceId) => {
+                          setValue(
+                            "services",
+                            currentServices.filter((s) => s.id !== serviceId),
+                            {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                              shouldTouch: true,
+                            },
+                          );
+                        }}
+                      />
+                    </Card>
                   ))}
                 </ModalBody>
               </FocusScope>

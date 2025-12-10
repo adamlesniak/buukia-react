@@ -7,7 +7,7 @@ const DrawerContentHeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #f4f4f4;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
   margin-bottom: 16px;
 
   h2 {

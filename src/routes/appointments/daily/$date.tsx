@@ -10,9 +10,7 @@ import {
 
 import { useAppointments } from "@/api/appointments";
 import { useAssistants } from "@/api/assistants/use-assistants";
-import { Calendar } from "@/components/Calendar/Calendar";
-import { CalendarBody } from "@/components/Calendar/CalendarBody";
-import { CalendarHeader } from "@/components/Calendar/CalendarHeader";
+import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
 import { ViewType } from "@/constants.ts";
 
 export const Route = createFileRoute("/appointments/daily/$date")({
@@ -38,7 +36,10 @@ function RouteComponent() {
     data: appointments,
     error: appointmentsError,
     isLoading: appointmentsLoading,
-  } = useAppointments({ date: new Date(todaysDate).toISOString() });
+  } = useAppointments({
+    startDate: subDays(startOfDay(new Date(todaysDate)), 7).toISOString(),
+    endDate: addDays(startOfDay(new Date(todaysDate)), 7).toISOString(),
+  });
 
   if (assistantsError || appointmentsError) {
     return (

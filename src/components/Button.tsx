@@ -8,6 +8,7 @@ const StyledButton = styled.button<{ $variant?: string; $size?: string }>`
   font-size: 14px;
   text-align: center;
   justify-content: center;
+  flex-direction: column;
 
   ${(props) => {
     if (props.$size === "sm") {
@@ -27,6 +28,10 @@ const StyledButton = styled.button<{ $variant?: string; $size?: string }>`
 
   &:hover {
     background-color: #fbfbfb;
+  }
+
+  &:disabled {
+    background: initial;
   }
 `;
 

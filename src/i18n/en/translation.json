@@ -12,6 +12,9 @@
     "teamDayView": "Team Day View",
     "teamWeekView": "Team Week View"
   },
+  "services": {
+    "unavailable": "Unavailable"
+  },
   "appointments": {
     "newAppointment": "New Appointment",
     "appointment": "Appointment",
@@ -24,6 +27,14 @@
       "addService": "Add Service",
       "totalPrice": "Total Price",
       "totalDuration": "Total Duration"
+    },
+    "form": {
+      "errors": {
+        "assistantNameError": "Assistant name is required",
+        "clientNameError": "Client name is required",
+        "timeError": "Time is required",
+        "servicesError": "At least one service must be selected"
+      }
     }
   },
   "common": {

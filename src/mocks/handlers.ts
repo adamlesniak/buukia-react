@@ -9,7 +9,6 @@ import type {
   CreateAppointmentBody,
   UpdateAppointmentBody,
 } from "@/types";
-import { isoDateMatchDate } from "@/utils";
 
 import data from "../routes/data.json";
 
@@ -59,38 +58,39 @@ export const handlers = [
   http.get("/api/appointments", async ({ request }) => {
     const url = new URL(request.url);
 
-    const [date, assistantId] = [
-      url.searchParams.get("date"),
+    const [assistantId, startDate, endDate] = [
       url.searchParams.get("assistantId"),
+      url.searchParams.get("startDate"),
+      url.searchParams.get("endDate"),
     ];
 
-    if (date && !assistantId) {
-      const filteredAppointments = Array.from(appointments.values()).filter(
-        (appointment) => isoDateMatchDate(appointment.time, date),
-      );
+    const filteredAppointments = Array.from(appointments.values()).filter(
+      (appointment) => {
+        if (assistantId && appointment.assistant.id !== assistantId) {
+          return false;
+        }
 
-      return HttpResponse.json(filteredAppointments);
-    }
+        if (startDate) {
+          const start = new Date(startDate);
+          const appointmentDate = new Date(appointment.time);
+          if (appointmentDate < start) {
+            return false;
+          }
+        }
 
-    if (assistantId && !date) {
-      const filteredAppointments = Array.from(appointments.values()).filter(
-        (appointment) => appointment.assistant?.id === assistantId,
-      );
+        if (endDate) {
+          const end = new Date(endDate);
+          const appointmentDate = new Date(appointment.time);
+          if (appointmentDate > end) {
+            return false;
+          }
+        }
 
-      return HttpResponse.json(filteredAppointments);
-    }
+        return true;
+      },
+    );
 
-    if (date && assistantId) {
-      const filteredAppointments = Array.from(appointments.values()).filter(
-        (appointment) =>
-          isoDateMatchDate(appointment.time, date) &&
-          appointment.assistant?.id === assistantId,
-      );
-
-      return HttpResponse.json(filteredAppointments);
-    }
-
-    return HttpResponse.json(Array.from(appointments.values()));
+    return HttpResponse.json(filteredAppointments);
   }),
 
   http.get("/api/appointments/:id", (req) => {

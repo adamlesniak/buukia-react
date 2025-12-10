@@ -1,13 +1,10 @@
-import type {
-  DetailedHTMLProps,
-  LabelHTMLAttributes,
-} from "react";
+import type { DetailedHTMLProps, LabelHTMLAttributes } from "react";
 import styled from "styled-components";
 
 const StyledLabel = styled.label`
   display: flex;
   flex-direction: row;
-  margin-bottom: .4em;
+  margin-bottom: 8px;
 `;
 
 type LabelProps = {

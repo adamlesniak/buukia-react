@@ -13,8 +13,10 @@ type AppointmentDetailProps = {
   appointment: BuukiaAppointment;
   clients: BuukiaClient[];
   services: BuukiaService[];
+  todaysAppointments: BuukiaAppointment[];
   onFormSubmit: (data: CreateAppointmentBody) => void;
   onClientSearch: (query: string) => void;
+  onServicesSearch: (query: string) => void;
 };
 
 export function AppointmentDetail(props: AppointmentDetailProps) {
@@ -32,7 +34,9 @@ export function AppointmentDetail(props: AppointmentDetailProps) {
       services={props.services || []}
       clients={props.clients || []}
       onClientsSearch={props.onClientSearch}
+      onServicesSearch={props.onServicesSearch}
       onSubmit={props.onFormSubmit}
+      todaysAppointments={props.todaysAppointments}
     />
   );
 }

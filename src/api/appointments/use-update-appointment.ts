@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import type { BuukiaAppointment, BuukiaService } from "@/types";
+import type { BuukiaAppointment } from "@/types";
 
 import { serviceQueryKeys } from "../services/services-query-keys";
 
@@ -35,12 +35,10 @@ export function useUpdateAppointment() {
       await queryClient.cancelQueries({ queryKey: appointmentQueryKeys.all });
 
       // Snapshot the previous value
-      const [previousItems, services] = [
-        queryClient.getQueryData<BuukiaAppointment[]>(appointmentQueryKeys.all),
-        queryClient.getQueryData<BuukiaService[]>(serviceQueryKeys.all),
-      ];
+      const previousItems = queryClient.getQueryData<BuukiaAppointment[]>(
+        appointmentQueryKeys.all,
+      );
 
-      console.log(services, previousItems);
       // Optimistically update to the new value
       queryClient.setQueryData(
         appointmentQueryKeys.all,

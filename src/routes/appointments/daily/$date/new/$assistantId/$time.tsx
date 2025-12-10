@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { getUnixTime } from "date-fns/getUnixTime";
+import { getUnixTime, startOfDay, endOfDay } from "date-fns";
 import { t } from "i18next";
 import { X } from "lucide-react";
 
@@ -13,10 +13,12 @@ import {
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
 import { Button } from "@/components/Button";
-import { DrawerContentBody } from "@/components/Drawer";
-import { Drawer } from "@/components/Drawer/Drawer";
-import { DrawerContent } from "@/components/Drawer/DrawerContent";
-import { DrawerContentHeader } from "@/components/Drawer/DrawerContentHeader";
+import {
+  DrawerContentBody,
+  Drawer,
+  DrawerContent,
+  DrawerContentHeader,
+} from "@/components/Drawer";
 import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
 
 export const Route = createFileRoute(
@@ -51,7 +53,18 @@ function RouteComponent() {
     data: clients,
     error: clientsError,
     isLoading: clientsLoading,
-  } = useClients({ limit: 10 });
+  } = useClients({ limit: 100 });
+
+  const todaysAppointments = queryClient
+    .getQueryData<BuukiaAppointment[]>(appointmentQueryKeys.all)
+    ?.filter((appointment) => {
+      const appointmentDate = new Date(appointment.time);
+      return (
+        appointmentDate >= startOfDay(new Date(appointment.time)) &&
+        appointmentDate <= endOfDay(new Date(appointment.time)) &&
+        appointment.assistant.id === assistantId
+      );
+    });
 
   const isLoading = assistantLoading || servicesLoading || clientsLoading;
   const isError = assistantError || servicesError || clientsError;
@@ -59,7 +72,7 @@ function RouteComponent() {
   const onClose = () => {
     queryClient.setQueryData(
       appointmentQueryKeys.all,
-      (old: BuukiaAppointment[]) => [
+      (old: BuukiaAppointment[] | undefined) => [
         ...(old || []).filter((a) => !a.id.includes("current-appointment")),
       ],
     );
@@ -128,6 +141,10 @@ function RouteComponent() {
             onClientSearch={(query) => {
               console.log("search query", query);
             }}
+            onServicesSearch={(query) => {
+              console.log("search query", query);
+            }}
+            todaysAppointments={todaysAppointments || []}
           />
         </DrawerContentBody>
       </DrawerContent>

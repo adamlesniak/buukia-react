@@ -6,7 +6,6 @@ import type { BuukiaAppointment } from "@/types";
 import { appointmentQueryKeys } from "./appointments-query-keys";
 
 interface useAppointmentsParams {
-  date?: string;
   startDate?: string;
   endDate?: string;
   assistantId?: string;

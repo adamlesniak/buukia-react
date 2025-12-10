@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { endOfDay, startOfDay } from "date-fns";
 import { t } from "i18next";
 import { X } from "lucide-react";
 
@@ -12,11 +13,14 @@ import {
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
 import { Button } from "@/components/Button";
-import { DrawerContentBody } from "@/components/Drawer";
-import { Drawer } from "@/components/Drawer/Drawer";
-import { DrawerContent } from "@/components/Drawer/DrawerContent";
-import { DrawerContentHeader } from "@/components/Drawer/DrawerContentHeader";
+import {
+  DrawerContentBody,
+  Drawer,
+  DrawerContent,
+  DrawerContentHeader,
+} from "@/components/Drawer";
 import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
+import { isoDateMatchDate } from "@/utils";
 
 export const Route = createFileRoute(
   "/appointments/weekly/$date/$assistantId/new/$time",
@@ -26,6 +30,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { assistantId, time, date } = Route.useParams();
+  const appointmentTime = new Date(Number(time)).toISOString();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -44,7 +49,23 @@ function RouteComponent() {
     data: clients,
     error: clientsError,
     isLoading: clientsLoading,
-  } = useClients({ limit: 10 });
+  } = useClients({ limit: 100 });
+
+  const appointmentDaysAppointments = queryClient
+    .getQueryData<BuukiaAppointment[]>(appointmentQueryKeys.all)
+    ?.filter(
+      (item) =>
+        appointmentTime &&
+        item.assistant.id === assistantId &&
+        isoDateMatchDate(item.time, appointmentTime),
+    )
+    ?.filter((item) => {
+      const appointmentDate = new Date(item.time);
+      return (
+        appointmentDate >= startOfDay(appointmentDate) &&
+        appointmentDate <= endOfDay(appointmentDate)
+      );
+    });
 
   const onClose = () => {
     queryClient.setQueryData(
@@ -114,6 +135,10 @@ function RouteComponent() {
             onClientSearch={(query) => {
               console.log("search query", query);
             }}
+            onServicesSearch={(query) => {
+              console.log("search query", query);
+            }}
+            todaysAppointments={appointmentDaysAppointments || []}
           />
         </DrawerContentBody>
       </DrawerContent>
