@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as AppointmentsDailyDateRouteImport } from './routes/appointments/daily/$date'
 import { Route as AppointmentsWeeklyDateAssistantIdRouteImport } from './routes/appointments/weekly/$date/$assistantId'
@@ -21,6 +22,11 @@ import { Route as AppointmentsDailyDateNewAssistantIdTimeRouteImport } from './r
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppointmentsIndexRoute = AppointmentsIndexRouteImport.update({
+  id: '/appointments/',
+  path: '/appointments/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
@@ -67,6 +73,7 @@ const AppointmentsDailyDateNewAssistantIdTimeRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/appointments': typeof AppointmentsIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/appointments': typeof AppointmentsIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/appointments/': typeof AppointmentsIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/demo/tanstack-query'
+    | '/appointments'
     | '/appointments/daily/$date'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/demo/tanstack-query'
+    | '/appointments'
     | '/appointments/daily/$date'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/demo/tanstack-query'
+    | '/appointments/'
     | '/appointments/daily/$date'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -131,6 +143,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  AppointmentsIndexRoute: typeof AppointmentsIndexRoute
   AppointmentsDailyDateRoute: typeof AppointmentsDailyDateRouteWithChildren
   AppointmentsWeeklyDateAssistantIdRoute: typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
 }
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/appointments/': {
+      id: '/appointments/'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AppointmentsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
@@ -234,6 +254,7 @@ const AppointmentsWeeklyDateAssistantIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  AppointmentsIndexRoute: AppointmentsIndexRoute,
   AppointmentsDailyDateRoute: AppointmentsDailyDateRouteWithChildren,
   AppointmentsWeeklyDateAssistantIdRoute:
     AppointmentsWeeklyDateAssistantIdRouteWithChildren,

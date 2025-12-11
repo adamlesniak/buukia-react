@@ -7,6 +7,7 @@ import {
   subDays,
   getUnixTime,
 } from "date-fns";
+import { useCallback, useMemo } from "react";
 
 import { useAppointments } from "@/api/appointments";
 import { useAssistants } from "@/api/assistants/use-assistants";
@@ -21,11 +22,15 @@ function RouteComponent() {
   const { date } = Route.useParams();
   const navigate = useNavigate();
 
-  const [previousDay, nextDay, todaysDate] = [
-    getUnixTime(subDays(startOfDay(new Date(Number(date))), 1)) * 1000,
-    getUnixTime(addDays(startOfDay(new Date(Number(date))), 1)) * 1000,
-    getUnixTime(startOfDay(new Date(Number(date)))) * 1000,
-  ];
+  const [previousDay, nextDay, todaysDateUnix, todaysDate] = useMemo(
+    () => [
+      getUnixTime(subDays(startOfDay(new Date(Number(date))), 1)) * 1000,
+      getUnixTime(addDays(startOfDay(new Date(Number(date))), 1)) * 1000,
+      getUnixTime(startOfDay(new Date(Number(date)))) * 1000,
+      startOfDay(new Date(Number(date))),
+    ],
+    [date],
+  );
 
   const {
     data: assistants,
@@ -41,6 +46,65 @@ function RouteComponent() {
     endDate: addDays(startOfDay(new Date(todaysDate)), 7).toISOString(),
   });
 
+  const startDate = useMemo(() => addMinutes(addHours(todaysDate, 8), 0), [todaysDate]);
+  const endDate = useMemo(() => addMinutes(addHours(todaysDate, 21), 0), [todaysDate]);
+
+  const handleFieldSelect = useCallback(
+    (data: { assistantId: string; time: string }) => {
+      navigate({
+        to: `/appointments/daily/${todaysDateUnix}/new/${data.assistantId}/${getUnixTime(new Date(data.time)) * 1000}/`,
+      });
+    },
+    [todaysDate],
+  );
+
+  const onHeaderSelect = useCallback(
+    (id: string) => {
+      navigate({
+        to: `/appointments/weekly/${todaysDateUnix}/${id}/`,
+      });
+    },
+    [todaysDate],
+  );
+
+  const onItemSelect = useCallback(
+    (value: { id: string }) => {
+      navigate({
+        to: `/appointments/daily/${todaysDateUnix}/${value.id}/`,
+      });
+    },
+    [todaysDate],
+  );
+
+  const previousDaySelect = useCallback(() => {
+    navigate({
+      to: `/appointments/daily/${previousDay}/`,
+    });
+  }, [previousDay]);
+
+  const nextDaySelect = useCallback(() => {
+    navigate({
+      to: `/appointments/daily/${nextDay}/`,
+    });
+  }, [nextDay]);
+
+  const viewToggleSelect = useCallback(() => {
+    navigate({
+      to: `/appointments/daily/${todaysDateUnix}`,
+    });
+  }, [todaysDate]);
+
+  const columns = useMemo(
+    () =>
+      assistants
+        ?.map((item) => ({
+          id: item.id,
+          name: item.initials,
+        }))
+        .slice(0, 4) || [],
+    [assistants],
+  );
+
   if (assistantsError || appointmentsError) {
     return (
       <div>Error: {assistantsError?.message || appointmentsError?.message}</div>
@@ -51,53 +115,14 @@ function RouteComponent() {
     return <div>Loading...</div>;
   }
 
-  const startDate = addMinutes(addHours(todaysDate, 8), 0);
-  const endDate = addMinutes(addHours(todaysDate, 21), 0);
-
-  const handleFieldSelect = (data: { assistantId: string; time: string }) => {
-    navigate({
-      to: `/appointments/daily/${todaysDate}/new/${data.assistantId}/${getUnixTime(new Date(data.time)) * 1000}/`,
-    });
-  };
-
-  const onHeaderSelect = (id: string) => {
-    navigate({
-      to: `/appointments/weekly/${todaysDate}/${id}/`,
-    });
-  };
-
-  const onItemSelect = (value: { id: string }) => {
-    navigate({
-      to: `/appointments/daily/${todaysDate}/${value.id}/`,
-    });
-  };
-
-  const columns =
-    assistants?.map((item) => ({
-      id: item.id,
-      name: item.initials,
-    })) || [];
-
   return (
     <>
       <Calendar>
         <CalendarHeader
-          previousDaySelect={() => {
-            navigate({
-              to: `/appointments/daily/${previousDay}/`,
-            });
-          }}
-          nextDaySelect={() => {
-            navigate({
-              to: `/appointments/daily/${nextDay}/`,
-            });
-          }}
-          date={new Date(todaysDate)}
-          viewToggle={() => {
-            navigate({
-              to: `/appointments/daily/${todaysDate}`,
-            });
-          }}
+          previousDaySelect={previousDaySelect}
+          nextDaySelect={nextDaySelect}
+          date={todaysDate}
+          viewToggle={viewToggleSelect}
           viewType={ViewType.DAY}
         />
         <CalendarBody

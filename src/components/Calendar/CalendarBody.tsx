@@ -9,11 +9,13 @@ import {
   format,
 } from "date-fns";
 import { CircleUserRound } from "lucide-react";
+import { memo, useMemo } from "react";
 import styled from "styled-components";
 
 import { ViewType } from "@/constants.ts";
 import type { BuukiaAppointment } from "@/types";
 import { isoDateMatchDateTime } from "@/utils";
+
 
 const CalendarBodyContainer = styled.div`
   display: flex;
@@ -146,6 +148,35 @@ const AppointmentItemClient = styled.div`
   }
 `;
 
+export type MemoizedPrimaryColumnProps = {
+  startDate: Date;
+  hoursOpen: number;
+};
+
+const MemoizedPrimaryColumn = memo((props: MemoizedPrimaryColumnProps) => {
+  const { startDate, hoursOpen } = props;
+  console.log("render");
+  return (
+    <CalendarBodyColumn key={"primary"}>
+      <CalendarBodyColumnHeader></CalendarBodyColumnHeader>
+      {Array.from({ length: hoursOpen }, (_, index) => {
+        const hour = startDate.getHours() + index;
+
+        return (
+          <CalendarBodyColumnItemPrimary key={hour}>
+            <div>
+              <span>{hour}:00</span>
+            </div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </CalendarBodyColumnItemPrimary>
+        );
+      })}
+    </CalendarBodyColumn>
+  );
+});
+
 export type CalendarBodyProps = {
   startDate: Date;
   endDate: Date;
@@ -167,31 +198,22 @@ export function CalendarBody({
   items,
   headerSelect,
 }: CalendarBodyProps) {
-  const hoursOpen = differenceInHours(endDate, startDate);
-  const weekStart = addHours(
-    startOfWeek(startDate, { weekStartsOn: 0 }),
-    startDate.getHours(),
+  const hoursOpen = useMemo(
+    () => differenceInHours(endDate, startDate),
+    [endDate, startDate],
+  );
+  const weekStart = useMemo(
+    () =>
+      addHours(
+        startOfWeek(startDate, { weekStartsOn: 0 }),
+        startDate.getHours(),
+      ),
+    [startDate],
   );
 
   return (
     <CalendarBodyContainer>
-      <CalendarBodyColumn key={"primary"}>
-        <CalendarBodyColumnHeader></CalendarBodyColumnHeader>
-        {Array.from({ length: hoursOpen }, (_, index) => {
-          const hour = startDate.getHours() + index;
-
-          return (
-            <CalendarBodyColumnItemPrimary key={hour}>
-              <div>
-                <span>{hour}:00</span>
-              </div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </CalendarBodyColumnItemPrimary>
-          );
-        })}
-      </CalendarBodyColumn>
+      <MemoizedPrimaryColumn startDate={startDate} hoursOpen={hoursOpen} />
       {viewType === ViewType.WEEK &&
         columns.map((column, columnIndex) => {
           const columnDate = formatISO(addDays(weekStart, columnIndex), {
@@ -358,13 +380,6 @@ export function CalendarBody({
                                 <CircleUserRound size={16} />
                                 <span>{`${appointment.client.name}`}</span>
                               </AppointmentItemClient>
-                              {/* <AppointmentItemMeta>
-                                <span>
-                                  {appointment.services
-                                    .map((service) => service.name)
-                                    .join(", ")}
-                                </span>
-                              </AppointmentItemMeta> */}
                             </AppointmentItem>
                           );
                         })}

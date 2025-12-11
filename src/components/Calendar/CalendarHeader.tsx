@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -54,7 +55,7 @@ type CalendarHeaderProps = {
   viewType: ViewType;
 };
 
-export function CalendarHeader({
+export const CalendarHeader = memo(function CalendarHeader({
   date,
   nextDaySelect,
   previousDaySelect,
@@ -62,7 +63,7 @@ export function CalendarHeader({
   viewType,
 }: CalendarHeaderProps) {
   const { t } = useTranslation();
-
+  console.log("render");
   return (
     <CalendarHeaderContainer>
       <CalendarHeaderItem>
@@ -94,10 +95,12 @@ export function CalendarHeader({
         </CalendarHeaderItem>
       </CalendarHeaderItem>
       <CalendarHeaderItem>
-        {viewType === ViewType.DAY
-          ? <h2>{t("calendar.teamDayView")}</h2>
-          : <h2>{t("calendar.teamWeekView")}</h2>}
+        {viewType === ViewType.DAY ? (
+          <h2>{t("calendar.teamDayView")}</h2>
+        ) : (
+          <h2>{t("calendar.teamWeekView")}</h2>
+        )}
       </CalendarHeaderItem>
     </CalendarHeaderContainer>
   );
-}
+});
