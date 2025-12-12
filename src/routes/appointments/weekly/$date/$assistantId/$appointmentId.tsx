@@ -64,18 +64,18 @@ function RouteComponent() {
     });
 
   const onClose = () => {
-    queryClient.setQueryData(
-      appointmentQueryKeys.all,
-      (old: BuukiaAppointment[]) => [
-        ...(old || []).map((item) => {
-          if (item.id === appointmentId) {
-            return appointment;
-          }
+    // queryClient.setQueryData(
+    //   appointmentQueryKeys.all,
+    //   (old: BuukiaAppointment[]) => [
+    //     ...(old || []).map((item) => {
+    //       if (item.id === appointmentId) {
+    //         return appointment;
+    //       }
 
-          return item;
-        }),
-      ],
-    );
+    //       return item;
+    //     }),
+    //   ],
+    // );
     navigate({ to: `/appointments/weekly/${date}/${assistantId}` });
   };
 

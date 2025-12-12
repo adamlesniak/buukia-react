@@ -128,7 +128,7 @@ function RouteComponent() {
         <CalendarBody
           startDate={startDate}
           endDate={endDate}
-          columns={columns.slice(0, 4)}
+          columns={columns}
           onFieldSelect={handleFieldSelect}
           viewType={ViewType.DAY}
           items={appointments || []}

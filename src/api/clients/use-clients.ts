@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { BuukiaClient } from "@/types";
 
@@ -9,11 +9,20 @@ interface useClientsParams {
 }
 
 export const useClients = (params: useClientsParams) => {
+  const queryClient = useQueryClient();
+
   const { isLoading, error, data, isFetching } = useQuery<BuukiaClient[]>({
     queryKey: clientQueryKeys.all,
     queryFn: async () => {
       const response = await fetch(`/api/clients?limit=${params.limit}`);
-      return response.json();
+
+      const result = await response.json();
+
+      for (const item of result) {
+        queryClient.setQueryData(clientQueryKeys.detail(item.id), item);
+      }
+
+      return result;
     },
   });
 

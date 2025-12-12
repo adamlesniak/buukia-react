@@ -90,7 +90,9 @@ export const handlers = [
       },
     );
 
-    return HttpResponse.json(filteredAppointments);
+    return HttpResponse.json(filteredAppointments.sort((a, b) => {
+      return new Date(a.time).getTime() - new Date(b.time).getTime();
+    }));
   }),
 
   http.get("/api/appointments/:id", (req) => {

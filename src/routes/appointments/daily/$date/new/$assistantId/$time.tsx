@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getUnixTime, startOfDay, endOfDay } from "date-fns";
 import { t } from "i18next";
-import { X } from "lucide-react";
+import { useCallback } from "react";
 
 import {
   useAssistant,
@@ -12,12 +12,11 @@ import {
 } from "@/api";
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
-import { Button } from "@/components/Button";
 import {
   DrawerContentBody,
   Drawer,
   DrawerContent,
-  DrawerContentHeader,
+  MemoizedDrawerHeaderH2,
 } from "@/components/Drawer";
 import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
 
@@ -45,12 +44,12 @@ function RouteComponent() {
     isLoading: assistantLoading,
   } = useAssistant(assistantId);
   const {
-    data: services,
+    data: services = [],
     error: servicesError,
     isLoading: servicesLoading,
   } = useServices();
   const {
-    data: clients,
+    data: clients = [],
     error: clientsError,
     isLoading: clientsLoading,
   } = useClients({ limit: 100 });
@@ -69,22 +68,33 @@ function RouteComponent() {
   const isLoading = assistantLoading || servicesLoading || clientsLoading;
   const isError = assistantError || servicesError || clientsError;
 
-  const onClose = () => {
-    queryClient.setQueryData(
-      appointmentQueryKeys.all,
-      (old: BuukiaAppointment[] | undefined) => [
-        ...(old || []).filter((a) => !a.id.includes("current-appointment")),
-      ],
-    );
+  const onClose = useCallback(() => {
+    // queryClient.setQueryData(
+    //   appointmentQueryKeys.all,
+    //   (old: BuukiaAppointment[] | undefined) => [
+    //     ...(old || []).filter((a) => !a.id.includes("current-appointment")),
+    //   ],
+    // );
     navigate({ to: `/appointments/daily/${unixDate}` });
-  };
+  }, [unixDate]);
 
-  const onSubmit = async (data: CreateAppointmentBody) =>
-    createAppointmentMutation.mutate(data, {
-      onSuccess: () => {
-        navigate({ to: `/appointments/daily/${unixDate}` });
-      },
-    });
+  const submit = useCallback(
+    async (data: CreateAppointmentBody) =>
+      createAppointmentMutation.mutate(data, {
+        onSuccess: () => {
+          navigate({ to: `/appointments/daily/${unixDate}` });
+        },
+      }),
+    [unixDate],
+  );
+
+  const clientsSearch = useCallback((query: string) => {
+    console.log("search query", query);
+  }, []);
+
+  const servicesSearch = useCallback((query: string) => {
+    console.log("search query", query);
+  }, []);
 
   if (isLoading) {
     return <div>{t("common.loading")}</div>;
@@ -104,18 +114,10 @@ function RouteComponent() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <DrawerContentHeader>
-          <h2>{t("appointments.appointment")}</h2>
-          <Button
-            variant="transparent"
-            aria-label={t("common.closeDrawer")}
-            tabIndex={0}
-            type="button"
-            onClick={onClose}
-          >
-            <X />
-          </Button>
-        </DrawerContentHeader>
+        <MemoizedDrawerHeaderH2
+          onClose={onClose}
+          title={t("appointments.appointment")}
+        />
         <DrawerContentBody>
           <AppointmentDetail
             appointment={
@@ -135,15 +137,11 @@ function RouteComponent() {
                 assistant,
               } as BuukiaAppointment
             }
-            services={services || []}
-            clients={clients || []}
-            onFormSubmit={onSubmit}
-            onClientSearch={(query) => {
-              console.log("search query", query);
-            }}
-            onServicesSearch={(query) => {
-              console.log("search query", query);
-            }}
+            services={services}
+            clients={clients}
+            onFormSubmit={submit}
+            onClientSearch={clientsSearch}
+            onServicesSearch={servicesSearch}
             todaysAppointments={todaysAppointments || []}
           />
         </DrawerContentBody>

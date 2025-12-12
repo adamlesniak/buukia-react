@@ -1,22 +1,20 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { endOfDay, startOfDay } from "date-fns";
 import { t } from "i18next";
-import { X } from "lucide-react";
+import { useCallback, useMemo } from "react";
 
 import { useClients, useServices, useUpdateAppointment } from "@/api";
 import { useAppointment } from "@/api/appointments";
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
-import { Button } from "@/components/Button";
 import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  DrawerContentHeader,
+  MemoizedDrawerHeaderH2,
 } from "@/components/Drawer";
-import type { BuukiaAppointment, UpdateAppointmentBody } from "@/types";
-
+import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
+import { isoDateMatchDate } from "@/utils";
 
 export const Route = createFileRoute(
   "/appointments/daily/$date/$appointmentId",
@@ -36,49 +34,65 @@ function RouteComponent() {
     error: appointmentError,
   } = useAppointment(appointmentId);
   const {
-    data: services,
+    data: services = [],
     error: servicesError,
     isLoading: servicesLoading,
   } = useServices();
   const {
-    data: clients,
+    data: clients = [],
     error: clientsError,
     isLoading: clientsLoading,
   } = useClients({ limit: 100 });
 
-  const todaysAppointments = queryClient
-    .getQueryData<BuukiaAppointment[]>(appointmentQueryKeys.all)
-    ?.filter((appointment) => {
-      const appointmentDate = new Date(appointment.time);
-      return (
-        appointmentDate >= startOfDay(new Date()) &&
-        appointmentDate <= endOfDay(new Date()) &&
-        appointment.assistant.id === appointment.assistant.id
-      );
-    });
+  const todaysAppointments = useMemo(
+    () =>
+      queryClient
+        .getQueryData<BuukiaAppointment[]>(appointmentQueryKeys.all)
+        ?.filter(
+          (item) =>
+            isoDateMatchDate(item.time, new Date(Number(date)).toISOString()) &&
+            appointment?.assistant.id === item.assistant.id,
+        ) || [],
+    [appointment?.assistant.id, date],
+  );
 
   const onClose = () => {
-    queryClient.setQueryData(
-      appointmentQueryKeys.all,
-      (old: BuukiaAppointment[]) => [
-        ...(old || []).map((item) => {
-          if (item.id === appointmentId) {
-            return appointment;
-          }
+    // queryClient.setQueryData(
+    //   appointmentQueryKeys.all,
+    //   (old: BuukiaAppointment[]) => [
+    //     ...(old || []).map((item) => {
+    //       if (item.id === appointmentId) {
+    //         console.log(appointment, appointmentId);
+    //         return appointment;
+    //       }
 
-          return item;
-        }),
-      ],
-    );
+    //       return item;
+    //     }),
+    //   ],
+    // );
     navigate({ to: `/appointments/daily/${date}` });
   };
 
-  const onSubmit = async (data: UpdateAppointmentBody) =>
-    updateAppointmentMutation.mutate(data, {
-      onSuccess: () => {
-        onClose();
-      },
-    });
+  const submit = useCallback(
+    async (data: CreateAppointmentBody) =>
+      updateAppointmentMutation.mutate(
+        { ...data, id: appointmentId },
+        {
+          onSuccess: () => {
+            onClose();
+          },
+        },
+      ),
+    [appointmentId],
+  );
+
+  const clientsSearch = useCallback((query: string) => {
+    console.log("search query", query);
+  }, []);
+
+  const servicesSearch = useCallback((query: string) => {
+    console.log("search query", query);
+  }, []);
 
   const isLoading = servicesLoading || clientsLoading || appointmentLoading;
 
@@ -102,36 +116,19 @@ function RouteComponent() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <DrawerContentHeader>
-          <h2>{t("appointments.appointment")}</h2>
-          <Button
-            variant="transparent"
-            aria-label={t("common.closeDrawer")}
-            tabIndex={0}
-            type="button"
-            onClick={onClose}
-          >
-            <X />
-          </Button>
-        </DrawerContentHeader>
+        <MemoizedDrawerHeaderH2
+          onClose={onClose}
+          title={t("appointments.appointment")}
+        />
         <DrawerContentBody>
           <AppointmentDetail
             appointment={appointment!}
-            services={services || []}
-            clients={clients || []}
-            onFormSubmit={(data) =>
-              onSubmit({
-                ...data,
-                id: appointmentId,
-              })
-            }
-            onClientSearch={(query) => {
-              console.log("search query", query);
-            }}
-            onServicesSearch={(query) => {
-              console.log("search query", query);
-            }}
-            todaysAppointments={todaysAppointments || []}
+            services={services}
+            clients={clients}
+            onFormSubmit={submit}
+            onClientSearch={clientsSearch}
+            onServicesSearch={servicesSearch}
+            todaysAppointments={todaysAppointments}
           />
         </DrawerContentBody>
       </DrawerContent>

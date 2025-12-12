@@ -4,6 +4,8 @@ import styled from "styled-components";
 
 import { DrawerContentBody } from "./DrawerContentBody";
 import { DrawerContentHeader } from "./DrawerContentHeader";
+import { MemoizedDrawerHeaderH2 } from "./MemoizedDrawerHeaderH2";
+import { MemoizedDrawerHeaderH3 } from "./MemoizedDrawerHeaderH3";
 
 const DrawerContentContainer = styled.div`
   display: flex;
@@ -26,7 +28,11 @@ export type DrawerContentProps = {
 
 export function DrawerContent(props: DrawerContentProps) {
   const DrawerContentHeaderChildren = Children.toArray(props.children).filter(
-    (child) => isValidElement(child) && child.type === DrawerContentHeader,
+    (child) =>
+      isValidElement(child) &&
+      (child.type === DrawerContentHeader ||
+        child.type === MemoizedDrawerHeaderH2 ||
+        child.type === MemoizedDrawerHeaderH3),
   );
   const DrawerContentBodyChildren = Children.toArray(props.children).filter(
     (child) => isValidElement(child) && child.type === DrawerContentBody,

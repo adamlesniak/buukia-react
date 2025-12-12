@@ -15,7 +15,7 @@ export const useAppointment = (appointmentId: string) => {
       }
 
       const data = await response.json();
-
+      console.log('appointment', data);
       return data;
     },
     retry: false,

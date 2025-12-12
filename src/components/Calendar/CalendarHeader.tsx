@@ -63,7 +63,7 @@ export const CalendarHeader = memo(function CalendarHeader({
   viewType,
 }: CalendarHeaderProps) {
   const { t } = useTranslation();
-  console.log("render");
+
   return (
     <CalendarHeaderContainer>
       <CalendarHeaderItem>

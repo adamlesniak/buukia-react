@@ -1,9 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import queryString from "query-string";
 
 import type { BuukiaAppointment } from "@/types";
 
+import { clientQueryKeys } from "../clients/clients-query-keys";
+
 import { appointmentQueryKeys } from "./appointments-query-keys";
+
 
 interface useAppointmentsParams {
   startDate?: string;
@@ -12,13 +15,22 @@ interface useAppointmentsParams {
 }
 
 export const useAppointments = (params: useAppointmentsParams) => {
+  const queryClient = useQueryClient();
+
   const { isLoading, error, data, isFetching } = useQuery<BuukiaAppointment[]>({
     queryKey: appointmentQueryKeys.all,
     queryFn: async () => {
       const response = await fetch(
         `/api/appointments?${queryString.stringify(params)}`,
       );
-      return response.json();
+
+      const result = await response.json();
+
+      for (const item of result) {
+        queryClient.setQueryData(clientQueryKeys.detail(item.id), item);
+      }
+
+      return result;
     },
     select: (data) => {
       return data as BuukiaAppointment[];

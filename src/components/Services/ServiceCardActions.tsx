@@ -26,18 +26,14 @@ export function ServiceCardActions(props: ServiceCardActionsProps) {
   const isAvailable = useMemo(() => {
     const appointmentsAfter = props.appointments
       .filter(
-        (appointment) => new Date(appointment.time) > new Date(props.currentAppointment.time),
+        (appointment) =>
+          new Date(appointment.time) > new Date(props.currentAppointment.time),
       )
       .filter((appointment) => {
         if (appointment.id === "current-appointment") {
           return false;
         }
-        console.log(
-          "checking appointment",
-          props.currentAppointment.time,
-          props.service.duration + props.servicesDurationSum,
-          props.service.name,
-        );
+
         return isAfter(
           addMinutes(
             new Date(props.currentAppointment.time),
@@ -46,7 +42,7 @@ export function ServiceCardActions(props: ServiceCardActionsProps) {
           appointment.time,
         );
       });
-    console.log("appointmentsAfter", appointmentsAfter);
+
     return appointmentsAfter.length === 0;
   }, [props.appointments, props.service.id, props.servicesDurationSum]);
 
