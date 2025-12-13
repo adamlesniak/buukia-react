@@ -13,6 +13,7 @@ import {
   DrawerContentBody,
   MemoizedDrawerHeaderH2,
 } from "@/components/Drawer";
+import { ErrorDetail } from "@/components/Error";
 import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
 import { isoDateMatchDate } from "@/utils";
 
@@ -98,19 +99,8 @@ function RouteComponent() {
 
   const isError = servicesError || clientsError || appointmentError;
 
-  if (isLoading) {
-    return <div>{t("common.loading")}</div>;
-  }
-
   if (isError) {
-    return (
-      <div>
-        {t("common.error")}:{" "}
-        {servicesError?.message ||
-          clientsError?.message ||
-          appointmentError?.message}
-      </div>
-    );
+    navigate({ to: `/error` });
   }
 
   return (
@@ -121,15 +111,23 @@ function RouteComponent() {
           title={t("appointments.appointment")}
         />
         <DrawerContentBody>
-          <AppointmentDetail
-            appointment={appointment!}
-            services={services}
-            clients={clients}
-            onFormSubmit={submit}
-            onClientSearch={clientsSearch}
-            onServicesSearch={servicesSearch}
-            todaysAppointments={todaysAppointments}
-          />
+          {isError && (
+            <ErrorDetail
+              message={isError?.message || t("common.unknownError")}
+            />
+          )}
+          {!isError && (
+            <AppointmentDetail
+              appointment={appointment!}
+              services={services}
+              clients={clients}
+              onFormSubmit={submit}
+              onClientSearch={clientsSearch}
+              onServicesSearch={servicesSearch}
+              todaysAppointments={todaysAppointments}
+              isLoading={isLoading}
+            />
+          )}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

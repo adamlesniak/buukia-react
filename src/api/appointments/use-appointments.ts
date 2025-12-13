@@ -1,12 +1,10 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import queryString from "query-string";
 
+import { STALE_TIME } from "@/constants.ts";
 import type { BuukiaAppointment } from "@/types";
 
-import { clientQueryKeys } from "../clients/clients-query-keys";
-
 import { appointmentQueryKeys } from "./appointments-query-keys";
-
 
 interface useAppointmentsParams {
   startDate?: string;
@@ -27,14 +25,12 @@ export const useAppointments = (params: useAppointmentsParams) => {
       const result = await response.json();
 
       for (const item of result) {
-        queryClient.setQueryData(clientQueryKeys.detail(item.id), item);
+        queryClient.setQueryData(appointmentQueryKeys.detail(item.id), item);
       }
 
       return result;
     },
-    select: (data) => {
-      return data as BuukiaAppointment[];
-    },
+    staleTime: STALE_TIME,
   });
 
   return { isLoading, error, data, isFetching };

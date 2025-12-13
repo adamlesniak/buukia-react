@@ -18,6 +18,7 @@ import {
   DrawerContent,
   MemoizedDrawerHeaderH2,
 } from "@/components/Drawer";
+import { ErrorDetail } from "@/components/Error";
 import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
 
 export const Route = createFileRoute(
@@ -96,21 +97,6 @@ function RouteComponent() {
     console.log("search query", query);
   }, []);
 
-  if (isLoading) {
-    return <div>{t("common.loading")}</div>;
-  }
-
-  if (isError) {
-    return (
-      <div>
-        {t("common.error")}:{" "}
-        {assistantError?.message ||
-          servicesError?.message ||
-          clientsError?.message}
-      </div>
-    );
-  }
-
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
@@ -119,31 +105,39 @@ function RouteComponent() {
           title={t("appointments.appointment")}
         />
         <DrawerContentBody>
-          <AppointmentDetail
-            appointment={
-              {
-                id: "",
-                time: new Date(unixTime).toISOString(),
-                client: {
+          {isError && (
+            <ErrorDetail
+              message={isError?.message || t("common.unknownError")}
+            />
+          )}
+          {!isError && (
+            <AppointmentDetail
+              appointment={
+                {
                   id: "",
-                  firstName: "",
-                  lastName: "",
-                  name: "",
-                  email: "",
-                  phone: "",
-                  appointments: [],
-                },
-                services: [],
-                assistant,
-              } as BuukiaAppointment
-            }
-            services={services}
-            clients={clients}
-            onFormSubmit={submit}
-            onClientSearch={clientsSearch}
-            onServicesSearch={servicesSearch}
-            todaysAppointments={todaysAppointments || []}
-          />
+                  time: new Date(unixTime).toISOString(),
+                  client: {
+                    id: "",
+                    firstName: "",
+                    lastName: "",
+                    name: "",
+                    email: "",
+                    phone: "",
+                    appointments: [],
+                  },
+                  services: [],
+                  assistant,
+                } as BuukiaAppointment
+              }
+              services={services}
+              clients={clients}
+              onFormSubmit={submit}
+              onClientSearch={clientsSearch}
+              onServicesSearch={servicesSearch}
+              todaysAppointments={todaysAppointments || []}
+              isLoading={isLoading}
+            />
+          )}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

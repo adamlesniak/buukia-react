@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { STALE_TIME } from "@/constants.ts";
 import type { BuukiaClient } from "@/types";
 
 import { clientQueryKeys } from "./clients-query-keys";
@@ -24,6 +25,7 @@ export const useClients = (params: useClientsParams) => {
 
       return result;
     },
+    staleTime: STALE_TIME,
   });
 
   return { isLoading, error, data, isFetching };

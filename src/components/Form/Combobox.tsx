@@ -79,7 +79,7 @@ const StyledComboboxSearch = styled.div`
   }
 `;
 
-const StyledComboboxContainerInput = styled.div`
+const StyledComboboxContainerInput = styled.div<{ $disabled?: boolean }>`
   display: flex;
   flex-direction: row;
   border-radius: 4px;
@@ -88,16 +88,20 @@ const StyledComboboxContainerInput = styled.div`
   padding: 4px 8px;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
 
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
 
+  svg {
+    cursor: ${(props) => (props.$disabled ? "default" : "pointer")};
+    color: ${(props) => (props.$disabled ? "gray" : "initial")};
+  }
+
   input {
     border: 0px;
     flex: 1;
-    cursor: pointer;
+    cursor: ${(props) => (props.$disabled ? "default" : "pointer")};
     outline: 0px;
     caret-color: transparent;
 
@@ -199,10 +203,19 @@ export function Combobox(
     <StyledCombobox {...props} ref={comboboxContainerRef}>
       <StyledComboboxContainerInput
         tabIndex={0}
+        $disabled={props.disabled}
         onClick={() => {
+          if (props.disabled) {
+            return;
+          }
+
           setIsOpen((item) => !item);
         }}
         onKeyDown={($event: KeyboardEvent<HTMLDivElement>) => {
+          if (props.disabled) {
+            return;
+          }
+
           if ($event.key === "Enter" || $event.key === "ArrowDown") {
             if (!inputSearchRef.current && !isOpen) {
               setIsOpen((item) => !item);
@@ -235,6 +248,7 @@ export function Combobox(
           role="combobox"
           placeholder="Please select an item."
           type="text"
+          disabled={props.disabled}
           id="client-name-input"
           autoComplete="off"
           name={props.name}

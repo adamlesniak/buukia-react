@@ -33,16 +33,15 @@ import { Overlay, Modal, ModalBody } from "../Modal";
 import { ServiceCardActions, ServicesContainer } from "../Services";
 import { ServiceCardDescription } from "../Services/ServiceCardDescription";
 
+type MemoizedAppointmentFormFieldsProps = {
+  register: UseFormRegister<AppointmentFormValues>;
+  errors: FieldErrors<AppointmentFormValues>;
+  clients: BuukiaClient[];
+  isLoading: boolean;
+};
+
 const MemoizedAppointmentFormFields = memo(
-  ({
-    register,
-    errors,
-    clients,
-  }: {
-    register: UseFormRegister<AppointmentFormValues>;
-    errors: FieldErrors<AppointmentFormValues>;
-    clients: BuukiaClient[];
-  }) => {
+  (props: MemoizedAppointmentFormFieldsProps) => {
     const { t } = useTranslation();
     return (
       <Fieldset>
@@ -51,7 +50,7 @@ const MemoizedAppointmentFormFields = memo(
             {t("appointments.detail.assistantName")}
           </Label>
           <Input
-            {...register("assistantName")}
+            {...props.register("assistantName")}
             id="assistant-name-input"
             type="text"
             data-testid="assistant-name-input"
@@ -64,7 +63,7 @@ const MemoizedAppointmentFormFields = memo(
             {t("appointments.detail.time")}
           </Label>
           <Input
-            {...register("time")}
+            {...props.register("time")}
             id="time-input"
             name="time"
             type="text"
@@ -78,13 +77,14 @@ const MemoizedAppointmentFormFields = memo(
             {t("appointments.detail.client")}
           </Label>
           <Combobox
-            {...register("clientName")}
+            {...props.register("clientName")}
             id="client-name-input"
             data-testid="client-name-input"
             valueKey="name"
-            items={clients}
+            items={props.clients}
+            disabled={props.isLoading}
           ></Combobox>
-          {errors.clientName && (
+          {props.errors.clientName && (
             <FieldError role="alert">
               {t("appointments.form.errors.clientNameError")}
             </FieldError>
@@ -95,28 +95,28 @@ const MemoizedAppointmentFormFields = memo(
   },
 );
 
+type MemoizedAppointmentFormSummaryProps = {
+  servicesDurationSum: number;
+  servicesPriceSum: number;
+  disabled: boolean;
+};
+
 const MemoizedAppointmentFormSummary = memo(
-  ({
-    servicesDurationSum,
-    servicesPriceSum,
-  }: {
-    servicesDurationSum: number;
-    servicesPriceSum: number;
-  }) => {
+  (props: MemoizedAppointmentFormSummaryProps) => {
     const { t } = useTranslation();
     return (
       <FormSummary>
         <FormSummaryItem data-testid="form-duration">
           <span>{t("appointments.detail.totalDuration")}</span>
           <b>
-            {servicesDurationSum} {t("common.min")}
+            {props.servicesDurationSum} {t("common.min")}
           </b>
         </FormSummaryItem>
         <FormSummaryItem data-testid="form-price">
           <span>{t("appointments.detail.totalPrice")}</span>
-          <b>€{servicesPriceSum}</b>
+          <b>€{props.servicesPriceSum}</b>
         </FormSummaryItem>
-        <Button size="sm" tabIndex={0} type="submit">
+        <Button disabled={props.disabled} size="sm" tabIndex={0} type="submit">
           {t("common.submit")}
         </Button>
       </FormSummary>
@@ -124,50 +124,41 @@ const MemoizedAppointmentFormSummary = memo(
   },
 );
 
-const MemoizedServiceCard = memo(
-  ({
-    service,
-    servicesIds,
-    servicesDurationSum,
-    appointmentId,
-    time,
-    todaysAppointments,
-    onServiceAdd,
-    onServiceRemove,
-  }: {
-    service: BuukiaService;
-    servicesIds: string[];
-    servicesDurationSum: number;
-    appointmentId: string;
-    time: string;
-    todaysAppointments: BuukiaAppointment[];
-    onServiceAdd: (service: BuukiaService) => void;
-    onServiceRemove: (serviceId: string) => void;
-  }) => {
-    const { t } = useTranslation();
-    return (
-      <Card data-testid="services-list-item" key={service.id}>
-        <ServiceCardDescription
-          title={`${service.name} (${service.duration} ${t("common.min")})`}
-          description={service.description}
-          price={`€${service.price}`}
-        />
-        <ServiceCardActions
-          serviceIds={servicesIds}
-          servicesDurationSum={servicesDurationSum}
-          service={service}
-          currentAppointment={{
-            id: appointmentId,
-            time: time,
-          }}
-          appointments={todaysAppointments}
-          onServiceAdd={onServiceAdd}
-          onServiceRemove={onServiceRemove}
-        />
-      </Card>
-    );
-  },
-);
+type MemoizedServiceCardProps = {
+  service: BuukiaService;
+  servicesIds: string[];
+  servicesDurationSum: number;
+  appointmentId: string;
+  time: string;
+  todaysAppointments: BuukiaAppointment[];
+  onServiceAdd: (service: BuukiaService) => void;
+  onServiceRemove: (serviceId: string) => void;
+};
+
+const MemoizedServiceCard = memo((props: MemoizedServiceCardProps) => {
+  const { t } = useTranslation();
+  return (
+    <Card data-testid="services-list-item" key={props.service.id}>
+      <ServiceCardDescription
+        title={`${props.service.name} (${props.service.duration} ${t("common.min")})`}
+        description={props.service.description}
+        price={`€${props.service.price}`}
+      />
+      <ServiceCardActions
+        serviceIds={props.servicesIds}
+        servicesDurationSum={props.servicesDurationSum}
+        service={props.service}
+        currentAppointment={{
+          id: props.appointmentId,
+          time: props.time,
+        }}
+        appointments={props.todaysAppointments}
+        onServiceAdd={props.onServiceAdd}
+        onServiceRemove={props.onServiceRemove}
+      />
+    </Card>
+  );
+});
 
 type AppointmentFormValues = {
   assistantName: string;
@@ -183,6 +174,7 @@ type AppointmentFormProps = {
   services: BuukiaService[];
   clients: BuukiaClient[];
   todaysAppointments: BuukiaAppointment[];
+  isLoading: boolean;
   onClientsSearch: (query: string) => void;
   onServicesSearch: (query: string) => void;
   onSubmit: (data: CreateAppointmentBody) => void;
@@ -306,6 +298,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
           register={register}
           errors={errors}
           clients={props.clients}
+          isLoading={props.isLoading}
         />
 
         <Field>
@@ -317,6 +310,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
               setShowModal((showModal) => !showModal);
             }}
             type="button"
+            disabled={props.isLoading}
           >
             {t("appointments.detail.addService")}
           </Button>
@@ -382,6 +376,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
         )}
 
       <MemoizedAppointmentFormSummary
+        disabled={props.isLoading}
         servicesDurationSum={servicesDurationSum}
         servicesPriceSum={servicesPriceSum}
       />

@@ -14,10 +14,11 @@ import { AppointmentForm } from "./AppointmentForm";
 type AppointmentDetailProps = {
   appointment: BuukiaAppointment;
   clients: BuukiaClient[];
+  isLoading: boolean;
   services: BuukiaService[];
   todaysAppointments: BuukiaAppointment[];
-  onFormSubmit: (data: CreateAppointmentBody) => void;
   onClientSearch: (query: string) => void;
+  onFormSubmit: (data: CreateAppointmentBody) => void;
   onServicesSearch: (query: string) => void;
 };
 
@@ -46,6 +47,7 @@ export const AppointmentDetail = memo(function AppointmentDetail(
       onServicesSearch={props.onServicesSearch}
       onSubmit={props.onFormSubmit}
       todaysAppointments={props.todaysAppointments}
+      isLoading={props.isLoading}
     />
   );
 });

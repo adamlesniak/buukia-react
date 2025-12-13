@@ -1,4 +1,8 @@
 {
+  "error": {
+    "title": "Error",
+    "message": "Something went wrong. Please try again later."
+  },
   "nav": {
     "dashboard": "Dashboard",
     "appointments": "Appointments",
