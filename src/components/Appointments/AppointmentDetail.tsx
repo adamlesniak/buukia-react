@@ -37,7 +37,6 @@ export const AppointmentDetail = memo(function AppointmentDetail(
 
   return (
     <AppointmentForm
-      data-testid="appointment-form"
       appointmentId={props.appointment?.id || ''}
       values={formValues}
       assistantId={props.appointment?.assistant?.id || ''}

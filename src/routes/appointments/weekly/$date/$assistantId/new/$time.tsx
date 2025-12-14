@@ -139,6 +139,7 @@ function RouteComponent() {
               console.log("search query", query);
             }}
             todaysAppointments={appointmentDaysAppointments || []}
+            isLoading={isLoading}
           />
         </DrawerContentBody>
       </DrawerContent>

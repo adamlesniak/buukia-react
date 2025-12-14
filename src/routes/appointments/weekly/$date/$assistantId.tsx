@@ -46,20 +46,20 @@ function RouteComponent() {
     endDate: new Date(nextWeekStart).toISOString(),
   });
 
-  const error = assistantError || appointmentsError;
+  const isError = assistantError || appointmentsError;
   const isLoading = assistantLoading || appointmentsLoading;
 
   // if (!assistant) {
   //   throw Error("Assistant not found");
   // }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  // if (error) {
+  //   return <div>Error: {error.message}</div>;
+  // }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
   const [startDate, endDate] = [
     addMinutes(addHours(weeksDate, 8), 0),
@@ -104,10 +104,12 @@ function RouteComponent() {
 
   const columns = useMemo(
     () =>
-      Array.from({ length: 7 }).map((_) => ({
-        id: assistant?.id || "",
-        name: "",
-      })),
+      assistant?.id
+        ? Array.from({ length: 7 }).map((_) => ({
+            id: assistant?.id,
+            name: "",
+          }))
+        : [],
     [assistant?.id],
   );
 
@@ -121,6 +123,7 @@ function RouteComponent() {
           viewToggle={viewToggle}
           viewType={ViewType.WEEK}
         />
+        {isError && <div>Error: {isError?.message}</div>}
         <CalendarBody
           columns={columns}
           endDate={endDate}
@@ -129,6 +132,7 @@ function RouteComponent() {
           onItemSelect={onItemSelect}
           startDate={startDate}
           viewType={ViewType.WEEK}
+          isLoading={isLoading}
         />
       </Calendar>
       <Outlet />

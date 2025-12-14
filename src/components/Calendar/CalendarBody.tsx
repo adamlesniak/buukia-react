@@ -5,7 +5,7 @@ import { ViewType } from "@/constants.ts";
 import type { BuukiaAppointment } from "@/types";
 
 import { CalendarBodyDaily } from "./CalendarBodyDaily";
-import CalendarBodyWeekly from "./CalendarBodyWeekly";
+import { CalendarBodyWeekly } from "./CalendarBodyWeekly";
 import { CalendarBodyContainer } from "./styled";
 
 export type CalendarBodyProps = {
@@ -14,6 +14,7 @@ export type CalendarBodyProps = {
   columns: { id: string; name: string }[];
   items: BuukiaAppointment[];
   viewType: ViewType;
+  isLoading: boolean;
   onFieldSelect: (data: { assistantId: string; time: string }) => void;
   onItemSelect: (value: { id: string }) => void;
   headerSelect?: (id: string) => void;

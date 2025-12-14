@@ -40,7 +40,8 @@ describe("AppointmentDetail", () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText("common.loading")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("appointment-form")).toBeInTheDocument();
     });
   });
+
 });

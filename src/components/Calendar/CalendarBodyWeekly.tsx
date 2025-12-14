@@ -5,7 +5,7 @@ import {
   startOfWeek,
   formatISO,
 } from "date-fns";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 
 import type { BuukiaAppointment } from "@/types";
 import { isoDateMatchDateTime } from "@/utils";
@@ -25,7 +25,7 @@ export type CalendarBodyWeeklyProps = {
   onHeaderSelect?: (id: string) => void;
 };
 
-export default function CalendarBodyWeekly(props: CalendarBodyWeeklyProps) {
+export const CalendarBodyWeekly = memo((props: CalendarBodyWeeklyProps) => {
   const weekStart = useMemo(
     () =>
       addHours(
@@ -62,7 +62,7 @@ export default function CalendarBodyWeekly(props: CalendarBodyWeeklyProps) {
         hoursOpen={props.hoursOpen}
       />
       {appointmentDailyColumns.map((column, columnIndex) => (
-        <CalendarBodyColumn key={column.id}>
+        <CalendarBodyColumn id={column.id} key={column.id}>
           <MemoizedColumnHeaderWeekly
             weekStart={weekStart}
             columnIndex={columnIndex}
@@ -102,4 +102,4 @@ export default function CalendarBodyWeekly(props: CalendarBodyWeeklyProps) {
       ))}
     </CalendarBodyContainer>
   );
-}
+})
