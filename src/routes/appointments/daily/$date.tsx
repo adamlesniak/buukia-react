@@ -119,21 +119,21 @@ function RouteComponent() {
     <>
       <Calendar>
         <CalendarHeader
-          previousDaySelect={previousDaySelect}
-          nextDaySelect={nextDaySelect}
           date={todaysDate}
+          nextDaySelect={nextDaySelect}
+          previousDaySelect={previousDaySelect}
           viewToggle={viewToggleSelect}
           viewType={ViewType.DAY}
         />
         <CalendarBody
-          startDate={startDate}
-          endDate={endDate}
           columns={columns}
-          onFieldSelect={handleFieldSelect}
-          viewType={ViewType.DAY}
-          items={appointments || []}
+          endDate={endDate}
           headerSelect={onHeaderSelect}
+          items={appointments || []}
+          onFieldSelect={handleFieldSelect}
           onItemSelect={onItemSelect}
+          startDate={startDate}
+          viewType={ViewType.DAY}
         />
       </Calendar>
       <Outlet />

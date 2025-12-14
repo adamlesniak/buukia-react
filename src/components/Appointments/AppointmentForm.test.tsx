@@ -2,7 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAssistant } from "../../../scripts/mocks";
+import { createAppointment, createAssistant } from "@/utils";
+
 import { server } from "../../mocks/server";
 import data from "../../routes/data.json";
 
@@ -37,12 +38,16 @@ describe("AppointmentForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AppointmentForm
+          appointmentId={createAppointment().id}
           assistantId={createAssistant().id}
           clients={[]}
           onClientsSearch={() => {}}
+          onServicesSearch={() => {}}
           services={[]}
           onSubmit={() => {}}
+          todaysAppointments={[]}
           values={testProps}
+          isLoading={false}
         />
       </QueryClientProvider>,
     );
@@ -64,12 +69,16 @@ describe("AppointmentForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AppointmentForm
+          appointmentId={createAppointment().id}
           assistantId={createAssistant().id}
           clients={[]}
           onClientsSearch={() => {}}
+          onServicesSearch={() => {}}
           services={[]}
           onSubmit={() => {}}
+          todaysAppointments={[]}
           values={testProps}
+          isLoading={false}
         />
       </QueryClientProvider>,
     );
@@ -89,12 +98,16 @@ describe("AppointmentForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AppointmentForm
+          appointmentId={createAppointment().id}
           assistantId={createAssistant().id}
           clients={[]}
           onClientsSearch={() => {}}
+          onServicesSearch={() => {}}
           services={[]}
           onSubmit={() => {}}
+          todaysAppointments={[]}
           values={testProps}
+          isLoading={false}
         />
       </QueryClientProvider>,
     );
@@ -117,12 +130,16 @@ describe("AppointmentForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AppointmentForm
+            appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
             clients={[]}
             onClientsSearch={() => {}}
+            onServicesSearch={() => {}}
             services={[]}
             onSubmit={() => {}}
+            todaysAppointments={[]}
             values={testProps}
+            isLoading={false}
           />
         </QueryClientProvider>,
       );
@@ -141,12 +158,16 @@ describe("AppointmentForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AppointmentForm
+            appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
             clients={[]}
             onClientsSearch={() => {}}
-            services={[]}
+            onServicesSearch={() => {}}
+            services={data.services}
             onSubmit={() => {}}
+            todaysAppointments={[]}
             values={testProps}
+            isLoading={false}
           />
         </QueryClientProvider>,
       );
@@ -170,12 +191,16 @@ describe("AppointmentForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AppointmentForm
+            appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
             clients={[]}
             onClientsSearch={() => {}}
-            services={[]}
+            onServicesSearch={() => {}}
+            services={data.services}
             onSubmit={() => {}}
+            todaysAppointments={[]}
             values={testProps}
+            isLoading={false}
           />
         </QueryClientProvider>,
       );
@@ -205,7 +230,9 @@ describe("AppointmentForm", () => {
       await waitFor(async () => {
         expect(screen.queryByTestId("services-modal")).toBeNull();
         expect(
-          screen.queryAllByTestId("services-container-list-item").length,
+          screen
+            .queryByTestId("services-container-list")
+            ?.querySelectorAll("[data-testid='services-list-item']").length,
         ).toEqual(1);
         expect(
           screen.queryByTestId("form-duration")?.querySelector("b"),
@@ -213,6 +240,98 @@ describe("AppointmentForm", () => {
         expect(
           screen.queryByTestId("form-price")?.querySelector("b"),
         ).toHaveTextContent(`€${data.services[0].price}`);
+      });
+    });
+
+    it("should remove service from form", async () => {
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AppointmentForm
+            appointmentId={createAppointment().id}
+            assistantId={createAssistant().id}
+            clients={[]}
+            onClientsSearch={() => {}}
+            onServicesSearch={() => {}}
+            services={data.services}
+            onSubmit={() => {}}
+            todaysAppointments={[]}
+            values={testProps}
+            isLoading={false}
+          />
+        </QueryClientProvider>,
+      );
+
+      expect(
+        screen.queryAllByTestId("services-container-list-item").length,
+      ).toEqual(0);
+
+      await user.click(screen.getByText("appointments.detail.addService"));
+
+      expect(screen.getByTestId("services-modal")).toBeInTheDocument();
+      expect(
+        screen.getByText("appointments.detail.services"),
+      ).toBeInTheDocument();
+
+      const item = screen.queryAllByTestId("services-list-item")[0];
+      const button = item.querySelector("button");
+
+      if (!button) {
+        throw new Error("Button not found");
+      }
+
+      await user.click(button);
+
+      screen.getByLabelText("common.closeModal").click();
+
+      const removeButton = screen
+        .queryAllByTestId("services-list-item")[0]
+        .querySelector("button");
+
+      if (!removeButton) {
+        throw new Error("Button not found");
+      }
+
+      await user.click(removeButton);
+
+      await waitFor(async () => {
+        expect(screen.queryByTestId("services-modal")).toBeNull();
+        expect(screen.queryAllByTestId("services-list-item").length).toEqual(0);
+      });
+    });
+
+    it("should ensure that inputs and buttons are disabled when loading", async () => {
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AppointmentForm
+            appointmentId={createAppointment().id}
+            assistantId={createAssistant().id}
+            clients={[]}
+            onClientsSearch={() => {}}
+            onServicesSearch={() => {}}
+            services={data.services}
+            onSubmit={() => {}}
+            todaysAppointments={[]}
+            values={testProps}
+            isLoading={true}
+          />
+        </QueryClientProvider>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByLabelText("appointments.detail.client"),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByTestId("client-name-input")?.querySelector("input"),
+        ).toBeDisabled();
+        expect(
+          screen.queryByText("appointments.detail.addService"),
+        ).toBeDisabled();
+        expect(screen.queryByText("common.submit")).toBeDisabled();
       });
     });
   });

@@ -1,5 +1,6 @@
-export * from './ServiceCardActions';
-import styled from 'styled-components';
+export * from "./ServiceCardActions";
+export * from "./MemoizedServiceCard";
+import styled from "styled-components";
 
 export const ServicesContainer = styled.div`
   display: flex;

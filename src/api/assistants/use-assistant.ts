@@ -10,6 +10,7 @@ export const useAssistant = (assistantId: string) => {
     useQuery<BuukiaAssistant>({
       queryKey: assistantQueryKeys.detail(assistantId),
       queryFn: async () => {
+        console.log(`/api/assistants/${assistantId}`)
         const response = await fetch(`/api/assistants/${assistantId}`);
 
         if (!response.ok) {

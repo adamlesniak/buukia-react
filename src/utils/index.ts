@@ -29,8 +29,8 @@ export const isoDateMatchDateTime = (date1: string, date2: string) => {
   );
 };
 
-export const createAppointment = (item: Partial<BuukiaAppointment>) => ({
-  id: item.id || "",
+export const createAppointment = (item?: Partial<BuukiaAppointment>) => ({
+  id: item?.id || "",
   assistant: {
     id: "",
     firstName: "",
@@ -44,9 +44,9 @@ export const createAppointment = (item: Partial<BuukiaAppointment>) => ({
     },
     business: "",
     type: "",
-    ...item.assistant,
+    ...item?.assistant,
   },
-  time: item.time ? new Date(item.time).toISOString() : "",
+  time: item?.time ? new Date(item.time).toISOString() : "",
   client: {
     id: "",
     firstName: "",
@@ -55,9 +55,9 @@ export const createAppointment = (item: Partial<BuukiaAppointment>) => ({
     email: "",
     phone: "",
     appointments: [],
-    ...item.client,
+    ...item?.client,
   },
-  services: item.services ? item.services : [],
+  services: item?.services ? item.services : [],
 });
 
 export const createService = (item: Partial<BuukiaService>) => ({
@@ -71,7 +71,7 @@ export const createService = (item: Partial<BuukiaService>) => ({
   ...item,
 });
 
-export const createAssistant = (item: Partial<BuukiaAssistant>) => ({
+export const createAssistant = (item?: Partial<BuukiaAssistant>) => ({
   id: "",
   firstName: "",
   lastName: "",
@@ -132,7 +132,6 @@ export const createCurrentAppointment = (
         }),
       ];
     },
-
   );
 };
 

@@ -12,7 +12,7 @@ import type {
 import { AppointmentForm } from "./AppointmentForm";
 
 type AppointmentDetailProps = {
-  appointment: BuukiaAppointment;
+  appointment?: BuukiaAppointment;
   clients: BuukiaClient[];
   isLoading: boolean;
   services: BuukiaService[];
@@ -27,20 +27,20 @@ export const AppointmentDetail = memo(function AppointmentDetail(
 ) {
   const formValues: AppointmentFormValues = useMemo(
     () => ({
-      assistantName: props.appointment.assistant.name || "",
-      clientName: props.appointment.client.name || "",
-      time: format(new Date(props.appointment.time), "PPpp"),
-      services: props.appointment.services || [],
+      assistantName: props.appointment?.assistant.name || "",
+      clientName: props.appointment?.client.name || "",
+      time: format(props.appointment?.time ? new Date(props.appointment.time) : new Date(), "PPpp"),
+      services: props.appointment?.services || [],
     }),
-    [props.appointment.id],
+    [props.appointment?.id],
   );
 
   return (
     <AppointmentForm
       data-testid="appointment-form"
-      appointmentId={props.appointment.id}
+      appointmentId={props.appointment?.id || ''}
       values={formValues}
-      assistantId={props.appointment.assistant.id}
+      assistantId={props.appointment?.assistant?.id || ''}
       services={props.services}
       clients={props.clients}
       onClientsSearch={props.onClientSearch}

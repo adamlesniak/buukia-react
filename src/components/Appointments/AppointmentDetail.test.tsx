@@ -19,16 +19,23 @@ afterAll(() => {
 });
 
 describe("AppointmentDetail", () => {
+  const props = {
+    appointment: data.appointments[0],
+    services: data.services,
+    clients: data.clients,
+    onFormSubmit: vi.fn(),
+    onClientSearch: vi.fn(),
+    onServicesSearch: vi.fn(),
+    todaysAppointments: [],
+    isLoading: false,
+  };
+
   it("display the appointment form", async () => {
     const queryClient = new QueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>
-        <AppointmentDetail
-          appointment={data.appointments[0]}
-          services={data.services}
-          clients={data.clients}
-        />
+        <AppointmentDetail {...props} />
       </QueryClientProvider>,
     );
 

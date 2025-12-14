@@ -116,9 +116,9 @@ function RouteComponent() {
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && (
+          {!isError  && (
             <AppointmentDetail
-              appointment={appointment!}
+              appointment={appointment}
               services={services}
               clients={clients}
               onFormSubmit={submit}

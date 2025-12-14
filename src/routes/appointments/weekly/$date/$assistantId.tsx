@@ -8,11 +8,10 @@ import {
   startOfWeek,
   startOfDay,
 } from "date-fns";
+import { useCallback, useMemo } from "react";
 
 import { useAppointments, useAssistant } from "@/api";
-import { Calendar } from "@/components/Calendar/Calendar";
-import { CalendarBody } from "@/components/Calendar/CalendarBody";
-import { CalendarHeader } from "@/components/Calendar/CalendarHeader";
+import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
 import { ViewType } from "@/constants.ts";
 
 export const Route = createFileRoute("/appointments/weekly/$date/$assistantId")(
@@ -50,6 +49,10 @@ function RouteComponent() {
   const error = assistantError || appointmentsError;
   const isLoading = assistantLoading || appointmentsLoading;
 
+  // if (!assistant) {
+  //   throw Error("Assistant not found");
+  // }
+
   if (error) {
     return <div>Error: {error.message}</div>;
   }
@@ -63,55 +66,69 @@ function RouteComponent() {
     addMinutes(addHours(weeksDate, 21), 0),
   ];
 
-  const handleFieldSelect = (data: { assistantId: string; time: string }) => {
+  const previousDaySelect = useCallback(() => {
     navigate({
-      to: `/appointments/weekly/${todaysDate}/${data.assistantId}/new/${getUnixTime(new Date(data.time)) * 1000}/`,
+      to: `/appointments/weekly/${prevWeekStart}/${assistantId}/`,
     });
-  };
+  }, [prevWeekStart, assistantId]);
 
-  const onItemSelect = (value: { id: string }) => {
+  const nextDaySelect = useCallback(() => {
     navigate({
-      to: `/appointments/weekly/${todaysDate}/${assistantId}/${value.id}/`,
+      to: `/appointments/weekly/${nextWeekStart}/${assistantId}/`,
     });
-  };
+  }, [nextWeekStart, assistantId]);
 
-  if (!assistant) {
-    throw Error("Assistant not found");
-  }
+  const viewToggle = useCallback(() => {
+    navigate({
+      to: `/appointments/daily/${todaysDate}/`,
+    });
+  }, [todaysDate]);
+
+  const handleFieldSelect = useCallback(
+    (data: { assistantId: string; time: string }) => {
+      navigate({
+        to: `/appointments/weekly/${weeksDate}/${data.assistantId}/new/${getUnixTime(new Date(data.time)) * 1000}/`,
+      });
+    },
+    [weeksDate, navigate],
+  );
+
+  const onItemSelect = useCallback(
+    (value: { id: string }) => {
+      navigate({
+        to: `/appointments/weekly/${weeksDate}/${assistantId}/${value.id}/`,
+      });
+    },
+    [weeksDate, assistantId, navigate],
+  );
+
+  const columns = useMemo(
+    () =>
+      Array.from({ length: 7 }).map((_) => ({
+        id: assistant?.id || "",
+        name: "",
+      })),
+    [assistant?.id],
+  );
 
   return (
     <>
       <Calendar>
         <CalendarHeader
-          previousDaySelect={() => {
-            navigate({
-              to: `/appointments/weekly/${prevWeekStart}/${assistant.id}/`,
-            });
-          }}
-          nextDaySelect={() => {
-            navigate({
-              to: `/appointments/weekly/${nextWeekStart}/${assistant.id}/`,
-            });
-          }}
           date={new Date(weeksDate)}
-          viewToggle={() => {
-            navigate({
-              to: `/appointments/daily/${todaysDate}/`,
-            });
-          }}
+          nextDaySelect={nextDaySelect}
+          previousDaySelect={previousDaySelect}
+          viewToggle={viewToggle}
           viewType={ViewType.WEEK}
         />
         <CalendarBody
-          startDate={startDate}
+          columns={columns}
           endDate={endDate}
-          columns={Array.from({ length: 7 }).map((_) => ({
-            id: assistant?.id || "",
-            name: "",
-          }))}
-          onItemSelect={onItemSelect}
-          onFieldSelect={handleFieldSelect}
-          viewType={ViewType.WEEK}
           items={appointments || []}
+          onFieldSelect={handleFieldSelect}
+          onItemSelect={onItemSelect}
+          startDate={startDate}
+          viewType={ViewType.WEEK}
         />
       </Calendar>
       <Outlet />
