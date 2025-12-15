@@ -65,15 +65,33 @@ export const CalendarHeader = memo(function CalendarHeader({
   const { t } = useTranslation();
 
   return (
-    <CalendarHeaderContainer>
+    <CalendarHeaderContainer data-testid="calendar-header">
       <CalendarHeaderItem>
         {previousDaySelect && (
-          <Button type="button" onClick={() => previousDaySelect?.(date)}>
+          <Button
+            aria-label={
+              viewType === ViewType.DAY
+                ? t("calendar.previousDay")
+                : t("calendar.previousWeek")
+            }
+            data-testid="calendar-header-button-previous"
+            type="button"
+            onClick={() => previousDaySelect?.(date)}
+          >
             <ChevronLeft />
           </Button>
         )}
         {nextDaySelect && (
-          <Button type="button" onClick={() => nextDaySelect?.(date)}>
+          <Button
+            aria-label={
+              viewType === ViewType.DAY
+                ? t("calendar.nextDay")
+                : t("calendar.nextWeek")
+            }
+            data-testid="calendar-header-button-next"
+            type="button"
+            onClick={() => nextDaySelect?.(date)}
+          >
             <ChevronRight />
           </Button>
         )}
@@ -83,6 +101,11 @@ export const CalendarHeader = memo(function CalendarHeader({
             <small>{format(date, "MMM dd, yyyy")}</small>
           </div>
           <OutlineButton
+            aria-label={
+              viewType === ViewType.DAY
+                ? t("calendar.toggleViewWeek")
+                : t("calendar.toggleViewDay")
+            }
             onClick={() => {
               // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               viewToggle && viewToggle();

@@ -14,7 +14,13 @@
   },
   "calendar": {
     "teamDayView": "Team Day View",
-    "teamWeekView": "Team Week View"
+    "teamWeekView": "Team Week View",
+    "nextDay": "Next Day",
+    "previousDay": "Previous Day",
+    "nextWeek": "Next Week",
+    "previousWeek": "Previous Week",
+    "toggleViewDay": "Day View",
+    "toggleViewWeek": "Week View"
   },
   "services": {
     "unavailable": "Unavailable"

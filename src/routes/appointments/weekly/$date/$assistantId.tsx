@@ -8,9 +8,9 @@ import {
   startOfWeek,
   startOfDay,
 } from "date-fns";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
-import { useAppointments, useAssistant } from "@/api";
+import { useAppointments } from "@/api";
 import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
 import { ViewType } from "@/constants.ts";
 
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/appointments/weekly/$date/$assistantId")(
   },
 );
 
-function RouteComponent() {
+export function RouteComponent() {
   const { assistantId, date } = Route.useParams();
 
   const weeksDate = getUnixTime(startOfWeek(new Date(Number(date)))) * 1000;
@@ -31,14 +31,10 @@ function RouteComponent() {
   ];
 
   const navigate = useNavigate();
-  const {
-    data: assistant,
-    error: assistantError,
-    isLoading: assistantLoading,
-  } = useAssistant(assistantId);
+
   const {
     data: appointments,
-    error: appointmentsError,
+    // error: appointmentsError,
     isLoading: appointmentsLoading,
   } = useAppointments({
     assistantId,
@@ -46,8 +42,8 @@ function RouteComponent() {
     endDate: new Date(nextWeekStart).toISOString(),
   });
 
-  const isError = assistantError || appointmentsError;
-  const isLoading = assistantLoading || appointmentsLoading;
+  // const isError = Boolean(appointmentsError);
+  const isLoading = appointmentsLoading;
 
   // if (!assistant) {
   //   throw Error("Assistant not found");
@@ -102,16 +98,10 @@ function RouteComponent() {
     [weeksDate, assistantId, navigate],
   );
 
-  const columns = useMemo(
-    () =>
-      assistant?.id
-        ? Array.from({ length: 7 }).map((_) => ({
-            id: assistant?.id,
-            name: "",
-          }))
-        : [],
-    [assistant?.id],
-  );
+  const columns = Array.from({ length: 7 }).map((_) => ({
+    id: assistantId,
+    name: "",
+  }));
 
   return (
     <>
@@ -123,16 +113,15 @@ function RouteComponent() {
           viewToggle={viewToggle}
           viewType={ViewType.WEEK}
         />
-        {isError && <div>Error: {isError?.message}</div>}
         <CalendarBody
+          startDate={startDate}
           columns={columns}
           endDate={endDate}
+          isLoading={isLoading}
           items={appointments || []}
+          viewType={ViewType.WEEK}
           onFieldSelect={handleFieldSelect}
           onItemSelect={onItemSelect}
-          startDate={startDate}
-          viewType={ViewType.WEEK}
-          isLoading={isLoading}
         />
       </Calendar>
       <Outlet />

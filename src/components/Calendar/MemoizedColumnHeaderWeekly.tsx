@@ -1,4 +1,4 @@
-import { addDays, format, getDate } from "date-fns";
+import { format, getDate } from "date-fns";
 import { memo } from "react";
 
 import {
@@ -6,21 +6,18 @@ import {
   CalendarBodyColumnHeaderDay,
 } from "./styled";
 
+type MemoizedColumnHeaderWeeklyProps = {
+  date: Date;
+  isToday: boolean;
+};
+
 export const MemoizedColumnHeaderWeekly = memo(
-  ({
-    weekStart,
-    columnIndex,
-    isToday,
-  }: {
-    weekStart: Date;
-    columnIndex: number;
-    isToday: boolean;
-  }) => {
+  (props: MemoizedColumnHeaderWeeklyProps) => {
     return (
       <CalendarBodyColumnHeader>
-        <h4>{format(addDays(weekStart, columnIndex), "EEE")}</h4>
-        <CalendarBodyColumnHeaderDay className={isToday ? "today" : ""}>
-          {getDate(addDays(weekStart, columnIndex))}
+        <h4>{format(props.date, "EEE")}</h4>
+        <CalendarBodyColumnHeaderDay className={props.isToday ? "today" : ""}>
+          {getDate(props.date)}
         </CalendarBodyColumnHeaderDay>
       </CalendarBodyColumnHeader>
     );

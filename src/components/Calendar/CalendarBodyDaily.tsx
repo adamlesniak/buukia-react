@@ -11,9 +11,10 @@ import { CalendarBodyColumn, CalendarBodyContainer } from "./styled";
 
 export type CalendarBodyDailyProps = {
   columns: { id: string; name: string }[];
+  hoursOpen: number;
+  isLoading: boolean;
   items: BuukiaAppointment[];
   startDate: Date;
-  hoursOpen: number;
   onFieldSelect?: (data: { assistantId: string; time: string }) => void;
   onItemSelect?: (value: { id: string }) => void;
   onHeaderSelect?: (id: string) => void;
@@ -69,6 +70,7 @@ export const CalendarBodyDaily = (props: CalendarBodyDailyProps) => {
                 appointmentDuration={duration}
                 onFieldSelect={props.onFieldSelect}
                 onItemSelect={props.onItemSelect}
+                isLoading={props.isLoading}
               />
             );
           })}

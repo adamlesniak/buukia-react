@@ -23,7 +23,7 @@ export const MemoizedPrimaryColumn = memo(
           return (
             <CalendarBodyColumnItemPrimary key={hour}>
               <div>
-                <span>{hour}:00</span>
+                <span>{String(hour).padStart(2, "0") + ":00"}</span>
               </div>
               <div></div>
               <div></div>

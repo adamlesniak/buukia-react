@@ -46,8 +46,14 @@ function RouteComponent() {
     endDate: addDays(startOfDay(new Date(todaysDate)), 7).toISOString(),
   });
 
-  const startDate = useMemo(() => addMinutes(addHours(todaysDate, 8), 0), [todaysDate]);
-  const endDate = useMemo(() => addMinutes(addHours(todaysDate, 21), 0), [todaysDate]);
+  const startDate = useMemo(
+    () => addMinutes(addHours(todaysDate, 8), 0),
+    [todaysDate],
+  );
+  const endDate = useMemo(
+    () => addMinutes(addHours(todaysDate, 21), 0),
+    [todaysDate],
+  );
 
   const handleFieldSelect = useCallback(
     (data: { assistantId: string; time: string }) => {
@@ -105,15 +111,8 @@ function RouteComponent() {
     [assistants],
   );
 
-  if (assistantsError || appointmentsError) {
-    return (
-      <div>Error: {assistantsError?.message || appointmentsError?.message}</div>
-    );
-  }
-
-  if (assistantsLoading || appointmentsLoading) {
-    return <div>Loading...</div>;
-  }
+  const error = assistantsError || appointmentsError;
+  const isLoading = assistantsLoading || appointmentsLoading;
 
   return (
     <>
@@ -125,6 +124,7 @@ function RouteComponent() {
           viewToggle={viewToggleSelect}
           viewType={ViewType.DAY}
         />
+        {error ? "error" : null}
         <CalendarBody
           columns={columns}
           endDate={endDate}
@@ -134,6 +134,7 @@ function RouteComponent() {
           onItemSelect={onItemSelect}
           startDate={startDate}
           viewType={ViewType.DAY}
+          isLoading={isLoading}
         />
       </Calendar>
       <Outlet />

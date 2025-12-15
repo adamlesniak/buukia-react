@@ -13,49 +13,59 @@ export type MemoizedAppointmentSlotProps = {
   appointmentId?: string;
   appointmentClient?: string;
   appointmentDuration?: number;
+  isLoading?: boolean;
   onFieldSelect?: (data: { assistantId: string; time: string }) => void;
   onItemSelect?: (value: { id: string }) => void;
 };
 
-export const MemoizedAppointmentSlot = memo((props: MemoizedAppointmentSlotProps) => {
-  const appointmentHeight = (props.appointmentDuration ?? 0) / 15;
+export const MemoizedAppointmentSlot = memo(
+  (props: MemoizedAppointmentSlotProps) => {
+    const appointmentHeight = (props.appointmentDuration ?? 0) / 15;
 
-  return (
-    <AppointmentSlot
-      onClick={($event) => {
-        if (props.onFieldSelect) {
-          props.onFieldSelect({
-            time: props.time.toISOString(),
-            assistantId: props.assistantId,
-          });
-        }
-        $event.preventDefault();
-        $event.stopPropagation();
-      }}
-    >
-      {props.appointmentId && (
-        <AppointmentItem
-          key={props.appointmentId}
-          style={{
-            height: appointmentHeight * 100 + "%",
-            paddingBottom: appointmentHeight - 1 + "px",
-          }}
-          onClick={($event) => {
-            if (props.onItemSelect) {
-              props.onItemSelect({
-                id: props.appointmentId as string,
-              });
-            }
+    return (
+      <AppointmentSlot
+        $isLoading={props.isLoading}
+        onClick={($event) => {
+          if (props.isLoading) {
             $event.preventDefault();
             $event.stopPropagation();
-          }}
-        >
-          <AppointmentItemClient>
-            <CircleUserRound size={16} />
-            <span>{`${props.appointmentClient}`}</span>
-          </AppointmentItemClient>
-        </AppointmentItem>
-      )}
-    </AppointmentSlot>
-  );
-});
+            return;
+          }
+
+          if (props.onFieldSelect) {
+            props.onFieldSelect({
+              time: props.time.toISOString(),
+              assistantId: props.assistantId,
+            });
+          }
+          $event.preventDefault();
+          $event.stopPropagation();
+        }}
+      >
+        {props.appointmentId && (
+          <AppointmentItem
+            key={props.appointmentId}
+            style={{
+              height: appointmentHeight * 100 + "%",
+              paddingBottom: appointmentHeight - 1 + "px",
+            }}
+            onClick={($event) => {
+              if (props.onItemSelect) {
+                props.onItemSelect({
+                  id: props.appointmentId as string,
+                });
+              }
+              $event.preventDefault();
+              $event.stopPropagation();
+            }}
+          >
+            <AppointmentItemClient>
+              <CircleUserRound size={16} />
+              <span>{`${props.appointmentClient}`}</span>
+            </AppointmentItemClient>
+          </AppointmentItem>
+        )}
+      </AppointmentSlot>
+    );
+  },
+);

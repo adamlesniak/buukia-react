@@ -20,43 +20,36 @@ export type CalendarBodyProps = {
   headerSelect?: (id: string) => void;
 };
 
-export function CalendarBody({
-  columns,
-  endDate,
-  onFieldSelect,
-  onItemSelect,
-  startDate,
-  viewType,
-  items,
-  headerSelect,
-}: CalendarBodyProps) {
+export function CalendarBody(props: CalendarBodyProps) {
   const hoursOpen = useMemo(
-    () => differenceInHours(endDate, startDate),
-    [endDate, startDate],
+    () => differenceInHours(props.endDate, props.startDate),
+    [props.endDate, props.startDate],
   );
 
   return (
-    <CalendarBodyContainer>
-      {viewType === ViewType.WEEK && (
+    <CalendarBodyContainer data-testid="calendar-body">
+      {props.viewType === ViewType.WEEK && (
         <CalendarBodyWeekly
-          columns={columns}
-          items={items}
-          startDate={startDate}
+          columns={props.columns}
           hoursOpen={hoursOpen}
-          onFieldSelect={onFieldSelect}
-          onItemSelect={onItemSelect}
-          onHeaderSelect={headerSelect}
+          isLoading={props.isLoading}
+          items={props.items}
+          onFieldSelect={props.onFieldSelect}
+          onHeaderSelect={props.headerSelect}
+          onItemSelect={props.onItemSelect}
+          startDate={props.startDate}
         />
       )}
-      {viewType === ViewType.DAY && (
+      {props.viewType === ViewType.DAY && (
         <CalendarBodyDaily
-          columns={columns}
-          items={items}
-          startDate={startDate}
+          columns={props.columns}
           hoursOpen={hoursOpen}
-          onFieldSelect={onFieldSelect}
-          onItemSelect={onItemSelect}
-          onHeaderSelect={headerSelect}
+          isLoading={props.isLoading}
+          items={props.items}
+          onFieldSelect={props.onFieldSelect}
+          onHeaderSelect={props.headerSelect}
+          onItemSelect={props.onItemSelect}
+          startDate={props.startDate}
         />
       )}
     </CalendarBodyContainer>

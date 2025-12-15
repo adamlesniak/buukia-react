@@ -60,7 +60,7 @@ export const createAppointment = (item?: Partial<BuukiaAppointment>) => ({
   services: item?.services ? item.services : [],
 });
 
-export const createService = (item: Partial<BuukiaService>) => ({
+export const createService = (item?: Partial<BuukiaService>) => ({
   id: "",
   name: "",
   description: "",
@@ -83,7 +83,7 @@ export const createAssistant = (item?: Partial<BuukiaAssistant>) => ({
   ...item,
 });
 
-export const createClient = (item: Partial<BuukiaClient>) => ({
+export const createClient = (item?: Partial<BuukiaClient>) => ({
   id: "",
   firstName: "",
   lastName: "",

@@ -99,7 +99,9 @@ export const CalendarBodyColumnItemPrimary = styled(CalendarBodyColumnItem)`
   }
 `;
 
-export const AppointmentSlot = styled.div`
+export const AppointmentSlot = styled.div<{
+  $isLoading?: boolean;
+}>`
   position: relative;
   border-top: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
@@ -109,9 +111,20 @@ export const AppointmentSlot = styled.div`
   cursor: pointer;
   justify-content: space-between;
 
-  &:hover {
-    background: #fbfbfb;
-  }
+  ${({ $isLoading }) => {
+    if ($isLoading) {
+      return `
+        pointer-events: none;
+        background: #f9f9f9;
+      `;
+    }
+
+    return `
+      &:hover {
+        background: #fbfbfb;
+      }
+    `;
+  }}
 
   span {
     padding-right: 12px;
