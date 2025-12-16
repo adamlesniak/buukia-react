@@ -19,6 +19,7 @@ import {
   DrawerContent,
   DrawerContentHeader,
 } from "@/components/Drawer";
+import { ErrorDetail } from "@/components/Error/ErrorDetail";
 import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
 import { isoDateMatchDate } from "@/utils";
 
@@ -85,15 +86,7 @@ function RouteComponent() {
     });
 
   const isLoading = assistantLoading || servicesLoading || clientsLoading;
-  const error = assistantError || servicesError || clientsError;
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error?.message}</div>;
-  }
+  const isError = assistantError || servicesError || clientsError;
 
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
@@ -111,36 +104,43 @@ function RouteComponent() {
           </Button>
         </DrawerContentHeader>
         <DrawerContentBody>
-          <AppointmentDetail
-            appointment={
-              {
-                id: "",
-                time: new Date(Number(time)).toISOString(),
-                client: {
+          {isError && (
+            <ErrorDetail
+              message={isError?.message || t("common.unknownError")}
+            />
+          )}
+          {!isError && (
+            <AppointmentDetail
+              appointment={
+                {
                   id: "",
-                  firstName: "",
-                  lastName: "",
-                  name: "",
-                  email: "",
-                  phone: "",
-                  appointments: [],
-                },
-                services: [],
-                assistant,
-              } as BuukiaAppointment
-            }
-            services={services || []}
-            clients={clients || []}
-            onFormSubmit={onSubmit}
-            onClientSearch={(query) => {
-              console.log("search query", query);
-            }}
-            onServicesSearch={(query) => {
-              console.log("search query", query);
-            }}
-            todaysAppointments={appointmentDaysAppointments || []}
-            isLoading={isLoading}
-          />
+                  time: new Date(Number(time)).toISOString(),
+                  client: {
+                    id: "",
+                    firstName: "",
+                    lastName: "",
+                    name: "",
+                    email: "",
+                    phone: "",
+                    appointments: [],
+                  },
+                  services: [],
+                  assistant,
+                } as BuukiaAppointment
+              }
+              services={services || []}
+              clients={clients || []}
+              onFormSubmit={onSubmit}
+              onClientSearch={(query) => {
+                console.log("search query", query);
+              }}
+              onServicesSearch={(query) => {
+                console.log("search query", query);
+              }}
+              todaysAppointments={appointmentDaysAppointments || []}
+              isLoading={isLoading}
+            />
+          )}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

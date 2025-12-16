@@ -23,7 +23,7 @@ export const Route = createFileRoute(
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const { appointmentId, date } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -99,16 +99,13 @@ function RouteComponent() {
 
   const isError = servicesError || clientsError || appointmentError;
 
-  if (isError) {
-    navigate({ to: `/error` });
-  }
-
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
         <MemoizedDrawerHeaderH2
           onClose={onClose}
           title={t("appointments.appointment")}
+          label={t("common.closeDrawer")}
         />
         <DrawerContentBody>
           {isError && (

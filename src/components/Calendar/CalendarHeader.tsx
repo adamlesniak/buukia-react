@@ -100,21 +100,19 @@ export const CalendarHeader = memo(function CalendarHeader({
             <h2>{format(date, "MMMM yyyy")}</h2>
             <small>{format(date, "MMM dd, yyyy")}</small>
           </div>
-          <OutlineButton
-            aria-label={
-              viewType === ViewType.DAY
-                ? t("calendar.toggleViewWeek")
-                : t("calendar.toggleViewDay")
-            }
-            onClick={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              viewToggle && viewToggle();
-            }}
-            style={{ marginLeft: "2em" }}
-            type="button"
-          >
-            <Users size={18} />
-          </OutlineButton>
+          {viewType === ViewType.WEEK && (
+            <OutlineButton
+              aria-label={t("calendar.toggleViewDay")}
+              onClick={() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                viewToggle && viewToggle();
+              }}
+              style={{ marginLeft: "2em" }}
+              type="button"
+            >
+              <Users size={18} />
+            </OutlineButton>
+          )}
         </CalendarHeaderItem>
       </CalendarHeaderItem>
       <CalendarHeaderItem>

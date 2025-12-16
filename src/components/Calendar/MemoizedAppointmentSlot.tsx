@@ -24,6 +24,7 @@ export const MemoizedAppointmentSlot = memo(
 
     return (
       <AppointmentSlot
+        data-testid={"appointment-slot"}
         $isLoading={props.isLoading}
         onClick={($event) => {
           if (props.isLoading) {

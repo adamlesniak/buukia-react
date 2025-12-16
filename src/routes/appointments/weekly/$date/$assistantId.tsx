@@ -20,6 +20,7 @@ export const Route = createFileRoute("/appointments/weekly/$date/$assistantId")(
   },
 );
 
+// TODO: Handle error and pagination
 export function RouteComponent() {
   const { assistantId, date } = Route.useParams();
 

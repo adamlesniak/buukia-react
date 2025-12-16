@@ -4,9 +4,13 @@ import { endOfDay, startOfDay } from "date-fns";
 import { t } from "i18next";
 import { X } from "lucide-react";
 
-import { useClients, useServices, useUpdateAppointment } from "@/api";
-import { useAppointment } from "@/api/appointments";
-import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
+import {
+  useClients,
+  useServices,
+  useUpdateAppointment,
+  appointmentQueryKeys,
+  useAppointment,
+} from "@/api";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
 import { Button } from "@/components/Button";
 import {
@@ -15,6 +19,7 @@ import {
   DrawerContentBody,
   DrawerContentHeader,
 } from "@/components/Drawer";
+import { ErrorDetail } from "@/components/Error";
 import type { BuukiaAppointment, UpdateAppointmentBody } from "@/types";
 import { isoDateMatchDate } from "@/utils";
 
@@ -24,7 +29,7 @@ export const Route = createFileRoute(
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const { appointmentId, date, assistantId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -52,7 +57,7 @@ function RouteComponent() {
       (item) =>
         appointment?.time &&
         item.assistant.id === appointment?.assistant.id &&
-        isoDateMatchDate(item.time, appointment?.time)
+        isoDateMatchDate(item.time, appointment?.time),
     )
     ?.filter((item) => {
       const appointmentDate = new Date(item.time);
@@ -90,21 +95,6 @@ function RouteComponent() {
 
   const isError = servicesError || clientsError || appointmentError;
 
-  if (isLoading) {
-    return <div>{t("common.loading")}</div>;
-  }
-
-  if (isError) {
-    return (
-      <div>
-        {t("common.error")}:{" "}
-        {servicesError?.message ||
-          clientsError?.message ||
-          appointmentError?.message}
-      </div>
-    );
-  }
-
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
@@ -121,25 +111,32 @@ function RouteComponent() {
           </Button>
         </DrawerContentHeader>
         <DrawerContentBody>
-          <AppointmentDetail
-            appointment={appointment!}
-            services={services || []}
-            clients={clients || []}
-            onFormSubmit={(data) =>
-              onSubmit({
-                ...data,
-                id: appointmentId,
-              })
-            }
-            onClientSearch={(query) => {
-              console.log("search query", query);
-            }}
-            onServicesSearch={(query) => {
-              console.log("search query", query);
-            }}
-            todaysAppointments={appointmentDaysAppointments || []}
-            isLoading={isLoading}
-          />
+          {isError && (
+            <ErrorDetail
+              message={isError?.message || t("common.unknownError")}
+            />
+          )}
+          {!isError && (
+            <AppointmentDetail
+              appointment={appointment!}
+              services={services || []}
+              clients={clients || []}
+              onFormSubmit={(data) =>
+                onSubmit({
+                  ...data,
+                  id: appointmentId,
+                })
+              }
+              onClientSearch={(query) => {
+                console.log("search query", query);
+              }}
+              onServicesSearch={(query) => {
+                console.log("search query", query);
+              }}
+              todaysAppointments={appointmentDaysAppointments || []}
+              isLoading={isLoading}
+            />
+          )}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

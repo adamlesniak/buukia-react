@@ -9,8 +9,7 @@ import {
 } from "date-fns";
 import { useCallback, useMemo } from "react";
 
-import { useAppointments } from "@/api/appointments";
-import { useAssistants } from "@/api/assistants/use-assistants";
+import { useAppointments, useAssistants } from "@/api";
 import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
 import { ViewType } from "@/constants.ts";
 
@@ -18,7 +17,8 @@ export const Route = createFileRoute("/appointments/daily/$date")({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+// TODO: Handle error and pagination
+export function RouteComponent() {
   const { date } = Route.useParams();
   const navigate = useNavigate();
 
@@ -34,12 +34,12 @@ function RouteComponent() {
 
   const {
     data: assistants,
-    error: assistantsError,
+    // error: assistantsError,
     isLoading: assistantsLoading,
   } = useAssistants();
   const {
     data: appointments,
-    error: appointmentsError,
+    // error: appointmentsError,
     isLoading: appointmentsLoading,
   } = useAppointments({
     startDate: subDays(startOfDay(new Date(todaysDate)), 7).toISOString(),
@@ -111,7 +111,7 @@ function RouteComponent() {
     [assistants],
   );
 
-  const error = assistantsError || appointmentsError;
+  // const error = assistantsError || appointmentsError;
   const isLoading = assistantsLoading || appointmentsLoading;
 
   return (
@@ -124,7 +124,6 @@ function RouteComponent() {
           viewToggle={viewToggleSelect}
           viewType={ViewType.DAY}
         />
-        {error ? "error" : null}
         <CalendarBody
           columns={columns}
           endDate={endDate}

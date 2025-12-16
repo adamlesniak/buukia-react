@@ -100,6 +100,7 @@ export function Drawer(props: DrawerBodyProps) {
     <DrawerContainer $drawerPosition={props.drawer}>
       <Overlay
         $drawerPosition={props.drawer}
+        data-testid="drawer-overlay"
         onClick={() => {
           props.onOverlayClick?.();
         }}

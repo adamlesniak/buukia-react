@@ -36,10 +36,13 @@ export const CalendarBodyDaily = (props: CalendarBodyDailyProps) => {
         hoursOpen={props.hoursOpen}
       />
       {props.columns?.map((column) => (
-        <CalendarBodyColumn key={column.id}>
+        <CalendarBodyColumn
+          data-testid={column.id}
+          key={column.id}
+        >
           <MemoizedColumnHeaderDay
             columnName={column.name}
-            columnId={column.id}
+            columnId={"assistant-" + column.id}
             headerSelect={props.onHeaderSelect}
           />
           {appointmentSlotsDaily.map((slot) => {
