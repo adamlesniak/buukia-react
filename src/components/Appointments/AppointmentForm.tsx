@@ -218,6 +218,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                 <MemoizedDrawerHeaderH3
                   title={t("appointments.detail.services")}
                   onClose={modalClose}
+                  label={t("common.closeModal")}
                 />
                 <ModalBody tabIndex={-1} data-testid="services-list">
                   {props.services.map((service) => (

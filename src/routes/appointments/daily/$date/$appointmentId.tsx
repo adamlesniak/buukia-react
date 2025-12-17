@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { t } from "i18next";
 import { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useClients, useServices, useUpdateAppointment } from "@/api";
 import { useAppointment } from "@/api/appointments";
@@ -24,6 +24,7 @@ export const Route = createFileRoute(
 });
 
 export function RouteComponent() {
+  const { t } = useTranslation();
   const { appointmentId, date } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -113,7 +114,7 @@ export function RouteComponent() {
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError  && (
+          {!isError && (
             <AppointmentDetail
               appointment={appointment}
               services={services}

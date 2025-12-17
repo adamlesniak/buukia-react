@@ -22,8 +22,8 @@ vi.mock("@/api", () => ({
   useAppointments: vi.fn(),
   useAssistant: vi.fn(),
 }));
-vi.mock("i18next", () => ({
-  t: (value: string) => value,
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (value: string) => value }),
 }));
 
 // Mock TanStack Router

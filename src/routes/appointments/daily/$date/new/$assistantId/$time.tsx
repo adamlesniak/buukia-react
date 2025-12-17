@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getUnixTime, startOfDay, endOfDay } from "date-fns";
-import { t } from "i18next";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   useAssistant,
@@ -27,7 +27,8 @@ export const Route = createFileRoute(
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
+  const { t } = useTranslation();
   const { assistantId, time, date } = Route.useParams();
 
   const [unixDate, unixTime] = [
@@ -103,6 +104,7 @@ function RouteComponent() {
         <MemoizedDrawerHeaderH2
           onClose={onClose}
           title={t("appointments.appointment")}
+          label={t("common.closeDrawer")}
         />
         <DrawerContentBody>
           {isError && (

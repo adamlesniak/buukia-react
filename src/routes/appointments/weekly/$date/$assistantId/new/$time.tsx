@@ -1,8 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { endOfDay, startOfDay } from "date-fns";
-import { t } from "i18next";
-import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import {
   useAssistant,
@@ -12,12 +11,11 @@ import {
 } from "@/api";
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
-import { Button } from "@/components/Button";
 import {
   DrawerContentBody,
   Drawer,
   DrawerContent,
-  DrawerContentHeader,
+  MemoizedDrawerHeaderH2,
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error/ErrorDetail";
 import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
@@ -29,7 +27,9 @@ export const Route = createFileRoute(
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
+  const { t } = useTranslation();
+
   const { assistantId, time, date } = Route.useParams();
   const appointmentTime = new Date(Number(time)).toISOString();
   const navigate = useNavigate();
@@ -91,18 +91,11 @@ function RouteComponent() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <DrawerContentHeader>
-          <h2>{t("appointments.appointment")}</h2>
-          <Button
-            variant="transparent"
-            aria-label={t("common.closeDrawer")}
-            tabIndex={0}
-            type="button"
-            onClick={onClose}
-          >
-            <X />
-          </Button>
-        </DrawerContentHeader>
+        <MemoizedDrawerHeaderH2
+          onClose={onClose}
+          title={t("appointments.appointment")}
+          label={t("common.closeDrawer")}
+        />
         <DrawerContentBody>
           {isError && (
             <ErrorDetail

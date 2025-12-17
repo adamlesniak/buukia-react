@@ -249,7 +249,7 @@ export function Combobox(
           placeholder="Please select an item."
           type="text"
           disabled={props.disabled}
-          id="client-name-input"
+          id={inputId}
           autoComplete="off"
           name={props.name}
           onChange={props.onChange}

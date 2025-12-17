@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { endOfDay, startOfDay } from "date-fns";
-import { t } from "i18next";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import {
   useClients,
@@ -30,6 +30,7 @@ export const Route = createFileRoute(
 });
 
 export function RouteComponent() {
+  const { t } = useTranslation();
   const { appointmentId, date, assistantId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();

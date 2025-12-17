@@ -114,7 +114,7 @@ describe("AppointmentForm", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText("appointments.detail.client"),
+        screen.queryByText("appointments.detail.client"),
       ).toBeInTheDocument();
       expect(screen.queryByTestId("client-name-input")).toBeInTheDocument();
       expect(
@@ -323,7 +323,7 @@ describe("AppointmentForm", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByLabelText("appointments.detail.client"),
+          screen.queryByText("appointments.detail.client"),
         ).toBeInTheDocument();
         expect(
           screen.queryByTestId("client-name-input")?.querySelector("input"),

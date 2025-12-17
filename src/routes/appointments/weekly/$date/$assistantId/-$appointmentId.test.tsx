@@ -22,13 +22,16 @@ vi.mock("@/api", () => ({
   useUpdateAppointment: vi.fn(),
   appointmentQueryKeys: vi.fn(),
 }));
-vi.mock("i18next", () => ({
-  t: (value: string) => value,
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (value: string) => value }),
 }));
 
 // Mock TanStack Router
 const mockNavigate = vi.fn();
 const mockUseParams = vi.fn();
+const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
+  onSuccess();
+});
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => mockNavigate,
@@ -63,6 +66,7 @@ const mockUseUpdateAppointment = useUpdateAppointment as unknown as ReturnType<
 const mockAppointmentQueryKeys = appointmentQueryKeys as unknown as ReturnType<
   typeof vi.fn
 >;
+
 
 // Import the component after mocking
 const { RouteComponent } = await import("./$appointmentId");
@@ -109,10 +113,10 @@ describe("weekly/$assistantId/$appointmentId", () => {
       error: null,
       isLoading: false,
     });
-    mockUseUpdateAppointment.mockReturnValue({
-      mutateAsync: vi.fn(),
-    });
     mockAppointmentQueryKeys.mockReturnValue({ all: "appointments-all" });
+    mockUseUpdateAppointment.mockReturnValue({
+      mutate: mockMutate,
+    });
   });
 
   describe("Drawer", () => {
