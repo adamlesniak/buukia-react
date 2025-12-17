@@ -27,8 +27,8 @@ export const AppointmentDetail = memo(function AppointmentDetail(
 ) {
   const formValues: AppointmentFormValues = useMemo(
     () => ({
-      assistantName: props.appointment?.assistant.name || "",
-      clientName: props.appointment?.client.name || "",
+      assistantName: props.appointment?.assistant?.name || "",
+      clientName: props.appointment?.client?.name || "",
       time: format(props.appointment?.time ? new Date(props.appointment.time) : new Date(), "PPpp"),
       services: props.appointment?.services || [],
     }),

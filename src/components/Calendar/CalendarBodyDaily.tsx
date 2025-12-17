@@ -43,7 +43,7 @@ export const CalendarBodyDaily = (props: CalendarBodyDailyProps) => {
           <MemoizedColumnHeaderDay
             columnName={column.name}
             columnId={"assistant-" + column.id}
-            headerSelect={props.onHeaderSelect}
+            headerSelect={() => props.onHeaderSelect?.(column.id)}
           />
           {appointmentSlotsDaily.map((slot) => {
             const matchedAppointment = props.items.find((appointment) => {

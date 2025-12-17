@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { format } from "date-fns/format";
 
 import {
   useAppointment,
@@ -12,7 +13,7 @@ import {
 import type { BuukiaAppointment, BuukiaClient, BuukiaService } from "@/types";
 import { createAssistant, createClient, createService } from "@/utils";
 
-import data from "../../../../data.json";
+import data from "../../routes/data.json";
 
 // Mock the API hooks
 vi.mock("@/api", () => ({
@@ -32,6 +33,7 @@ const mockUseParams = vi.fn();
 const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
   onSuccess();
 });
+const mockRouterState = vi.fn().mockReturnValue("daily");
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => mockNavigate,
@@ -42,6 +44,7 @@ vi.mock("@tanstack/react-router", () => ({
   }),
   Outlet: () => <div data-testid="outlet" />,
   lazyRouteComponent: vi.fn(),
+  useRouterState: mockRouterState,
 }));
 
 // Create test data
@@ -67,9 +70,8 @@ const mockAppointmentQueryKeys = appointmentQueryKeys as unknown as ReturnType<
   typeof vi.fn
 >;
 
-
 // Import the component after mocking
-const { RouteComponent } = await import("./$appointmentId");
+const EditAppointment = await import("./EditAppointment");
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,6 +91,8 @@ describe("weekly/$assistantId/$appointmentId", () => {
     vi.setSystemTime(date);
 
     mockNavigate.mockClear();
+    mockMutate.mockClear();
+    mockRouterState.mockClear();
 
     // Mock route params
     mockUseParams.mockReturnValue({
@@ -113,17 +117,17 @@ describe("weekly/$assistantId/$appointmentId", () => {
       error: null,
       isLoading: false,
     });
-    mockAppointmentQueryKeys.mockReturnValue({ all: "appointments-all" });
     mockUseUpdateAppointment.mockReturnValue({
       mutate: mockMutate,
     });
+    mockAppointmentQueryKeys.mockReturnValue({ all: "appointments-all" });
   });
 
   describe("Drawer", () => {
     it("should render header title", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <EditAppointment.default />
         </QueryClientProvider>,
       );
 
@@ -133,7 +137,7 @@ describe("weekly/$assistantId/$appointmentId", () => {
     it("should render header title with functional close button", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <EditAppointment.default />
         </QueryClientProvider>,
       );
 
@@ -142,14 +146,14 @@ describe("weekly/$assistantId/$appointmentId", () => {
       await user.click(closeButton);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/appointments/weekly/1765670400000/${mockAppointment.assistant.id}`,
+        to: `/appointments/daily/1765670400000`,
       });
     });
 
     it("should ensure that overlay has functional close button", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <EditAppointment.default />
         </QueryClientProvider>,
       );
 
@@ -158,7 +162,7 @@ describe("weekly/$assistantId/$appointmentId", () => {
       await user.click(overlay);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/appointments/weekly/1765670400000/${mockAppointment.assistant.id}`,
+        to: `/appointments/daily/1765670400000`,
       });
     });
 
@@ -171,7 +175,7 @@ describe("weekly/$assistantId/$appointmentId", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <EditAppointment.default />
         </QueryClientProvider>,
       );
 
@@ -187,7 +191,7 @@ describe("weekly/$assistantId/$appointmentId", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <EditAppointment.default />
         </QueryClientProvider>,
       );
 
@@ -203,11 +207,106 @@ describe("weekly/$assistantId/$appointmentId", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <EditAppointment.default />
         </QueryClientProvider>,
       );
 
       expect(await screen.findByText("error.message")).toBeInTheDocument();
+    });
+
+    it("should populate form with expected values", async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <EditAppointment.default />
+        </QueryClientProvider>,
+      );
+
+      const timeInputElement = await (screen.queryByTestId(
+        "time-input",
+      ) as HTMLInputElement);
+      const assistantNameInputElement = await (screen.queryByTestId(
+        "assistant-name-input",
+      ) as HTMLInputElement);
+      const submitButton = (await screen.queryByText(
+        "common.submit",
+      )) as HTMLElement;
+      const elements = await screen.queryAllByTestId("services-list-item");
+
+      await user.click(submitButton);
+
+      expect(elements.length).toEqual(mockAppointment.services.length);
+      expect(assistantNameInputElement).toHaveValue(
+        mockAppointment.assistant.name,
+      );
+      expect(timeInputElement).toHaveValue(
+        format(new Date(mockAppointment.time), "PPpp"),
+      );
+    });
+
+    it("should redirect to daily view after successful appointment creation", async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <EditAppointment.default />
+        </QueryClientProvider>,
+      );
+
+      const button = screen.queryByText("common.submit");
+
+      if (!button) {
+        throw new Error("Button not found");
+      }
+
+      await user.click(button!);
+
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: `/appointments/daily/1765670400000`,
+      });
+      expect(mockMutate).toHaveBeenCalledWith(
+        {
+          id: mockAppointment.id,
+          assistantId: "3b5d8fda-f136-4696-b91d-4d3f28d4a9f9",
+          clientId: "0105b195-3533-4be8-a143-8f8d53b4bce7",
+          serviceIds: ["0f15e666-855d-4dfe-ae57-b925cee00452"],
+          time: "2025-12-15T10:00:00.000Z",
+        },
+        {
+          onSuccess: expect.any(Function),
+        },
+      );
+    });
+
+    it("should redirect to weekly view after successful appointment creation", async () => {
+      mockRouterState.mockReturnValueOnce("weekly");
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <EditAppointment.default />
+        </QueryClientProvider>,
+      );
+
+      const button = screen.queryByText("common.submit");
+
+      if (!button) {
+        throw new Error("Button not found");
+      }
+
+      await user.click(button!);
+
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: `/appointments/weekly/1765670400000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9`,
+      });
+      expect(mockMutate).toHaveBeenCalledWith(
+        {
+          id: mockAppointment.id,
+          assistantId: "3b5d8fda-f136-4696-b91d-4d3f28d4a9f9",
+          clientId: "0105b195-3533-4be8-a143-8f8d53b4bce7",
+          serviceIds: ["0f15e666-855d-4dfe-ae57-b925cee00452"],
+          time: "2025-12-15T10:00:00.000Z",
+        },
+        {
+          onSuccess: expect.any(Function),
+        },
+      );
     });
   });
 });

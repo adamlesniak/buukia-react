@@ -12,6 +12,7 @@ import {
 } from "@/api";
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
+import EditAppointment from "@/components/Appointments/EditAppointment";
 import {
   DrawerContentBody,
   Drawer,
@@ -24,7 +25,7 @@ import type { BuukiaAppointment, CreateAppointmentBody } from "@/types";
 export const Route = createFileRoute(
   "/appointments/daily/$date/new/$assistantId/$time",
 )({
-  component: RouteComponent,
+  component: EditAppointment,
 });
 
 export function RouteComponent() {

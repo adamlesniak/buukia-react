@@ -66,7 +66,7 @@ export const handlers = [
 
     const filteredAppointments = Array.from(appointments.values()).filter(
       (appointment) => {
-        if (assistantId && appointment.assistant.id !== assistantId) {
+        if (assistantId && appointment?.assistant?.id !== assistantId) {
           return false;
         }
 

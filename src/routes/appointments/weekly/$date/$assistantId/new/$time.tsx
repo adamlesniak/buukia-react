@@ -11,6 +11,7 @@ import {
 } from "@/api";
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import { AppointmentDetail } from "@/components/Appointments/AppointmentDetail";
+import EditAppointment from "@/components/Appointments/EditAppointment";
 import {
   DrawerContentBody,
   Drawer,
@@ -24,7 +25,7 @@ import { isoDateMatchDate } from "@/utils";
 export const Route = createFileRoute(
   "/appointments/weekly/$date/$assistantId/new/$time",
 )({
-  component: RouteComponent,
+  component: EditAppointment,
 });
 
 export function RouteComponent() {
