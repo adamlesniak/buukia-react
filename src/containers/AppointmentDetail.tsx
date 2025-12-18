@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouterState } from "@tanstack/react-router";
-import { getUnixTime } from "date-fns";
+import { format, getUnixTime } from "date-fns";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +13,9 @@ import {
   useCreateAppointment,
   useAssistant,
 } from "@/api";
+import { AppointmentForm } from "@/components/Appointments/AppointmentForm";
 import type {
+  AppointmentFormValues,
   BuukiaAppointment,
   CreateAppointmentBody,
   UpdateAppointmentBody,
@@ -25,12 +27,11 @@ import {
   DrawerContent,
   DrawerContentBody,
   MemoizedDrawerHeaderH2,
-} from "../Drawer";
-import { ErrorDetail } from "../Error";
+} from "../components/Drawer";
+import { ErrorDetail } from "../components/Error";
 
-import { AppointmentDetail } from "./AppointmentDetail";
 
-export default function EditAppointment() {
+export default function AppointmentDetail() {
   const { t } = useTranslation();
   const {
     appointmentId,
@@ -174,6 +175,19 @@ export default function EditAppointment() {
   const isError =
     servicesError || clientsError || appointmentError || assistantError;
 
+  const formValues: AppointmentFormValues = useMemo(
+    () => ({
+      assistantName: appointment?.assistant?.name || "",
+      clientName: appointment?.client?.name || "",
+      time: format(
+        appointment?.time ? new Date(appointment.time) : new Date(),
+        "PPpp",
+      ),
+      services: appointment?.services || [],
+    }),
+    [appointment?.id],
+  );
+
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
@@ -188,14 +202,16 @@ export default function EditAppointment() {
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && !isLoading && (
-            <AppointmentDetail
-              appointment={appointment}
+          {!isError && (
+            <AppointmentForm
+              appointmentId={appointment?.id || ""}
+              values={formValues}
+              assistantId={appointment?.assistant?.id || ""}
               services={services}
               clients={clients}
-              onFormSubmit={submit}
-              onClientSearch={clientsSearch}
+              onClientsSearch={clientsSearch}
               onServicesSearch={servicesSearch}
+              onSubmit={submit}
               todaysAppointments={todaysAppointments}
               isLoading={isLoading}
             />

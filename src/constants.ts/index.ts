@@ -4,3 +4,5 @@ export enum ViewType {
 }
 
 export const STALE_TIME = 5 * 60 * 1000; // 5 minutes
+
+export const MAX_ASSISTANTS = 4;

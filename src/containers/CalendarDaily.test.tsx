@@ -1,29 +1,18 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { RouteComponent } from "@tanstack/react-router";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  addDays,
-  addHours,
-  addMinutes,
-  differenceInDays,
-  differenceInHours,
-  format,
-} from "date-fns";
+import { addHours, addMinutes, differenceInHours } from "date-fns";
 
-import { useAppointments, useAssistant } from "@/api";
-import type { BuukiaAppointment } from "@/types";
+import { useAppointments, useAssistants } from "@/api";
+import type { BuukiaAppointment, BuukiaAssistant } from "@/types";
 import { createAssistant, createClient, createService } from "@/utils";
 
-import data from "../../../../routes/data.json";
+import data from "../routes/data.json";
 
 // Mock the API hooks
 vi.mock("@/api", () => ({
   useAppointments: vi.fn(),
-  useAssistant: vi.fn(),
-}));
-vi.mock("react-i18next", () => ({
-  useTranslation: () => ({ t: (value: string) => value }),
+  useAssistants: vi.fn(),
 }));
 
 // Mock TanStack Router
@@ -38,28 +27,36 @@ vi.mock("@tanstack/react-router", () => ({
     options,
   }),
   Outlet: () => <div data-testid="outlet" />,
-  lazyRouteComponent: vi.fn(),
+  lazy: vi.fn(),
+}));
+vi.mock("i18next", () => ({
+  t: (value: string) => value,
 }));
 
 // Create test data
-const mockAssistant = createAssistant(data.assistants[0]);
+const mockAssistants: BuukiaAssistant[] = [
+  createAssistant(data.assistants[0]),
+  createAssistant(data.assistants[1]),
+  createAssistant(data.assistants[2]),
+  createAssistant(data.assistants[3]),
+];
 const mockAppointments: BuukiaAppointment[] = [
   {
     id: "appointmentId",
-    time: "2025-12-15T10:00:00.000Z",
-    assistant: mockAssistant,
+    time: "2025-12-14T10:00:00.000Z",
+    assistant: mockAssistants[0],
     client: createClient(data.clients[0]),
     services: [createService(data.services[0])],
   },
 ];
 
-const mockUseAssistant = useAssistant as unknown as ReturnType<typeof vi.fn>;
+const mockUseAssistants = useAssistants as unknown as ReturnType<typeof vi.fn>;
 const mockUseAppointments = useAppointments as unknown as ReturnType<
   typeof vi.fn
 >;
 
 // Import the component after mocking
-const { RouteComponent } = await import("./$assistantId");
+const CalendarDaily = await import("./CalendarDaily");
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,7 +67,7 @@ const queryClient = new QueryClient({
 
 const user = userEvent.setup();
 
-describe("weekly/$date/$assistantId", () => {
+describe("daily/$date", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -82,13 +79,12 @@ describe("weekly/$date/$assistantId", () => {
 
     // Mock route params
     mockUseParams.mockReturnValue({
-      assistantId: mockAssistant.id,
       date: String(new Date("2025-12-14").getTime()),
     });
 
     // Default mock implementations
-    mockUseAssistant.mockReturnValue({
-      data: mockAssistant,
+    mockUseAssistants.mockReturnValue({
+      data: mockAssistants,
       error: null,
       isLoading: false,
     });
@@ -104,7 +100,7 @@ describe("weekly/$date/$assistantId", () => {
     it("should render the header", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
@@ -114,7 +110,7 @@ describe("weekly/$date/$assistantId", () => {
     it("should render the header with dates", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
@@ -122,34 +118,34 @@ describe("weekly/$date/$assistantId", () => {
       expect(await screen.findByText("Dec 14, 2025")).toBeInTheDocument();
     });
 
-    it("should render the header with weekly title", async () => {
+    it("should render the header with daily title", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
       expect(
-        await screen.findByText("calendar.teamWeekView"),
+        await screen.findByText("calendar.teamDayView"),
       ).toBeInTheDocument();
     });
 
     it("should render two functional buttons that act as next and previous", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
       const previousButton = await screen.findByLabelText(
-        "calendar.previousWeek",
+        "calendar.previousDay",
       );
-      const nextButton = await screen.findByLabelText("calendar.nextWeek");
+      const nextButton = await screen.findByLabelText("calendar.nextDay");
 
       await user.click(previousButton);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/weekly/1765062000000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
+        to: "/appointments/daily/1765580400000/",
       });
 
       await user.click(nextButton);
@@ -158,25 +154,7 @@ describe("weekly/$date/$assistantId", () => {
       expect(nextButton).toBeInTheDocument();
       expect(mockNavigate).toHaveBeenCalledTimes(2);
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/weekly/1766271600000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
-      });
-    });
-
-    it("should render two functional button that toggles between day and week", async () => {
-      render(
-        <QueryClientProvider client={queryClient}>
-          <RouteComponent />
-        </QueryClientProvider>,
-      );
-
-      const toggleButton = await screen.findByLabelText(
-        "calendar.toggleViewDay",
-      );
-
-      await user.click(toggleButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/daily/1765666800000/",
+        to: "/appointments/daily/1765753200000/",
       });
     });
   });
@@ -185,7 +163,7 @@ describe("weekly/$date/$assistantId", () => {
     it("should render the calendar body", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
@@ -195,7 +173,7 @@ describe("weekly/$date/$assistantId", () => {
     it("should render column with time", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
@@ -211,34 +189,27 @@ describe("weekly/$date/$assistantId", () => {
       }
     });
 
-    it("should render upcoming week days", async () => {
+    it("should render assistants as header", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
-      const [startDate, endDate] = [
-        addMinutes(addHours(new Date("2025-12-14"), 8), 0),
-        addDays(addMinutes(addHours(new Date("2025-12-14"), 21), 0), 7),
-      ];
-
-      const daysDiff = differenceInDays(endDate, startDate);
-
-      for (let i = 0; i < daysDiff; i++) {
-        await screen.findByText(format(addDays(startDate, i), "EEE"));
+      for (const assistant of mockAssistants) {
+        await screen.findByText(assistant.initials);
       }
     });
 
     it("should ensure that each column has 4 rows per hour for 15-minute intervals", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
       const slots = (
-        await screen.findByTestId("date-2025-12-14")
+        await screen.findByTestId(mockAssistants[0].id)
       ).querySelectorAll("[data-testid='appointment-slot']");
 
       const [startDate, endDate] = [
@@ -254,7 +225,7 @@ describe("weekly/$date/$assistantId", () => {
     it("should render available appointments", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <CalendarDaily.default />
         </QueryClientProvider>,
       );
 
@@ -270,25 +241,25 @@ describe("weekly/$date/$assistantId", () => {
       it("should navigate to new appointment page on empty slot click", async () => {
         render(
           <QueryClientProvider client={queryClient}>
-            <RouteComponent />
+            <CalendarDaily.default />
           </QueryClientProvider>,
         );
 
         const emptySlot = (
-          await screen.findByTestId("date-2025-12-16")
+          await screen.findByTestId(`${mockAssistants[0].id}`)
         ).querySelectorAll("div")[2]; // First slot of the day
 
         await user.click(emptySlot!);
 
         expect(mockNavigate).toHaveBeenCalledWith({
-          to: `/appointments/weekly/1765666800000/${mockAssistant.id}/new/1765868400000/`,
+          to: `/appointments/daily/1765666800000/new/${mockAssistants[0].id}/1765695600000/`,
         });
       });
 
-      it("should redirect to appointment page on appoitment click", async () => {
+      it("should redirect to appointment page on appointment click", async () => {
         render(
           <QueryClientProvider client={queryClient}>
-            <RouteComponent />
+            <CalendarDaily.default />
           </QueryClientProvider>,
         );
 
@@ -299,7 +270,7 @@ describe("weekly/$date/$assistantId", () => {
         await user.click(appointmentElement);
 
         expect(mockNavigate).toHaveBeenCalledWith({
-          to: `/appointments/weekly/1765666800000/${mockAssistant.id}/appointmentId/`,
+          to: `/appointments/daily/1765666800000/appointmentId/`,
         });
       });
     });

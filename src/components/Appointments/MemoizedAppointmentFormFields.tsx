@@ -4,14 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import type { AppointmentFormValues, BuukiaClient } from "@/types";
 
-import {
-  Combobox,
-  Field,
-  FieldError,
-  Input,
-  Label,
-  Fieldset,
-} from "../Form";
+import { Combobox, Field, FieldError, Input, Label, Fieldset } from "../Form";
 
 export type MemoizedAppointmentFormFieldsProps = {
   register: UseFormRegister<AppointmentFormValues>;
@@ -34,6 +27,7 @@ export const MemoizedAppointmentFormFields = memo(
             id="assistant-name-input"
             type="text"
             data-testid="assistant-name-input"
+            placeholder={t("common.loading")}
             disabled
           />
         </Field>

@@ -1,25 +1,29 @@
-import { QueryClient } from "@tanstack/query-core";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { format } from "date-fns/format";
 
 import {
-  useAssistant,
+  useAppointment,
   useServices,
   useClients,
+  useUpdateAppointment,
+  appointmentQueryKeys,
   useCreateAppointment,
 } from "@/api";
-import type { BuukiaAssistant, BuukiaClient, BuukiaService } from "@/types";
+import type { BuukiaAppointment, BuukiaClient, BuukiaService } from "@/types";
 import { createAssistant, createClient, createService } from "@/utils";
 
-import data from "../../../../../data.json";
+import data from "../routes/data.json";
 
 // Mock the API hooks
 vi.mock("@/api", () => ({
-  useAssistant: vi.fn(),
+  useAppointment: vi.fn(),
   useServices: vi.fn(),
   useClients: vi.fn(),
   useCreateAppointment: vi.fn(),
+  useUpdateAppointment: vi.fn(),
+  appointmentQueryKeys: vi.fn(),
 }));
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (value: string) => value }),
@@ -28,6 +32,10 @@ vi.mock("react-i18next", () => ({
 // Mock TanStack Router
 const mockNavigate = vi.fn();
 const mockUseParams = vi.fn();
+const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
+  onSuccess();
+});
+const mockRouterState = vi.fn().mockReturnValue("daily");
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => mockNavigate,
@@ -38,24 +46,37 @@ vi.mock("@tanstack/react-router", () => ({
   }),
   Outlet: () => <div data-testid="outlet" />,
   lazyRouteComponent: vi.fn(),
+  useRouterState: mockRouterState,
 }));
 
 // Create test data
-const mockAssistant: BuukiaAssistant = createAssistant(data.assistants[0]);
+const mockAppointment: BuukiaAppointment = {
+  id: "appointmentId",
+  time: "2025-12-15T10:00:00.000Z",
+  assistant: createAssistant(data.assistants[0]),
+  client: createClient(data.clients[0]),
+  services: [createService(data.services[0])],
+};
 const mockServices: BuukiaService[] = [createService(data.services[0])];
 const mockClients: BuukiaClient[] = [createClient(data.clients[0])];
 
-const mockUseAssistant = useAssistant as unknown as ReturnType<typeof vi.fn>;
+const mockUseAppointment = useAppointment as unknown as ReturnType<
+  typeof vi.fn
+>;
 const mockUseServices = useServices as unknown as ReturnType<typeof vi.fn>;
 const mockUseClients = useClients as unknown as ReturnType<typeof vi.fn>;
+const mockUseUpdateAppointment = useUpdateAppointment as unknown as ReturnType<
+  typeof vi.fn
+>;
 const mockUseCreateAppointment = useCreateAppointment as unknown as ReturnType<
   typeof vi.fn
 >;
-const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
-  onSuccess();
-});
+const mockAppointmentQueryKeys = appointmentQueryKeys as unknown as ReturnType<
+  typeof vi.fn
+>;
 
-const { RouteComponent } = await import("./$time");
+// Import the component after mocking
+const AppointmentDetail = await import("./AppointmentDetail");
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,7 +87,7 @@ const queryClient = new QueryClient({
 
 const user = userEvent.setup();
 
-describe("daily/new/$assistantId/$time", () => {
+describe("weekly/$assistantId/$appointmentId", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -74,19 +95,20 @@ describe("daily/new/$assistantId/$time", () => {
 
     vi.setSystemTime(date);
 
-    mockMutate.mockClear();
     mockNavigate.mockClear();
+    mockMutate.mockClear();
+    mockRouterState.mockClear();
 
     // Mock route params
     mockUseParams.mockReturnValue({
-      assistantId: mockAssistant.id,
+      appointmentId: mockAppointment.id,
       date: String(new Date("2025-12-14").getTime()),
-      time: String(new Date("2025-12-14").getTime()),
+      assistantId: mockAppointment.assistant.id,
     });
 
     // Default mock implementations
-    mockUseAssistant.mockReturnValue({
-      data: mockAssistant,
+    mockUseAppointment.mockReturnValue({
+      data: mockAppointment,
       error: null,
       isLoading: false,
     });
@@ -100,16 +122,20 @@ describe("daily/new/$assistantId/$time", () => {
       error: null,
       isLoading: false,
     });
+    mockUseUpdateAppointment.mockReturnValue({
+      mutate: mockMutate,
+    });
     mockUseCreateAppointment.mockReturnValue({
       mutate: mockMutate,
     });
+    mockAppointmentQueryKeys.mockReturnValue({ all: "appointments-all" });
   });
 
   describe("Drawer", () => {
     it("should render header title", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
 
@@ -119,7 +145,7 @@ describe("daily/new/$assistantId/$time", () => {
     it("should render header title with functional close button", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
 
@@ -135,7 +161,7 @@ describe("daily/new/$assistantId/$time", () => {
     it("should ensure that overlay has functional close button", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
 
@@ -148,16 +174,16 @@ describe("daily/new/$assistantId/$time", () => {
       });
     });
 
-    it("should display error when there is an assistant error", async () => {
-      mockUseAssistant.mockReturnValueOnce({
+    it("should display error when there is an appointment error", async () => {
+      mockUseAppointment.mockReturnValueOnce({
         data: null,
-        error: new Error("Assistant error"),
+        error: new Error("Appointment error"),
         isLoading: false,
       });
 
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
 
@@ -173,7 +199,7 @@ describe("daily/new/$assistantId/$time", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
 
@@ -189,88 +215,48 @@ describe("daily/new/$assistantId/$time", () => {
 
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
 
       expect(await screen.findByText("error.message")).toBeInTheDocument();
     });
 
-    it("should render form with expected values", async () => {
+    it("should populate form with expected values", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
 
-      const element = await (screen.queryByTestId(
+      const timeInputElement = await (screen.queryByTestId(
         "time-input",
       ) as HTMLInputElement);
-
-      expect(
-        await screen.queryByText("appointments.detail.assistantName"),
-      ).toBeInTheDocument();
-      expect(
-        await screen.queryByText("appointments.detail.time"),
-      ).toBeInTheDocument();
-      expect(
-        await screen.queryByText("appointments.detail.client"),
-      ).toBeInTheDocument();
-
-      expect(element).toHaveValue("Dec 14, 2025, 1:00:00 AM");
-    });
-
-    it("should render form with expected values and show errors when its not completed", async () => {
-      render(
-        <QueryClientProvider client={queryClient}>
-          <RouteComponent />
-        </QueryClientProvider>,
-      );
-
-      const element = await (screen.queryByTestId(
-        "time-input",
+      const assistantNameInputElement = await (screen.queryByTestId(
+        "assistant-name-input",
       ) as HTMLInputElement);
-
       const submitButton = (await screen.queryByText(
         "common.submit",
       )) as HTMLElement;
+      const elements = await screen.queryAllByTestId("services-list-item");
 
       await user.click(submitButton);
 
-      expect(
-        await screen.queryByText("appointments.form.errors.clientNameError"),
-      ).toBeInTheDocument();
-      expect(
-        await screen.queryByText("appointments.form.errors.servicesError"),
-      ).toBeInTheDocument();
-      expect(element).toHaveValue("Dec 14, 2025, 1:00:00 AM");
+      expect(elements.length).toEqual(mockAppointment.services.length);
+      expect(assistantNameInputElement).toHaveValue(
+        mockAppointment.assistant.name,
+      );
+      expect(timeInputElement).toHaveValue(
+        format(new Date(mockAppointment.time), "PPpp"),
+      );
     });
 
     it("should redirect to daily view after successful appointment creation", async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <RouteComponent />
+          <AppointmentDetail.default />
         </QueryClientProvider>,
       );
-
-      // Select client
-      const clientInput = (
-        await screen.findByTestId("client-name-input")
-      ).querySelectorAll("input")[0] as HTMLInputElement;
-
-      await user.click(clientInput);
-
-      const clientOption = await screen.findByText(`${mockClients[0].name}`);
-
-      await user.click(clientOption);
-
-      // Select service
-      await user.click(screen.getByText("appointments.detail.addService"));
-
-      const item = screen.queryAllByTestId("services-list-item")[0];
-      const serviceAddButton = item.querySelector("button");
-
-      await user.click(serviceAddButton!);
 
       const button = screen.queryByText("common.submit");
 
@@ -285,10 +271,45 @@ describe("daily/new/$assistantId/$time", () => {
       });
       expect(mockMutate).toHaveBeenCalledWith(
         {
+          id: mockAppointment.id,
           assistantId: "3b5d8fda-f136-4696-b91d-4d3f28d4a9f9",
           clientId: "0105b195-3533-4be8-a143-8f8d53b4bce7",
           serviceIds: ["0f15e666-855d-4dfe-ae57-b925cee00452"],
-          time: "2025-12-14T00:00:00.000Z",
+          time: "2025-12-15T10:00:00.000Z",
+        },
+        {
+          onSuccess: expect.any(Function),
+        },
+      );
+    });
+
+    it("should redirect to weekly view after successful appointment creation", async () => {
+      mockRouterState.mockReturnValueOnce("weekly");
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AppointmentDetail.default />
+        </QueryClientProvider>,
+      );
+
+      const button = screen.queryByText("common.submit");
+
+      if (!button) {
+        throw new Error("Button not found");
+      }
+
+      await user.click(button!);
+
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: `/appointments/weekly/1765670400000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9`,
+      });
+      expect(mockMutate).toHaveBeenCalledWith(
+        {
+          id: mockAppointment.id,
+          assistantId: "3b5d8fda-f136-4696-b91d-4d3f28d4a9f9",
+          clientId: "0105b195-3533-4be8-a143-8f8d53b4bce7",
+          serviceIds: ["0f15e666-855d-4dfe-ae57-b925cee00452"],
+          time: "2025-12-15T10:00:00.000Z",
         },
         {
           onSuccess: expect.any(Function),

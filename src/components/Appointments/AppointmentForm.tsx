@@ -57,7 +57,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
     formState: { errors },
   } = useForm<AppointmentFormValues>({
     resolver: validateResolver(appointmentFormSchema),
-    defaultValues: {
+    values: {
       ...props.values,
     },
   });
