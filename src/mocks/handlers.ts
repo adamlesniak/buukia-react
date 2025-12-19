@@ -9,9 +9,7 @@ import type {
   CreateAppointmentBody,
   UpdateAppointmentBody,
 } from "@/types";
-import { isoDateMatchDate } from "@/utils";
 
-import { createAppointment } from "../../scripts/mocks";
 import data from "../routes/data.json";
 
 // Account Wide
@@ -60,17 +58,43 @@ export const handlers = [
   http.get("/api/appointments", async ({ request }) => {
     const url = new URL(request.url);
 
-    const date = url.searchParams.get("date");
+    const [assistantId, startDate, endDate] = [
+      url.searchParams.get("assistantId"),
+      url.searchParams.get("startDate"),
+      url.searchParams.get("endDate"),
+    ];
 
-    if (date) {
-      const filteredAppointments = data.appointments.filter((appointment) =>
-        isoDateMatchDate(appointment.time, date),
-      );
+    const filteredAppointments = Array.from(appointments.values()).filter(
+      (appointment) => {
+        if (assistantId && appointment?.assistant?.id !== assistantId) {
+          return false;
+        }
 
-      return HttpResponse.json(filteredAppointments);
-    }
+        if (startDate) {
+          const start = new Date(startDate);
+          const appointmentDate = new Date(appointment.time);
+          if (appointmentDate < start) {
+            return false;
+          }
+        }
 
-    return HttpResponse.json(data.appointments);
+        if (endDate) {
+          const end = new Date(endDate);
+          const appointmentDate = new Date(appointment.time);
+          if (appointmentDate > end) {
+            return false;
+          }
+        }
+
+        return true;
+      },
+    );
+
+    return HttpResponse.json(
+      filteredAppointments.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      }),
+    );
   }),
 
   http.get("/api/appointments/:id", (req) => {
@@ -109,10 +133,9 @@ export const handlers = [
         }
       }
 
-      const item = createAppointment();
       const appointment = {
-        ...item,
         id,
+        time: body.time,
         assistant: assistants.get(body.assistantId),
         client: clients.get(body.clientId),
         services: body.serviceIds
@@ -144,7 +167,8 @@ export const handlers = [
         }
       }
 
-      const item = createAppointment();
+      const item = appointments.get(body.id);
+
       const appointment = {
         ...item,
         id: body.id,
@@ -173,9 +197,18 @@ export const handlers = [
   }),
 
   http.get("/api/clients", ({ request }) => {
-    const limitParam = new URL(request.url).searchParams.get("limit");
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
     const limit = limitParam ? parseInt(limitParam, 10) : undefined;
-    return HttpResponse.json(Array.from(clients.values()).slice(0, limit));
+    return HttpResponse.json(
+      Array.from(clients.values())
+        .filter((client) =>
+          client.name.toLowerCase().includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
   }),
   http.get("/api/clients/:id", (req) => {
     const { id } = req.params as { id: string };

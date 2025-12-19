@@ -3,11 +3,14 @@ import path from "node:path";
 
 import { faker } from "@faker-js/faker";
 import {
+  addDays,
   addHours,
   addMinutes,
+  differenceInDays,
   differenceInHours,
   roundToNearestMinutes,
   startOfDay,
+  subDays,
 } from "date-fns";
 import prettier from "prettier";
 
@@ -115,7 +118,6 @@ export const createClient = (): BuukiaClient => {
   };
 };
 
-
 export const createAppointment = (): BuukiaAppointment => {
   return {
     id: faker.string.uuid(),
@@ -128,10 +130,15 @@ export const createAppointment = (): BuukiaAppointment => {
       { nearestTo: 15 },
     ).toISOString(),
     client: createClient(),
-    services: [...new Map(Array.from({ length: faker.number.int({ min: 1, max: 2 }) }).map(() => {
-      const service = services[faker.number.int({ min: 0, max: services.length - 1 })];
-      return [service.id, service];
-    })).values()],
+    services: [
+      ...new Map(
+        Array.from({ length: faker.number.int({ min: 1, max: 2 }) }).map(() => {
+          const service =
+            services[faker.number.int({ min: 0, max: services.length - 1 })];
+          return [service.id, service];
+        }),
+      ).values(),
+    ],
   };
 };
 
@@ -140,10 +147,14 @@ const [assistants, clients]: [BuukiaAssistant[], BuukiaClient[]] = [
   Array.from({ length: 20 }).map(() => createClient()),
 ];
 
-const startDate = addMinutes(addHours(startOfDay(new Date()), 8), 0);
-const endDate = addMinutes(addHours(startOfDay(new Date()), 21), 0);
+const dayStartDate = addMinutes(addHours(startOfDay(new Date()), 8), 0);
+const dayEndDate = addMinutes(addHours(startOfDay(new Date()), 21), 0);
 
-const hoursDiff = -differenceInHours(startDate, endDate);
+const weekStartDate = subDays(dayStartDate, 7);
+const weekEndDate = addDays(dayStartDate, 7);
+
+const hoursDiff = differenceInHours(dayEndDate, dayStartDate);
+const daysDiff = differenceInDays(weekEndDate, weekStartDate);
 
 const [appointments, todaysAppointments]: [
   BuukiaAppointment[],
@@ -155,17 +166,27 @@ const [appointments, todaysAppointments]: [
       assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
     client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
   })),
-  Array.from({ length: hoursDiff }).map((_, index) => {
-    return {
-      ...createAppointment(),
-      assistant:
-        assistants[faker.number.int({ min: 0, max: assistants.length - 1 })],
-      client: clients[faker.number.int({ min: 0, max: clients.length - 1 })],
-      time: roundToNearestMinutes(addHours(startDate, index), {
-        nearestTo: 15,
-      }).toISOString(),
-    };
-  }),
+  Array.from({ length: daysDiff })
+    .map((_, indexDay) =>
+      Array.from({ length: hoursDiff }).map((_, index) => {
+        return {
+          ...createAppointment(),
+          assistant:
+            assistants[
+              faker.number.int({ min: 0, max: assistants.length - 1 })
+            ],
+          client:
+            clients[faker.number.int({ min: 0, max: clients.length - 1 })],
+          time: roundToNearestMinutes(
+            addHours(addDays(weekStartDate, indexDay), index),
+            {
+              nearestTo: 15,
+            },
+          ).toISOString(),
+        };
+      }),
+    )
+    .flat(),
 ];
 
 const main = async (): Promise<void> => {

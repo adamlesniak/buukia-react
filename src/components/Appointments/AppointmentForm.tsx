@@ -1,112 +1,31 @@
-import { PlusIcon, X, XIcon } from "lucide-react";
-import { useState, useMemo } from "react";
+// import { useQueryClient } from "@tanstack/react-query";
+import debounce from "debounce";
+import { LoaderCircle, Search } from "lucide-react";
+import { useState, useMemo, memo, useCallback } from "react";
 import { FocusScope } from "react-aria";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 
-import { useServices } from "@/api/services";
-import { useCreateAppointment } from "@/api/services/use-create-appointment";
-import type {
-  BuukiaClient,
-  BuukiaService,
-  CreateAppointmentBody,
+import {
+  type BuukiaAppointment,
+  type BuukiaClient,
+  type BuukiaService,
+  type CreateAppointmentBody,
 } from "@/types";
+// import { createCurrentAppointment, updateExistingAppointment } from "@/utils";
+import { appointmentFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
-import { Combobox, Field, Form, Input, Label } from "../Form";
+import { MemoizedDrawerHeaderH3 } from "../Drawer";
+import { Field, FieldError, Form, Input, Label } from "../Form";
+import { SearchInput } from "../Form/SearchInput";
+import { Overlay, Modal, ModalBody } from "../Modal";
+import { ServicesContainer } from "../Services";
+import { MemoizedServiceCard } from "../Services/MemoizedServiceCard";
 
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-`;
-
-const Modal = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 1px solid #f4f4f4;
-  margin-bottom: 16px;
-  padding-bottom: 4px;
-`;
-
-const ModalBody = styled.div`
-  max-height: 400px;
-  overflow-y: auto;
-`;
-
-const Item = styled.div`
-  padding: 10px;
-  border: 1px solid #f4f4f4;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 12px;
-  margin: 12px 0px;
-  margin-top: 0px;
-`;
-
-const ItemBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-right: 24px;
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 0px;
-  }
-`;
-
-const ServicesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-  flex: 1;
-`;
-
-const Fieldset = styled.fieldset`
-  border: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-`;
-
-const FormSummary = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 16px;
-  justify-content: end;
-  border-top: 1px solid #f4f4f4;
-`;
-
-const FormSummaryItem = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 8px 0px;
-`;
+import { MemoizedAppointmentFormFields } from "./MemoizedAppointmentFormFields";
+import { MemoizedAppointmentFormSummary } from "./MemoizedAppointmentFormSummary";
 
 type AppointmentFormValues = {
   assistantName: string;
@@ -117,26 +36,41 @@ type AppointmentFormValues = {
 
 type AppointmentFormProps = {
   values: AppointmentFormValues;
+  appointmentId: string;
   assistantId: string;
   services: BuukiaService[];
   clients: BuukiaClient[];
+  todaysAppointments: BuukiaAppointment[];
+  isLoading: boolean;
+  clientsRefetching: boolean;
+  servicesRefetching: boolean;
   onClientsSearch: (query: string) => void;
-  onSubmit: (data: AppointmentFormValues) => void;
+  onServicesSearch: (query: string) => void;
+  onSubmit: (data: CreateAppointmentBody) => void;
 };
 
-export function AppointmentForm(props: AppointmentFormProps) {
+export const AppointmentForm = memo((props: AppointmentFormProps) => {
   const { t } = useTranslation();
+
   const [showModal, setShowModal] = useState(false);
-  const { register, handleSubmit, setValue, watch } =
-    useForm<AppointmentFormValues>({
-      defaultValues: {
-        ...props.values,
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    getValues,
+    formState: { errors },
+  } = useForm<AppointmentFormValues>({
+    resolver: validateResolver(appointmentFormSchema),
+    values: {
+      ...props.values,
+    },
+  });
 
-  const { data: services = [] } = useServices();
-
-  const createAppointmentMutation = useCreateAppointment();
+  const servicesChangeDebounce = debounce(
+    (value: string) => props.onServicesSearch?.(value),
+    1000,
+  );
 
   const currentServices = watch("services") || [];
   const [servicesIds, servicesPriceSum, servicesDurationSum] = [
@@ -154,6 +88,62 @@ export function AppointmentForm(props: AppointmentFormProps) {
     ),
   ];
 
+  // const queryClient = useQueryClient();
+  // const isExistingAppointment = props.appointmentId && props.appointmentId.length > 0;
+
+  // // Add opened appointment to calendar view.
+  // if (!isExistingAppointment) {
+  //   const setCurrentAppointment = useCallback(() => {
+  //     createCurrentAppointment(
+  //       queryClient,
+  //       props.assistantId,
+  //       getValues("clientName"),
+  //       getValues("time"),
+  //       servicesDurationSum,
+  //     );
+  //   }, [watch("clientName"), watch("services")]);
+
+  //   setCurrentAppointment();
+  // } else {
+  //   const updateCachedAppointment = useCallback(() => {
+  //     updateExistingAppointment(
+  //       queryClient,
+  //       props.appointmentId,
+  //       props.assistantId,
+  //       getValues("clientName"),
+  //       getValues("time"),
+  //       servicesDurationSum,
+  //     );
+  //   }, [watch("clientName"), watch("services")]);
+
+  //   updateCachedAppointment();
+  // }
+
+  const serviceAdd = (service: BuukiaService) => {
+    setValue("services", [...currentServices, service], {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
+
+  const serviceRemove = (serviceId: string) => {
+    setValue(
+      "services",
+      currentServices.filter((s) => s.id !== serviceId),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      },
+    );
+  };
+
+  const modalClose = useCallback(
+    () => setShowModal(false),
+    [props.appointmentId],
+  );
+
   const onSubmit = (data: AppointmentFormValues) => {
     const client = props.clients.find(
       (client) => client.name === data.clientName,
@@ -168,102 +158,71 @@ export function AppointmentForm(props: AppointmentFormProps) {
     const body: CreateAppointmentBody = {
       assistantId: props.assistantId,
       clientId: client.id,
-      time: data.time,
+      time: new Date(data.time).toISOString(),
       serviceIds: data.services.map((service) => service.id),
     };
 
-    createAppointmentMutation.mutate(body);
+    props.onSubmit(body);
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <Fieldset>
-        <Field>
-          <Label id={"assistant-name-label"} htmlFor="assistant-name-input">
-            {t("appointments.detail.assistantName")}
-          </Label>
-          <Input
-            {...register("assistantName", { required: true })}
-            id="assistant-name-input"
-            type="text"
-            data-testid="assistant-name-input"
-            disabled
+    <>
+      <Form data-testid="appointment-form" onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <MemoizedAppointmentFormFields
+            register={register}
+            errors={errors}
+            clients={props.clients}
+            isLoading={props.isLoading}
+            clientsSearch={props.onClientsSearch}
+            clientsLoading={props.clientsRefetching}
           />
-        </Field>
 
-        <Field>
-          <Label id={"time-input-label"} htmlFor="time-input">
-            {t("appointments.detail.time")}
-          </Label>
-          <Input
-            {...register("time", { required: true })}
-            id="time-input"
-            name="time"
-            type="text"
-            data-testid="time-input"
-            disabled
-          />
-        </Field>
-
-        <Field>
-          <Label id={"client-name-label"} htmlFor="client-name-input">
-            {t("appointments.detail.client")}
-          </Label>
-          <Combobox
-            {...register("clientName", { required: true })}
-            id="client-name-input"
-            data-testid="client-name-input"
-            valueKey="name"
-            items={props.clients}
-          ></Combobox>
-        </Field>
-
-        <Field>
-          <Label>{t("appointments.detail.service")}</Label>
-          <Button
-            size="sm"
-            tabIndex={0}
-            onClick={() => {
-              setShowModal((showModal) => !showModal);
-            }}
-            type="button"
-          >
-            {t("appointments.detail.addService")}
-          </Button>
-
-          <hr />
-        </Field>
-      </Fieldset>
-
-      <ServicesContainer>
-        {currentServices.map((service) => (
-          <Item data-testid="services-container-list-item" key={service.id}>
-            <ItemBody>
-              <h3>
-                {service.name} ({service.duration}
-                {t("common.min")})
-              </h3>
-              <p>{service.description}</p>
-              <b>€{service.price}</b>
-            </ItemBody>
-
+          <Field>
+            <Label>{t("appointments.detail.service")}</Label>
             <Button
               size="sm"
               tabIndex={0}
               onClick={() => {
-                setValue(
-                  "services",
-                  currentServices.filter((s) => s.id !== service.id),
-                );
+                setShowModal((showModal) => !showModal);
               }}
               type="button"
+              disabled={props.isLoading}
             >
-              <XIcon />
+              {t("appointments.detail.addService")}
             </Button>
-          </Item>
-        ))}
-      </ServicesContainer>
+            <hr />
+          </Field>
+        </div>
 
+        <ServicesContainer data-testid="services-container-list">
+          {errors.services && (
+            <FieldError $textAlign="center" role="alert">
+              {t(`${errors.services.message}`)}
+            </FieldError>
+          )}
+          {currentServices.map((service) => (
+            <MemoizedServiceCard
+              key={service.id}
+              service={service}
+              servicesIds={servicesIds}
+              servicesDurationSum={servicesDurationSum}
+              appointmentId={props.appointmentId}
+              time={getValues("time")}
+              todaysAppointments={props.todaysAppointments}
+              onServiceAdd={serviceAdd}
+              onServiceRemove={serviceRemove}
+              data-testid="services-container-list-item"
+            />
+          ))}
+        </ServicesContainer>
+
+        <MemoizedAppointmentFormSummary
+          disabled={props.isLoading}
+          servicesDurationSum={servicesDurationSum}
+          servicesPriceSum={servicesPriceSum}
+        />
+      </Form>
       {showModal &&
         createPortal(
           <Overlay onClick={() => setShowModal(false)}>
@@ -275,58 +234,44 @@ export function AppointmentForm(props: AppointmentFormProps) {
               data-testid="services-modal"
             >
               <FocusScope autoFocus restoreFocus contain>
-                <ModalHeader>
-                  <h3>{t("appointments.detail.services")}</h3>
-                  <Button
-                    variant="transparent"
-                    onClick={() => setShowModal(false)}
-                    aria-label={t("common.closeModal")}
-                    tabIndex={0}
-                    type="button"
-                  >
-                    <X />
-                  </Button>
-                </ModalHeader>
+                <MemoizedDrawerHeaderH3
+                  title={t("appointments.detail.services")}
+                  onClose={modalClose}
+                  label={t("common.closeModal")}
+                />
                 <ModalBody tabIndex={-1} data-testid="services-list">
-                  {services.map((service) => (
-                    <Item data-testid="services-list-item" key={service.id}>
-                      <ItemBody>
-                        <h3>
-                          {service.name} ({service.duration}min)
-                        </h3>
-                        <p>{service.description}</p>
-                        <b>€{service.price}</b>
-                      </ItemBody>
-                      {!servicesIds.includes(service.id) && (
-                        <Button
-                          size="sm"
-                          tabIndex={0}
-                          onClick={() => {
-                            setValue("services", [...currentServices, service]);
-                          }}
-                          type="button"
-                        >
-                          <PlusIcon />
-                        </Button>
-                      )}
-                      {servicesIds.includes(service.id) && (
-                        <Button
-                          size="sm"
-                          tabIndex={0}
-                          onClick={() => {
-                            setValue(
-                              "services",
-                              currentServices.filter(
-                                (s) => s.id !== service.id,
-                              ),
-                            );
-                          }}
-                          type="button"
-                        >
-                          <XIcon />
-                        </Button>
-                      )}
-                    </Item>
+                  <SearchInput data-testid="search">
+                    {props.servicesRefetching ? (
+                      <LoaderCircle size={20} />
+                    ) : (
+                      <Search size={20} />
+                    )}
+                    <Input
+                      type="text"
+                      id={"services-search-input"}
+                      aria-autocomplete="none"
+                      aria-label={t("common.search")}
+                      autoComplete="off"
+                      tabIndex={0}
+                      onChange={($event) => {
+                        servicesChangeDebounce($event.target.value);
+                        $event.preventDefault();
+                        $event.stopPropagation();
+                      }}
+                    />
+                  </SearchInput>
+                  {props.services.map((service) => (
+                    <MemoizedServiceCard
+                      key={service.id}
+                      service={service}
+                      servicesIds={servicesIds}
+                      servicesDurationSum={servicesDurationSum}
+                      appointmentId={props.appointmentId}
+                      time={getValues("time")}
+                      todaysAppointments={props.todaysAppointments}
+                      onServiceAdd={serviceAdd}
+                      onServiceRemove={serviceRemove}
+                    />
                   ))}
                 </ModalBody>
               </FocusScope>
@@ -334,22 +279,6 @@ export function AppointmentForm(props: AppointmentFormProps) {
           </Overlay>,
           document.body,
         )}
-
-      <FormSummary>
-        <FormSummaryItem data-testid="form-duration">
-          <span>{t("appointments.detail.totalDuration")}</span>
-          <b>
-            {servicesDurationSum} {t("common.min")}
-          </b>
-        </FormSummaryItem>
-        <FormSummaryItem data-testid="form-price">
-          <span>{t("appointments.detail.totalPrice")}</span>
-          <b>€{servicesPriceSum}</b>
-        </FormSummaryItem>
-        <Button size="sm" tabIndex={0} type="submit">
-          {t("common.submit")}
-        </Button>
-      </FormSummary>
-    </Form>
+    </>
   );
-}
+});

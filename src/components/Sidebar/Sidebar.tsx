@@ -1,6 +1,3 @@
-import { useRouterState } from "@tanstack/react-router";
-import { startOfDay } from "date-fns";
-import { getUnixTime } from "date-fns/getUnixTime";
 import {
   Banknote,
   Bell,
@@ -46,9 +43,6 @@ const SidebarFixed = styled.div`
 `;
 
 export function Sidebar() {
-  const selected = useRouterState({
-    select: (state) => state.location.href,
-  });
   const { t } = useTranslation();
 
   return (
@@ -72,13 +66,9 @@ export function Sidebar() {
           <span>{t("nav.dashboard")}</span>
         </SidebarMenuItem>
         <SidebarMenuItem
-          to={`/appointments/daily/$date`}
+          to={`/appointments`}
           activeOptions={{ exact: false }}
           key={t("nav.appointments")}
-          className={selected.includes("/appointments/") ? "active" : ""}
-          params={
-            { date: getUnixTime(startOfDay(new Date())).toString() } as never
-          }
         >
           <ClipboardClock size={24} />
           <span>{t("nav.appointments")}</span>

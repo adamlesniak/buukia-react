@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -54,7 +55,7 @@ type CalendarHeaderProps = {
   viewType: ViewType;
 };
 
-export function CalendarHeader({
+export const CalendarHeader = memo(function CalendarHeader({
   date,
   nextDaySelect,
   previousDaySelect,
@@ -64,15 +65,33 @@ export function CalendarHeader({
   const { t } = useTranslation();
 
   return (
-    <CalendarHeaderContainer>
+    <CalendarHeaderContainer data-testid="calendar-header">
       <CalendarHeaderItem>
         {previousDaySelect && (
-          <Button type="button" onClick={() => previousDaySelect?.(date)}>
+          <Button
+            aria-label={
+              viewType === ViewType.DAY
+                ? t("calendar.previousDay")
+                : t("calendar.previousWeek")
+            }
+            data-testid="calendar-header-button-previous"
+            type="button"
+            onClick={() => previousDaySelect?.(date)}
+          >
             <ChevronLeft />
           </Button>
         )}
         {nextDaySelect && (
-          <Button type="button" onClick={() => nextDaySelect?.(date)}>
+          <Button
+            aria-label={
+              viewType === ViewType.DAY
+                ? t("calendar.nextDay")
+                : t("calendar.nextWeek")
+            }
+            data-testid="calendar-header-button-next"
+            type="button"
+            onClick={() => nextDaySelect?.(date)}
+          >
             <ChevronRight />
           </Button>
         )}
@@ -81,23 +100,28 @@ export function CalendarHeader({
             <h2>{format(date, "MMMM yyyy")}</h2>
             <small>{format(date, "MMM dd, yyyy")}</small>
           </div>
-          <OutlineButton
-            onClick={() => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              viewToggle && viewToggle();
-            }}
-            style={{ marginLeft: "2em" }}
-            type="button"
-          >
-            <Users size={18} />
-          </OutlineButton>
+          {viewType === ViewType.WEEK && (
+            <OutlineButton
+              aria-label={t("calendar.toggleViewDay")}
+              onClick={() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                viewToggle && viewToggle();
+              }}
+              style={{ marginLeft: "2em" }}
+              type="button"
+            >
+              <Users size={18} />
+            </OutlineButton>
+          )}
         </CalendarHeaderItem>
       </CalendarHeaderItem>
       <CalendarHeaderItem>
-        {viewType === ViewType.DAY
-          ? <h2>{t("calendar.teamDayView")}</h2>
-          : <h2>{t("calendar.teamWeekView")}</h2>}
+        {viewType === ViewType.DAY ? (
+          <h2>{t("calendar.teamDayView")}</h2>
+        ) : (
+          <h2>{t("calendar.teamWeekView")}</h2>
+        )}
       </CalendarHeaderItem>
     </CalendarHeaderContainer>
   );
-}
+});
