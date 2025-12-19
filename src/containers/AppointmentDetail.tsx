@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouterState } from "@tanstack/react-router";
 import { format, getUnixTime } from "date-fns";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -30,7 +30,6 @@ import {
 } from "../components/Drawer";
 import { ErrorDetail } from "../components/Error";
 
-
 export default function AppointmentDetail() {
   const { t } = useTranslation();
   const {
@@ -49,10 +48,12 @@ export default function AppointmentDetail() {
   const selected = useRouterState({
     select: (state) => state.location.href,
   });
-  const isNew = selected.includes("new");
+  const isNew = !appointmentId;
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [clientsQuery, setClientsQuery] = useState("");
+  const [servicesQuery, setServicesQuery] = useState("");
 
   const [createAppointment, updateAppointment] = [
     useCreateAppointment(),
@@ -97,12 +98,16 @@ export default function AppointmentDetail() {
     data: services = [],
     error: servicesError,
     isLoading: servicesLoading,
-  } = useServices();
+    refetch: refetchServices,
+    isRefetching: servicesIsRefetching,
+  } = useServices({ limit: 100, query: servicesQuery });
   const {
     data: clients = [],
     error: clientsError,
     isLoading: clientsLoading,
-  } = useClients({ limit: 100 });
+    refetch: refetchClients,
+    isRefetching: clientsIsRefetching,
+  } = useClients({ limit: 100, query: clientsQuery });
 
   const todaysAppointments = useMemo(
     () =>
@@ -134,7 +139,7 @@ export default function AppointmentDetail() {
       navigate({ to: `/appointments/daily/${date}` });
     } else {
       navigate({
-        to: `/appointments/weekly/${date}/${appointment?.assistant.id}`,
+        to: `/appointments/weekly/${date}/${assistantId}`,
       });
     }
   };
@@ -161,13 +166,21 @@ export default function AppointmentDetail() {
     [appointmentId],
   );
 
-  const clientsSearch = useCallback((query: string) => {
-    console.log("search query", query);
-  }, []);
+  const clientsSearch = (query: string) => {
+    setClientsQuery(query);
+  };
 
-  const servicesSearch = useCallback((query: string) => {
-    console.log("search query", query);
-  }, []);
+  useEffect(() => {
+    refetchClients();
+  }, [clientsQuery]);
+
+  const servicesSearch = (query: string) => {
+    setServicesQuery(query);
+  };
+
+  useEffect(() => {
+    refetchServices();
+  }, [servicesQuery]);
 
   const isLoading =
     servicesLoading || clientsLoading || appointmentLoading || assistantLoading;
@@ -185,7 +198,7 @@ export default function AppointmentDetail() {
       ),
       services: appointment?.services || [],
     }),
-    [appointment?.id],
+    [appointment?.id, assistant?.id],
   );
 
   return (
@@ -214,6 +227,8 @@ export default function AppointmentDetail() {
               onSubmit={submit}
               todaysAppointments={todaysAppointments}
               isLoading={isLoading}
+              clientsRefetching={clientsIsRefetching}
+              servicesRefetching={servicesIsRefetching}
             />
           )}
         </DrawerContentBody>

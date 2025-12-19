@@ -1,4 +1,6 @@
 // import { useQueryClient } from "@tanstack/react-query";
+import debounce from "debounce";
+import { LoaderCircle, Search } from "lucide-react";
 import { useState, useMemo, memo, useCallback } from "react";
 import { FocusScope } from "react-aria";
 import { createPortal } from "react-dom";
@@ -16,7 +18,8 @@ import { appointmentFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
 import { MemoizedDrawerHeaderH3 } from "../Drawer";
-import { Field, FieldError, Form, Label } from "../Form";
+import { Field, FieldError, Form, Input, Label } from "../Form";
+import { SearchInput } from "../Form/SearchInput";
 import { Overlay, Modal, ModalBody } from "../Modal";
 import { ServicesContainer } from "../Services";
 import { MemoizedServiceCard } from "../Services/MemoizedServiceCard";
@@ -39,6 +42,8 @@ type AppointmentFormProps = {
   clients: BuukiaClient[];
   todaysAppointments: BuukiaAppointment[];
   isLoading: boolean;
+  clientsRefetching: boolean;
+  servicesRefetching: boolean;
   onClientsSearch: (query: string) => void;
   onServicesSearch: (query: string) => void;
   onSubmit: (data: CreateAppointmentBody) => void;
@@ -61,6 +66,11 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
       ...props.values,
     },
   });
+
+  const servicesChangeDebounce = debounce(
+    (value: string) => props.onServicesSearch?.(value),
+    1000,
+  );
 
   const currentServices = watch("services") || [];
   const [servicesIds, servicesPriceSum, servicesDurationSum] = [
@@ -156,54 +166,63 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
   };
 
   return (
-    <Form data-testid="appointment-form" onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <MemoizedAppointmentFormFields
-          register={register}
-          errors={errors}
-          clients={props.clients}
-          isLoading={props.isLoading}
-        />
-
-        <Field>
-          <Label>{t("appointments.detail.service")}</Label>
-          <Button
-            size="sm"
-            tabIndex={0}
-            onClick={() => {
-              setShowModal((showModal) => !showModal);
-            }}
-            type="button"
-            disabled={props.isLoading}
-          >
-            {t("appointments.detail.addService")}
-          </Button>
-          <hr />
-        </Field>
-      </div>
-
-      <ServicesContainer data-testid="services-container-list">
-        {errors.services && (
-          <FieldError $textAlign="center" role="alert">
-            {t(`${errors.services.message}`)}
-          </FieldError>
-        )}
-        {currentServices.map((service) => (
-          <MemoizedServiceCard
-            key={service.id}
-            service={service}
-            servicesIds={servicesIds}
-            servicesDurationSum={servicesDurationSum}
-            appointmentId={props.appointmentId}
-            time={getValues("time")}
-            todaysAppointments={props.todaysAppointments}
-            onServiceAdd={serviceAdd}
-            onServiceRemove={serviceRemove}
-            data-testid="services-container-list-item"
+    <>
+      <Form data-testid="appointment-form" onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <MemoizedAppointmentFormFields
+            register={register}
+            errors={errors}
+            clients={props.clients}
+            isLoading={props.isLoading}
+            clientsSearch={props.onClientsSearch}
+            clientsLoading={props.clientsRefetching}
           />
-        ))}
-      </ServicesContainer>
 
+          <Field>
+            <Label>{t("appointments.detail.service")}</Label>
+            <Button
+              size="sm"
+              tabIndex={0}
+              onClick={() => {
+                setShowModal((showModal) => !showModal);
+              }}
+              type="button"
+              disabled={props.isLoading}
+            >
+              {t("appointments.detail.addService")}
+            </Button>
+            <hr />
+          </Field>
+        </div>
+
+        <ServicesContainer data-testid="services-container-list">
+          {errors.services && (
+            <FieldError $textAlign="center" role="alert">
+              {t(`${errors.services.message}`)}
+            </FieldError>
+          )}
+          {currentServices.map((service) => (
+            <MemoizedServiceCard
+              key={service.id}
+              service={service}
+              servicesIds={servicesIds}
+              servicesDurationSum={servicesDurationSum}
+              appointmentId={props.appointmentId}
+              time={getValues("time")}
+              todaysAppointments={props.todaysAppointments}
+              onServiceAdd={serviceAdd}
+              onServiceRemove={serviceRemove}
+              data-testid="services-container-list-item"
+            />
+          ))}
+        </ServicesContainer>
+
+        <MemoizedAppointmentFormSummary
+          disabled={props.isLoading}
+          servicesDurationSum={servicesDurationSum}
+          servicesPriceSum={servicesPriceSum}
+        />
+      </Form>
       {showModal &&
         createPortal(
           <Overlay onClick={() => setShowModal(false)}>
@@ -221,6 +240,26 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                   label={t("common.closeModal")}
                 />
                 <ModalBody tabIndex={-1} data-testid="services-list">
+                  <SearchInput data-testid="search">
+                    {props.servicesRefetching ? (
+                      <LoaderCircle size={20} />
+                    ) : (
+                      <Search size={20} />
+                    )}
+                    <Input
+                      type="text"
+                      id={"services-search-input"}
+                      aria-autocomplete="none"
+                      aria-label={t("common.search")}
+                      autoComplete="off"
+                      tabIndex={0}
+                      onChange={($event) => {
+                        servicesChangeDebounce($event.target.value);
+                        $event.preventDefault();
+                        $event.stopPropagation();
+                      }}
+                    />
+                  </SearchInput>
                   {props.services.map((service) => (
                     <MemoizedServiceCard
                       key={service.id}
@@ -240,12 +279,6 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
           </Overlay>,
           document.body,
         )}
-
-      <MemoizedAppointmentFormSummary
-        disabled={props.isLoading}
-        servicesDurationSum={servicesDurationSum}
-        servicesPriceSum={servicesPriceSum}
-      />
-    </Form>
+    </>
   );
 });

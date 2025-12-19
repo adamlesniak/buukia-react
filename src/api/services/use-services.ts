@@ -1,28 +1,37 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import queryString from "query-string";
 
 import { STALE_TIME } from "@/constants.ts";
 import type { BuukiaService } from "@/types";
 
 import { serviceQueryKeys } from "./services-query-keys";
 
-export const useServices = () => {
+interface useServicesParams {
+  limit: number;
+  query: string;
+}
+
+export const useServices = (params: useServicesParams) => {
   const queryClient = useQueryClient();
 
-  const { isLoading, error, data, isFetching } = useQuery<BuukiaService[]>({
-    queryKey: serviceQueryKeys.all,
-    queryFn: async () => {
-      const response = await fetch(`/api/services`);
+  const { isLoading, error, data, isFetching, refetch, isRefetching } =
+    useQuery<BuukiaService[]>({
+      queryKey: serviceQueryKeys.all,
+      queryFn: async () => {
+        const response = await fetch(
+          `/api/services?${queryString.stringify(params)}`,
+        );
 
-      const result = await response.json();
+        const result = await response.json();
 
-      for (const item of result) {
-        queryClient.setQueryData(serviceQueryKeys.detail(item.id), item);
-      }
+        for (const item of result) {
+          queryClient.setQueryData(serviceQueryKeys.detail(item.id), item);
+        }
 
-      return result;
-    },
-    staleTime: STALE_TIME,
-  });
+        return result;
+      },
+      staleTime: STALE_TIME,
+    });
 
-  return { isLoading, error, data, isFetching };
+  return { isLoading, error, data, isFetching, refetch, isRefetching };
 };

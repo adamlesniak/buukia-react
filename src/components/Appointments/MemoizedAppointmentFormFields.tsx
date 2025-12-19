@@ -10,6 +10,8 @@ export type MemoizedAppointmentFormFieldsProps = {
   register: UseFormRegister<AppointmentFormValues>;
   errors: FieldErrors<AppointmentFormValues>;
   clients: BuukiaClient[];
+  clientsSearch: (query: string) => void;
+  clientsLoading: boolean;
   isLoading: boolean;
 };
 
@@ -57,6 +59,9 @@ export const MemoizedAppointmentFormFields = memo(
             valueKey="name"
             items={props.clients}
             disabled={props.isLoading}
+            onSearchChange={props.clientsSearch}
+            loading={props.clientsLoading}
+            search={true}
           ></Combobox>
           {props.errors.clientName && (
             <FieldError role="alert">

@@ -116,11 +116,13 @@ describe("weekly/$assistantId/$appointmentId", () => {
       data: mockServices,
       error: null,
       isLoading: false,
+      refetch: vi.fn(),
     });
     mockUseClients.mockReturnValue({
       data: mockClients,
       error: null,
       isLoading: false,
+      refetch: vi.fn(),
     });
     mockUseUpdateAppointment.mockReturnValue({
       mutate: mockMutate,
@@ -195,6 +197,7 @@ describe("weekly/$assistantId/$appointmentId", () => {
         data: null,
         error: new Error("Services error"),
         isLoading: false,
+        refetch: vi.fn(),
       });
 
       render(
@@ -211,6 +214,7 @@ describe("weekly/$assistantId/$appointmentId", () => {
         data: null,
         error: new Error("Clients error"),
         isLoading: false,
+        refetch: vi.fn(),
       });
 
       render(

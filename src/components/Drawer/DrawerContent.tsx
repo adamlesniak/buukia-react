@@ -39,11 +39,11 @@ export function DrawerContent(props: DrawerContentProps) {
   );
 
   return (
-    <FocusScope contain restoreFocus autoFocus>
-      <DrawerContentContainer>
+    <DrawerContentContainer>
+      <FocusScope autoFocus restoreFocus contain>
         {DrawerContentHeaderChildren}
         {DrawerContentBodyChildren}
-      </DrawerContentContainer>
-    </FocusScope>
+      </FocusScope>
+    </DrawerContentContainer>
   );
 }

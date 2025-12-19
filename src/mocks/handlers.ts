@@ -90,9 +90,11 @@ export const handlers = [
       },
     );
 
-    return HttpResponse.json(filteredAppointments.sort((a, b) => {
-      return new Date(a.time).getTime() - new Date(b.time).getTime();
-    }));
+    return HttpResponse.json(
+      filteredAppointments.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      }),
+    );
   }),
 
   http.get("/api/appointments/:id", (req) => {
@@ -195,9 +197,18 @@ export const handlers = [
   }),
 
   http.get("/api/clients", ({ request }) => {
-    const limitParam = new URL(request.url).searchParams.get("limit");
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
     const limit = limitParam ? parseInt(limitParam, 10) : undefined;
-    return HttpResponse.json(Array.from(clients.values()).slice(0, limit));
+    return HttpResponse.json(
+      Array.from(clients.values())
+        .filter((client) =>
+          client.name.toLowerCase().includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
   }),
   http.get("/api/clients/:id", (req) => {
     const { id } = req.params as { id: string };

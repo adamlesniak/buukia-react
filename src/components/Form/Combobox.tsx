@@ -1,4 +1,5 @@
-import { ChevronDown, Search } from "lucide-react";
+import debounce from "debounce";
+import { ChevronDown, LoaderCircle, Search } from "lucide-react";
 import {
   useId,
   useRef,
@@ -8,10 +9,13 @@ import {
   type DetailedHTMLProps,
   type InputHTMLAttributes,
   type RefCallback,
+  type ChangeEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { Input } from "./Input";
+import { SearchInput } from "./SearchInput";
 
 const StyledCombobox = styled.div`
   display: flex;
@@ -60,23 +64,9 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
   }
 `;
 
-const StyledComboboxSearch = styled.div`
-  display: flex;
-  flex-direction: row;
-  font-size: 14px;
+const StyledComboboxSearch = styled(SearchInput)`
+  border: 0px;
   border-bottom: 1px solid #e0e0e0;
-
-  svg {
-    padding: 8px;
-  }
-
-  input {
-    margin: 0px;
-    padding: 8px;
-    border: 0px;
-    outline: none;
-    flex: 1;
-  }
 `;
 
 const StyledComboboxContainerInput = styled.div<{ $disabled?: boolean }>`
@@ -119,6 +109,7 @@ type ComboboxProps = {
   children?: React.ReactNode;
   onSearchChange?: (value: string) => void;
   items: { id: string; name: string }[];
+  limitItemsDisplay?: number;
   loading?: boolean;
   search?: boolean;
   /**
@@ -134,10 +125,18 @@ export function Combobox(
   props: ComboboxProps &
     DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
 ) {
+  const { t } = useTranslation();
+
+  const itemsDisplayLimit = props.limitItemsDisplay || 10;
   const itemsRef = useRef<HTMLLIElement[]>([]);
   const comboboxContainerRef = useRef<HTMLDivElement>(null);
   const comboboxContainerInputRef = useRef<HTMLInputElement>(null);
   const inputSearchRef = useRef<HTMLInputElement>(null);
+
+  const searchChangeDebounce = debounce(
+    (value: string) => props.onSearchChange?.(value),
+    1000,
+  );
 
   const [activeItem, setActiveItem] = useState<number>(0);
   const [inputId, listBoxId] = [useId(), useId()];
@@ -246,12 +245,20 @@ export function Combobox(
           }
           aria-haspopup="listbox"
           role="combobox"
-          placeholder="Please select an item."
+          placeholder={t("common.selectAnItem")}
           type="text"
           disabled={props.disabled}
           id={inputId}
           autoComplete="off"
           name={props.name}
+          onKeyDown={($event) => {
+            if ($event.key === "Tab") {
+              return false;
+            }
+
+            $event.stopPropagation();
+            $event.preventDefault();
+          }}
           onChange={props.onChange}
           onBlur={props.onBlur}
           ref={(el) => {
@@ -268,12 +275,16 @@ export function Combobox(
         >
           {props.search && (
             <StyledComboboxSearch data-testid="search">
-              <Search size={20} />
+              {props.loading ? (
+                <LoaderCircle size={20} />
+              ) : (
+                <Search size={20} />
+              )}
               <Input
                 type="text"
                 id={inputId}
                 aria-autocomplete="none"
-                aria-label={"Search"}
+                aria-label={t("common.search")}
                 autoComplete="off"
                 role={"combobox"}
                 tabIndex={0}
@@ -286,9 +297,10 @@ export function Combobox(
                   ) {
                     handleDropdownSelection($event);
                   }
-
+                }}
+                onChange={($event: ChangeEvent<HTMLInputElement>) => {
                   if (props.onSearchChange) {
-                    props.onSearchChange($event.currentTarget.value);
+                    searchChangeDebounce($event.target.value);
                   }
                 }}
                 onBlur={() => setIsOpen(false)}
@@ -296,8 +308,17 @@ export function Combobox(
             </StyledComboboxSearch>
           )}
 
-          <ul id={listBoxId} aria-label={"Dropdown items"} role="listbox">
-            {props.items.map((item, i) => (
+          <ul
+            id={listBoxId}
+            aria-label={t("common.dropdownItems")}
+            role="listbox"
+          >
+            {props.items.length === 0 && (
+              <li role="option" key={"no-results"}>
+                {t("common.noResults")}
+              </li>
+            )}
+            {props.items.slice(0, itemsDisplayLimit).map((item, i) => (
               <li
                 ref={(el) => {
                   if (el) {

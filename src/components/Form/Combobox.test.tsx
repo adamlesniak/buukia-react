@@ -29,7 +29,7 @@ describe("Combobox Component", () => {
   it("renders initial prompt", () => {
     render(<Combobox valueKey="name" items={mockItems} />);
 
-    const inputElement = screen.getByPlaceholderText("Please select an item.");
+    const inputElement = screen.getByPlaceholderText("common.selectAnItem");
 
     expect(inputElement).toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe("Combobox Component", () => {
     await user.click(item);
 
     expect(dropdown).not.toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Please select an item.")).toHaveValue(
+    expect(screen.getByPlaceholderText("common.selectAnItem")).toHaveValue(
       item.textContent || "",
     );
   });

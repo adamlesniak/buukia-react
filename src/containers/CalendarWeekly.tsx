@@ -8,7 +8,7 @@ import {
   startOfWeek,
   startOfDay,
 } from "date-fns";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useAppointments } from "@/api";
 import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
@@ -26,7 +26,7 @@ export default function CalendarWeekly() {
   });
 
   const weeksDate = getUnixTime(startOfWeek(new Date(Number(date)))) * 1000;
-  console.log('weeksDate', date);
+
   const [todaysDate, prevWeekStart, nextWeekStart] = [
     getUnixTime(startOfDay(new Date().getTime())) * 1000,
     getUnixTime(subDays(weeksDate, 7)) * 1000,
@@ -60,10 +60,13 @@ export default function CalendarWeekly() {
   //   return <div>Loading...</div>;
   // }
 
-  const [startDate, endDate] = [
-    addMinutes(addHours(weeksDate, 8), 0),
-    addMinutes(addHours(weeksDate, 21), 0),
-  ];
+  const [startDate, endDate] = useMemo(
+    () => [
+      addMinutes(addHours(weeksDate, 8), 0),
+      addMinutes(addHours(weeksDate, 21), 0),
+    ],
+    [date],
+  );
 
   const previousDaySelect = useCallback(() => {
     navigate({
@@ -101,16 +104,20 @@ export default function CalendarWeekly() {
     [weeksDate, assistantId, navigate],
   );
 
-  const columns = Array.from({ length: 7 }).map((_) => ({
-    id: assistantId,
-    name: "",
-  }));
+  const columns = useMemo(
+    () =>
+      Array.from({ length: 7 }).map((_) => ({
+        id: assistantId,
+        name: "",
+      })),
+    [assistantId],
+  );
 
   return (
     <>
       <Calendar>
         <CalendarHeader
-          date={new Date(weeksDate)}
+          date={startDate}
           nextDaySelect={nextDaySelect}
           previousDaySelect={previousDaySelect}
           viewToggle={viewToggle}

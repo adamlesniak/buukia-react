@@ -23,7 +23,8 @@
     "toggleViewWeek": "Week View"
   },
   "services": {
-    "unavailable": "Unavailable"
+    "unavailable": "Unavailable",
+    "searchServices": "Search services..."
   },
   "appointments": {
     "newAppointment": "New Appointment",
@@ -53,6 +54,10 @@
     "loading": "Loading...",
     "min": "min",
     "closeModal": "Close Modal",
-    "closeDrawer": "Close Drawer"
+    "closeDrawer": "Close Drawer",
+    "noResults": "No results matching the term.",
+    "selectAnItem": "Please select an item.",
+    "search": "Search",
+    "dropdownItems": "Dropdown items"
   }
 }
