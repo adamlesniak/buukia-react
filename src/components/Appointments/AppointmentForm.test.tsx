@@ -40,10 +40,10 @@ describe("AppointmentForm", () => {
         <AppointmentForm
           appointmentId={createAppointment().id}
           assistantId={createAssistant().id}
-          clients={[]}
+          clients={data.clients}
           onClientsSearch={() => {}}
           onServicesSearch={() => {}}
-          services={[]}
+          services={data.services}
           onSubmit={() => {}}
           todaysAppointments={[]}
           values={testProps}
@@ -73,10 +73,10 @@ describe("AppointmentForm", () => {
         <AppointmentForm
           appointmentId={createAppointment().id}
           assistantId={createAssistant().id}
-          clients={[]}
+          clients={data.clients}
           onClientsSearch={() => {}}
           onServicesSearch={() => {}}
-          services={[]}
+          services={data.services}
           onSubmit={() => {}}
           todaysAppointments={[]}
           values={testProps}
@@ -104,10 +104,10 @@ describe("AppointmentForm", () => {
         <AppointmentForm
           appointmentId={createAppointment().id}
           assistantId={createAssistant().id}
-          clients={[]}
+          clients={data.clients}
           onClientsSearch={() => {}}
           onServicesSearch={() => {}}
-          services={[]}
+          services={data.services}
           onSubmit={() => {}}
           todaysAppointments={[]}
           values={testProps}
@@ -138,10 +138,10 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
-            clients={[]}
+            clients={data.clients}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={[]}
+            services={data.services}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
@@ -168,10 +168,10 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
-            clients={[]}
+            clients={data.clients}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={[]}
+            services={data.services}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
@@ -203,10 +203,10 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
-            clients={[]}
+            clients={data.clients}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={[]}
+            services={data.services}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
@@ -263,10 +263,10 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
-            clients={[]}
+            clients={data.clients}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={[]}
+            services={data.services}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
@@ -323,14 +323,14 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             appointmentId={createAppointment().id}
             assistantId={createAssistant().id}
-            clients={[]}
+            clients={data.clients}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={[]}
+            services={data.services}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
-            isLoading={false}
+            isLoading={true}
             clientsRefetching={false}
             servicesRefetching={false}
           />
