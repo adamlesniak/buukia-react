@@ -6,7 +6,7 @@
     "dev": "vite --port 3000",
     "build": "vite build && tsc",
     "serve": "vite preview",
-    "test": "eslint && vitest run",
+    "test": "eslint && TZ=UTC vitest run",
     "format": "biome format",
     "lint": "eslint",
     "bundle": "ANALYZE_DEBUG=true pnpm run build",

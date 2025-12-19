@@ -145,7 +145,7 @@ describe("daily/$date", () => {
       await user.click(previousButton);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/daily/1765580400000/",
+        to: "/appointments/daily/1765584000000/",
       });
 
       await user.click(nextButton);
@@ -154,7 +154,7 @@ describe("daily/$date", () => {
       expect(nextButton).toBeInTheDocument();
       expect(mockNavigate).toHaveBeenCalledTimes(2);
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/daily/1765753200000/",
+        to: "/appointments/daily/1765756800000/",
       });
     });
   });
@@ -252,7 +252,7 @@ describe("daily/$date", () => {
         await user.click(emptySlot!);
 
         expect(mockNavigate).toHaveBeenCalledWith({
-          to: `/appointments/daily/1765666800000/new/${mockAssistants[0].id}/1765695600000/`,
+          to: `/appointments/daily/1765670400000/new/${mockAssistants[0].id}/1765699200000/`,
         });
       });
 
@@ -270,7 +270,7 @@ describe("daily/$date", () => {
         await user.click(appointmentElement);
 
         expect(mockNavigate).toHaveBeenCalledWith({
-          to: `/appointments/daily/1765666800000/appointmentId/`,
+          to: `/appointments/daily/1765670400000/appointmentId/`,
         });
       });
     });

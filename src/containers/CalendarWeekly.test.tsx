@@ -148,7 +148,7 @@ describe("weekly/$date/$assistantId", () => {
       await user.click(previousButton);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/weekly/1765062000000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
+        to: "/appointments/weekly/1765065600000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
       });
 
       await user.click(nextButton);
@@ -157,7 +157,7 @@ describe("weekly/$date/$assistantId", () => {
       expect(nextButton).toBeInTheDocument();
       expect(mockNavigate).toHaveBeenCalledTimes(2);
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/weekly/1766271600000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
+        to: "/appointments/weekly/1765065600000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
       });
     });
 
@@ -175,7 +175,7 @@ describe("weekly/$date/$assistantId", () => {
       await user.click(toggleButton);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/daily/1765666800000/",
+        to: "/appointments/daily/1765670400000/",
       });
     });
   });
@@ -280,7 +280,7 @@ describe("weekly/$date/$assistantId", () => {
         await user.click(emptySlot!);
 
         expect(mockNavigate).toHaveBeenCalledWith({
-          to: `/appointments/weekly/1765666800000/${mockAssistant.id}/new/1765868400000/`,
+          to: `/appointments/weekly/1765670400000/${mockAssistant.id}/new/1765872000000/`,
         });
       });
 
@@ -298,7 +298,7 @@ describe("weekly/$date/$assistantId", () => {
         await user.click(appointmentElement);
 
         expect(mockNavigate).toHaveBeenCalledWith({
-          to: `/appointments/weekly/1765666800000/${mockAssistant.id}/appointmentId/`,
+          to: `/appointments/weekly/1765670400000/${mockAssistant.id}/appointmentId/`,
         });
       });
     });
