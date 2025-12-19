@@ -10,10 +10,39 @@ const mockAppointments: BuukiaAppointment[] = [
   {
     id: "1",
     time: "2025-12-14T10:00:00.000Z",
-    assistant: { id: "assistant1", name: "John Assistant" },
-    client: { id: "client1", name: "Jane Client", email: "jane@example.com", phone: "123-456-7890" },
+    assistant: {
+      id: "assistant1",
+      name: "John Assistant",
+      firstName: "John",
+      lastName: "Assistant",
+      initials: "JA",
+      business: "testBusiness",
+      type: "test",
+      availability: {
+        regular: [],
+        holidays: [],
+        exceptions: [],
+      },
+    },
+    client: {
+      id: "client1",
+      name: "Jane Client",
+      email: "jane@example.com",
+      phone: "123-456-7890",
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      appointments: [],
+    },
     services: [
-      { id: "service1", name: "Consultation", duration: 30, price: 50, description: "Basic consultation" },
+      {
+        id: "service1",
+        name: "Consultation",
+        duration: 30,
+        price: 50,
+        description: "Basic consultation",
+        business: "business1",
+        category: "testCategory",
+      },
     ],
   },
 ];

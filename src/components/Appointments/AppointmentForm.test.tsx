@@ -48,6 +48,8 @@ describe("AppointmentForm", () => {
           todaysAppointments={[]}
           values={testProps}
           isLoading={false}
+          clientsRefetching={false}
+          servicesRefetching={false}
         />
       </QueryClientProvider>,
     );
@@ -79,6 +81,8 @@ describe("AppointmentForm", () => {
           todaysAppointments={[]}
           values={testProps}
           isLoading={false}
+          clientsRefetching={false}
+          servicesRefetching={false}
         />
       </QueryClientProvider>,
     );
@@ -108,6 +112,8 @@ describe("AppointmentForm", () => {
           todaysAppointments={[]}
           values={testProps}
           isLoading={false}
+          clientsRefetching={false}
+          servicesRefetching={false}
         />
       </QueryClientProvider>,
     );
@@ -140,6 +146,8 @@ describe("AppointmentForm", () => {
             todaysAppointments={[]}
             values={testProps}
             isLoading={false}
+            clientsRefetching={false}
+            servicesRefetching={false}
           />
         </QueryClientProvider>,
       );
@@ -163,11 +171,13 @@ describe("AppointmentForm", () => {
             clients={[]}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={data.services}
+            services={[]}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
             isLoading={false}
+            clientsRefetching={false}
+            servicesRefetching={false}
           />
         </QueryClientProvider>,
       );
@@ -196,11 +206,13 @@ describe("AppointmentForm", () => {
             clients={[]}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={data.services}
+            services={[]}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
             isLoading={false}
+            clientsRefetching={false}
+            servicesRefetching={false}
           />
         </QueryClientProvider>,
       );
@@ -254,11 +266,13 @@ describe("AppointmentForm", () => {
             clients={[]}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={data.services}
+            services={[]}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
             isLoading={false}
+            clientsRefetching={false}
+            servicesRefetching={false}
           />
         </QueryClientProvider>,
       );
@@ -312,11 +326,13 @@ describe("AppointmentForm", () => {
             clients={[]}
             onClientsSearch={() => {}}
             onServicesSearch={() => {}}
-            services={data.services}
+            services={[]}
             onSubmit={() => {}}
             todaysAppointments={[]}
             values={testProps}
-            isLoading={true}
+            isLoading={false}
+            clientsRefetching={false}
+            servicesRefetching={false}
           />
         </QueryClientProvider>,
       );
