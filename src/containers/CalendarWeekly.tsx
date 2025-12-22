@@ -8,13 +8,23 @@ import {
   startOfWeek,
   startOfDay,
 } from "date-fns";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAppointments } from "@/api";
-import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
+import {
+  Calendar,
+  CalendarBody,
+  CalendarError,
+  CalendarHeader,
+} from "@/components/Calendar";
+import { ErrorDetail } from "@/components/Error";
 import { ViewType } from "@/constants.ts";
 
+
 export default function CalendarWeekly() {
+  const { t } = useTranslation();
+
   const {
     date,
     assistantId,
@@ -37,15 +47,16 @@ export default function CalendarWeekly() {
 
   const {
     data: appointments,
-    // error: appointmentsError,
+    error: appointmentsError,
     isLoading: appointmentsLoading,
+    refetch: refetchAppointments,
   } = useAppointments({
     assistantId,
     startDate: new Date(weeksDate).toISOString(),
     endDate: new Date(nextWeekStart).toISOString(),
   });
 
-  // const isError = Boolean(appointmentsError);
+  const isError = appointmentsError;
   const isLoading = appointmentsLoading;
 
   // if (!assistant) {
@@ -67,6 +78,10 @@ export default function CalendarWeekly() {
     ],
     [date],
   );
+
+  useEffect(() => {
+    refetchAppointments();
+  }, [date]);
 
   const previousDaySelect = useCallback(() => {
     navigate({
@@ -115,26 +130,35 @@ export default function CalendarWeekly() {
 
   return (
     <>
-      <Calendar>
-        <CalendarHeader
-          date={startDate}
-          nextDaySelect={nextDaySelect}
-          previousDaySelect={previousDaySelect}
-          viewToggle={viewToggle}
-          viewType={ViewType.WEEK}
-        />
-        <CalendarBody
-          startDate={startDate}
-          columns={columns}
-          endDate={endDate}
-          isLoading={isLoading}
-          items={appointments || []}
-          viewType={ViewType.WEEK}
-          onFieldSelect={handleFieldSelect}
-          onItemSelect={onItemSelect}
-        />
-      </Calendar>
-      <Outlet />
+      {isError && (
+        <CalendarError>
+          <ErrorDetail message={t("common.unknownError")} />
+        </CalendarError>
+      )}
+      {!isError && (
+        <>
+          <Calendar>
+            <CalendarHeader
+              date={startDate}
+              nextDaySelect={nextDaySelect}
+              previousDaySelect={previousDaySelect}
+              viewToggle={viewToggle}
+              viewType={ViewType.WEEK}
+            />
+            <CalendarBody
+              startDate={startDate}
+              columns={columns}
+              endDate={endDate}
+              isLoading={isLoading}
+              items={appointments || []}
+              viewType={ViewType.WEEK}
+              onFieldSelect={handleFieldSelect}
+              onItemSelect={onItemSelect}
+            />
+          </Calendar>
+          <Outlet />
+        </>
+      )}
     </>
   );
 }

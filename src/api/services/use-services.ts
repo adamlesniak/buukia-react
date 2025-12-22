@@ -16,7 +16,7 @@ export const useServices = (params: useServicesParams) => {
 
   const { isLoading, error, data, isFetching, refetch, isRefetching } =
     useQuery<BuukiaService[]>({
-      queryKey: serviceQueryKeys.all,
+      queryKey: [serviceQueryKeys.all, params.limit, params.query],
       queryFn: async () => {
         const response = await fetch(
           `/api/services?${queryString.stringify(params)}`,

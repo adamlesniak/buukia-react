@@ -58,6 +58,7 @@
     "noResults": "No results matching the term.",
     "selectAnItem": "Please select an item.",
     "search": "Search",
-    "dropdownItems": "Dropdown items"
+    "dropdownItems": "Dropdown items",
+    "unknownError": "An unknown error occurred."
   }
 }

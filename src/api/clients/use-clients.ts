@@ -16,7 +16,7 @@ export const useClients = (params: useClientsParams) => {
 
   const { isLoading, error, data, isFetching, refetch, isRefetching } =
     useQuery<BuukiaClient[]>({
-      queryKey: clientQueryKeys.all,
+      queryKey: [clientQueryKeys.all, params.limit, params.query],
       queryFn: async () => {
         const response = await fetch(
           `/api/clients?${queryString.stringify(params)}`,
