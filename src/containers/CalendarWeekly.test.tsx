@@ -90,16 +90,37 @@ describe("weekly/$date/$assistantId", () => {
       data: mockAssistant,
       error: null,
       isLoading: false,
+      refetch: vi.fn(),
     });
 
     mockUseAppointments.mockReturnValue({
       data: mockAppointments,
       error: null,
       isLoading: false,
+      refetch: vi.fn(),
     });
   });
 
   describe("Calendar Header", () => {
+    it("should render error in case of error", async () => {
+      mockUseAppointments.mockReturnValue({
+        data: mockAppointments,
+        error: new Error("test Error"),
+        isLoading: false,
+        refetch: vi.fn(),
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <CalendarWeekly.default />
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByText("common.unknownError"),
+      ).toBeInTheDocument();
+    });
+
     it("should render the header", async () => {
       render(
         <QueryClientProvider client={queryClient}>

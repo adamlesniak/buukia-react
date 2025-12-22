@@ -87,12 +87,14 @@ describe("daily/$date", () => {
       data: mockAssistants,
       error: null,
       isLoading: false,
+      refetch: vi.fn(),
     });
 
     mockUseAppointments.mockReturnValue({
       data: mockAppointments,
       error: null,
       isLoading: false,
+      refetch: vi.fn(),
     });
   });
 
@@ -160,6 +162,25 @@ describe("daily/$date", () => {
   });
 
   describe("Calendar Body", () => {
+    it("should render error in case of error", async () => {
+      mockUseAppointments.mockReturnValue({
+        data: mockAppointments,
+        error: new Error("test Error"),
+        isLoading: false,
+        refetch: vi.fn(),
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <CalendarDaily.default />
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByText("common.unknownError"),
+      ).toBeInTheDocument();
+    });
+
     it("should render the calendar body", async () => {
       render(
         <QueryClientProvider client={queryClient}>

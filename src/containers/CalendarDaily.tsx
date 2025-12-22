@@ -6,15 +6,25 @@ import {
   addMinutes,
   subDays,
   getUnixTime,
+  endOfDay,
 } from "date-fns";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAppointments, useAssistants } from "@/api";
-import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
+import {
+  Calendar,
+  CalendarBody,
+  CalendarError,
+  CalendarHeader,
+} from "@/components/Calendar";
+import { ErrorDetail } from "@/components/Error";
 import { MAX_ASSISTANTS, ViewType } from "@/constants.ts";
 
 // TODO: Handle error and pagination
 export default function CalendarDaily() {
+  const { t } = useTranslation();
+
   const {
     date,
   }: {
@@ -23,7 +33,6 @@ export default function CalendarDaily() {
     strict: false,
   });
   const navigate = useNavigate();
-
   const [previousDay, nextDay, todaysDateUnix, todaysDate] = useMemo(
     () => [
       getUnixTime(subDays(startOfDay(new Date(Number(date))), 1)) * 1000,
@@ -36,18 +45,18 @@ export default function CalendarDaily() {
 
   const {
     data: assistants,
-    // error: assistantsError,
+    error: assistantsError,
     isLoading: assistantsLoading,
   } = useAssistants();
   const {
     data: appointments,
-    // error: appointmentsError,
+    error: appointmentsError,
     isLoading: appointmentsLoading,
+    refetch: refetchAppointments,
   } = useAppointments({
-    startDate: subDays(startOfDay(new Date(todaysDate)), 7).toISOString(),
-    endDate: addDays(startOfDay(new Date(todaysDate)), 7).toISOString(),
+    startDate: startOfDay(new Date(todaysDate)).toISOString(),
+    endDate: endOfDay(new Date(todaysDate)).toISOString(),
   });
-
   const startDate = useMemo(
     () => addMinutes(addHours(todaysDate, 8), 0),
     [todaysDate],
@@ -56,6 +65,10 @@ export default function CalendarDaily() {
     () => addMinutes(addHours(todaysDate, 21), 0),
     [todaysDate],
   );
+
+  useEffect(() => {
+    refetchAppointments();
+  }, [date]);
 
   const handleFieldSelect = useCallback(
     (data: { assistantId: string; time: string }) => {
@@ -117,32 +130,41 @@ export default function CalendarDaily() {
     [assistants],
   );
 
-  // const error = assistantsError || appointmentsError;
+  const isError = assistantsError || appointmentsError;
   const isLoading = assistantsLoading || appointmentsLoading;
 
   return (
     <>
-      <Calendar>
-        <CalendarHeader
-          date={todaysDate}
-          nextDaySelect={nextDaySelect}
-          previousDaySelect={previousDaySelect}
-          viewToggle={viewToggleSelect}
-          viewType={ViewType.DAY}
-        />
-        <CalendarBody
-          columns={columns}
-          endDate={endDate}
-          headerSelect={onHeaderSelect}
-          items={appointments || []}
-          onFieldSelect={handleFieldSelect}
-          onItemSelect={onItemSelect}
-          startDate={startDate}
-          viewType={ViewType.DAY}
-          isLoading={isLoading}
-        />
-      </Calendar>
-      <Outlet />
+      {isError && (
+        <CalendarError>
+          <ErrorDetail message={t("common.unknownError")} />
+        </CalendarError>
+      )}
+      {!isError && (
+        <>
+          <Calendar>
+            <CalendarHeader
+              date={todaysDate}
+              nextDaySelect={nextDaySelect}
+              previousDaySelect={previousDaySelect}
+              viewToggle={viewToggleSelect}
+              viewType={ViewType.DAY}
+            />
+            <CalendarBody
+              columns={columns}
+              endDate={endDate}
+              headerSelect={onHeaderSelect}
+              items={appointments || []}
+              onFieldSelect={handleFieldSelect}
+              onItemSelect={onItemSelect}
+              startDate={startDate}
+              viewType={ViewType.DAY}
+              isLoading={isLoading}
+            />
+          </Calendar>
+          <Outlet />
+        </>
+      )}
     </>
   );
 }

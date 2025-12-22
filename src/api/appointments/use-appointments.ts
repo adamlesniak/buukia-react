@@ -15,8 +15,15 @@ interface useAppointmentsParams {
 export const useAppointments = (params: useAppointmentsParams) => {
   const queryClient = useQueryClient();
 
-  const { isLoading, error, data, isFetching } = useQuery<BuukiaAppointment[]>({
-    queryKey: appointmentQueryKeys.all,
+  const { isLoading, error, data, isFetching, refetch } = useQuery<
+    BuukiaAppointment[]
+  >({
+    queryKey: [
+      appointmentQueryKeys.all,
+      params.startDate,
+      params.endDate,
+      params.assistantId,
+    ],
     queryFn: async () => {
       const response = await fetch(
         `/api/appointments?${queryString.stringify(params)}`,
@@ -33,5 +40,5 @@ export const useAppointments = (params: useAppointmentsParams) => {
     staleTime: STALE_TIME,
   });
 
-  return { isLoading, error, data, isFetching };
+  return { isLoading, error, data, isFetching, refetch };
 };
