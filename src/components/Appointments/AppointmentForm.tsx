@@ -139,10 +139,10 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
     );
   };
 
-  const modalClose = useCallback(
-    () => setShowModal(false),
-    [props.appointmentId],
-  );
+  const modalClose = useCallback(() => {
+    props.onServicesSearch("");
+    setShowModal(false);
+  }, [props.appointmentId]);
 
   const onSubmit = (data: AppointmentFormValues) => {
     const client = props.clients.find(
@@ -240,7 +240,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                   label={t("common.closeModal")}
                 />
                 <ModalBody tabIndex={-1} data-testid="services-list">
-                  <SearchInput data-testid="search">
+                  <SearchInput data-testid="search" style={{ marginBottom: 8 }}>
                     {props.servicesRefetching ? (
                       <LoaderCircle size={20} />
                     ) : (
@@ -273,6 +273,9 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                       onServiceRemove={serviceRemove}
                     />
                   ))}
+                  {props.services.length === 0 && !props.servicesRefetching && (
+                    <p>{t("services.noServicesFound")}</p>
+                  )}
                 </ModalBody>
               </FocusScope>
             </Modal>

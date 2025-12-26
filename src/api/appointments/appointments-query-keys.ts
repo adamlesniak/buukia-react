@@ -3,9 +3,16 @@
 // https://tkdodo.eu/blog/leveraging-the-query-function-context#query-key-factories
 
 export const appointmentQueryKeys = {
-  all: ['appointments'],
-  details: () => [...appointmentQueryKeys.all, 'detail'],
-  detail: (id: string) => [...appointmentQueryKeys.details(), id],
-  pagination: (page: number) => [...appointmentQueryKeys.all, 'pagination', page],
-  infinite: () => [...appointmentQueryKeys.all, 'infinite'],
+  all: ["appointments"],
+  details: () => [...appointmentQueryKeys.all, "detail"],
+  detail: (id: string) => [
+    ...appointmentQueryKeys.details(),
+    id,
+  ],
+  pagination: (page: number) => [
+    ...appointmentQueryKeys.all,
+    "pagination",
+    page,
+  ],
+  infinite: () => [...appointmentQueryKeys.all, "infinite"],
 };

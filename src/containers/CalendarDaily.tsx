@@ -6,7 +6,7 @@ import {
   addMinutes,
   subDays,
   getUnixTime,
-  endOfDay,
+  startOfWeek,
 } from "date-fns";
 import { useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,15 +33,18 @@ export default function CalendarDaily() {
     strict: false,
   });
   const navigate = useNavigate();
-  const [previousDay, nextDay, todaysDateUnix, todaysDate] = useMemo(
+
+  const [previousDay, nextDay, todaysDateUnix, todaysDate, weeksDate] = useMemo(
     () => [
       getUnixTime(subDays(startOfDay(new Date(Number(date))), 1)) * 1000,
       getUnixTime(addDays(startOfDay(new Date(Number(date))), 1)) * 1000,
       getUnixTime(startOfDay(new Date(Number(date)))) * 1000,
       startOfDay(new Date(Number(date))),
+      getUnixTime(startOfWeek(new Date(Number(date)))) * 1000,
     ],
     [date],
   );
+  const nextWeekStart = getUnixTime(addDays(weeksDate, 7)) * 1000;
 
   const {
     data: assistants,
@@ -54,8 +57,8 @@ export default function CalendarDaily() {
     isLoading: appointmentsLoading,
     refetch: refetchAppointments,
   } = useAppointments({
-    startDate: startOfDay(new Date(todaysDate)).toISOString(),
-    endDate: endOfDay(new Date(todaysDate)).toISOString(),
+    startDate: new Date(weeksDate).toISOString(),
+    endDate: new Date(nextWeekStart).toISOString(),
   });
   const startDate = useMemo(
     () => addMinutes(addHours(todaysDate, 8), 0),
@@ -68,7 +71,7 @@ export default function CalendarDaily() {
 
   useEffect(() => {
     refetchAppointments();
-  }, [date]);
+  }, [nextWeekStart > todaysDateUnix]);
 
   const handleFieldSelect = useCallback(
     (data: { assistantId: string; time: string }) => {

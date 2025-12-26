@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { BuukiaAppointment } from "@/types";
+import { getWeekStartEndDate } from "@/utils";
 
 import { serviceQueryKeys } from "../services/services-query-keys";
 
@@ -30,18 +31,26 @@ export function useUpdateAppointment() {
       return response.json();
     },
     onMutate: async (appointment) => {
+      const { start, end } = getWeekStartEndDate(appointment.time);
+
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: appointmentQueryKeys.all });
 
       // Snapshot the previous value
-      const previousItems = queryClient.getQueryData<BuukiaAppointment[]>(
-        appointmentQueryKeys.all,
-      );
+      const previousItems = queryClient.getQueryData<BuukiaAppointment[]>([
+        ...appointmentQueryKeys.all,
+        new Date(start).toISOString(),
+        new Date(end).toISOString(),
+      ]);
 
       // Optimistically update to the new value
       queryClient.setQueryData(
-        appointmentQueryKeys.all,
+        [
+          ...appointmentQueryKeys.all,
+          new Date(start).toISOString(),
+          new Date(end).toISOString(),
+        ],
         (old: BuukiaAppointment[]) =>
           [...(old || [])].map((item) => {
             if (item.id === appointment.id) {
@@ -69,10 +78,19 @@ export function useUpdateAppointment() {
       // Return a context object with the snapshotted value
       return { previousItems };
     },
-    onError: (_error, _variables, context) => {
+    onSuccess: (data) => {
+      queryClient.setQueryData(appointmentQueryKeys.detail(data.id), data);
+    },
+    onError: (_error, variables, context) => {
+      const { start, end } = getWeekStartEndDate(variables.time);
+
       if (context) {
         queryClient.setQueryData(
-          appointmentQueryKeys.all,
+          [
+            ...appointmentQueryKeys.all,
+            new Date(start).toISOString(),
+            new Date(end).toISOString(),
+          ],
           context.previousItems,
         );
       }

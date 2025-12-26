@@ -12,15 +12,20 @@ import {
   useAppointment,
   useCreateAppointment,
   useAssistant,
+  serviceQueryKeys,
+  clientQueryKeys,
 } from "@/api";
 import { AppointmentForm } from "@/components/Appointments/AppointmentForm";
+import { MAX_PAGINATION } from "@/constants.ts";
 import type {
   AppointmentFormValues,
   BuukiaAppointment,
+  BuukiaClient,
+  BuukiaService,
   CreateAppointmentBody,
   UpdateAppointmentBody,
 } from "@/types";
-import { isoDateMatchDate } from "@/utils";
+import { isoDateMatchDate, getWeekStartEndDate } from "@/utils";
 
 import {
   Drawer,
@@ -49,7 +54,6 @@ export default function AppointmentDetail() {
     select: (state) => state.location.href,
   });
   const isNew = !appointmentId;
-
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [clientsQuery, setClientsQuery] = useState("");
@@ -100,41 +104,38 @@ export default function AppointmentDetail() {
     isLoading: servicesLoading,
     refetch: refetchServices,
     isRefetching: servicesIsRefetching,
-  } = useServices({ limit: 100, query: servicesQuery });
+  } = useServices({ limit: MAX_PAGINATION, query: servicesQuery });
   const {
     data: clients = [],
     error: clientsError,
     isLoading: clientsLoading,
     refetch: refetchClients,
     isRefetching: clientsIsRefetching,
-  } = useClients({ limit: 100, query: clientsQuery });
+  } = useClients({ limit: MAX_PAGINATION, query: clientsQuery });
+
+  const { start, end } = getWeekStartEndDate(
+    new Date(Number(isNew ? time : date)).toISOString(),
+  );
 
   const todaysAppointments = useMemo(
     () =>
       queryClient
-        .getQueryData<BuukiaAppointment[]>(appointmentQueryKeys.all)
+        .getQueryData<
+          BuukiaAppointment[]
+        >([...appointmentQueryKeys.all, new Date(start).toISOString(), new Date(end).toISOString()])
         ?.filter(
           (item) =>
-            isoDateMatchDate(item.time, new Date(Number(date)).toISOString()) &&
-            appointment?.assistant?.id === item.assistant.id,
+            isoDateMatchDate(
+              item.time,
+              isNew
+                ? new Date(Number(time)).toISOString()
+                : (appointment?.time as string),
+            ) && appointment?.assistant?.id === item.assistant.id,
         ) || [],
-    [appointment?.assistant?.id, date],
+    [appointment?.assistant?.id, time],
   );
 
   const onClose = () => {
-    // queryClient.setQueryData(
-    //   appointmentQueryKeys.all,
-    //   (old: BuukiaAppointment[]) => [
-    //     ...(old || []).map((item) => {
-    //       if (item.id === appointmentId) {
-    //         console.log(appointment, appointmentId);
-    //         return appointment;
-    //       }
-
-    //       return item;
-    //     }),
-    //   ],
-    // );
     if (selected.includes("daily")) {
       navigate({ to: `/appointments/daily/${date}` });
     } else {
@@ -166,20 +167,38 @@ export default function AppointmentDetail() {
     [appointmentId],
   );
 
-  const clientsSearch = (query: string) => {
-    setClientsQuery(query);
-  };
+  const clientsSearch = useCallback(
+    (query: string) => setClientsQuery(query),
+    [appointmentId],
+  );
 
   useEffect(() => {
-    refetchClients();
+    const clients = queryClient.getQueryData<BuukiaClient[]>([
+      ...clientQueryKeys.all,
+      MAX_PAGINATION,
+      clientsQuery,
+    ]);
+
+    if (!clients) {
+      refetchClients();
+    }
   }, [clientsQuery]);
 
-  const servicesSearch = (query: string) => {
-    setServicesQuery(query);
-  };
+  const servicesSearch = useCallback(
+    (query: string) => setServicesQuery(query),
+    [appointmentId],
+  );
 
   useEffect(() => {
-    refetchServices();
+    const services = queryClient.getQueryData<BuukiaService[]>([
+      ...serviceQueryKeys.all,
+      MAX_PAGINATION,
+      servicesQuery,
+    ]);
+
+    if (!services) {
+      refetchServices({});
+    }
   }, [servicesQuery]);
 
   const isLoading =

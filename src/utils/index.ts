@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/query-core";
-import { parseISO } from "date-fns";
+import { addDays, getUnixTime, parseISO, startOfWeek } from "date-fns";
 
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import type {
@@ -167,4 +167,11 @@ export const updateExistingAppointment = (
       return result;
     },
   );
+};
+
+export const getWeekStartEndDate = (date: string) => {
+  const start = getUnixTime(startOfWeek(new Date(date))) * 1000;
+  const end = getUnixTime(addDays(start, 7)) * 1000;
+
+  return { start, end };
 };
