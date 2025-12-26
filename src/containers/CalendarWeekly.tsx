@@ -21,7 +21,6 @@ import {
 import { ErrorDetail } from "@/components/Error";
 import { ViewType } from "@/constants.ts";
 
-
 export default function CalendarWeekly() {
   const { t } = useTranslation();
 
@@ -51,7 +50,6 @@ export default function CalendarWeekly() {
     isLoading: appointmentsLoading,
     refetch: refetchAppointments,
   } = useAppointments({
-    assistantId,
     startDate: new Date(weeksDate).toISOString(),
     endDate: new Date(nextWeekStart).toISOString(),
   });

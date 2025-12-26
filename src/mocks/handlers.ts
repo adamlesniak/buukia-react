@@ -33,10 +33,21 @@ const [assistants, clients, services, appointments]: [
 ];
 
 export const handlers = [
-  http.get("/api/services", () =>
-    HttpResponse.json(Array.from(services.values())),
-  ),
+  http.get("/api/services", ({ request }) => {
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
 
+    return HttpResponse.json(
+      Array.from(services.values())
+        .filter((service) =>
+          service.name.toLowerCase().includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
+  }),
   http.get("/api/assistants", () =>
     HttpResponse.json(Array.from(assistants.values())),
   ),

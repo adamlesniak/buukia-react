@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { BuukiaAppointment, BuukiaClient, BuukiaService } from "@/types";
+import { getWeekStartEndDate } from "@/utils";
 
 import { clientQueryKeys } from "../clients/clients-query-keys";
 import { serviceQueryKeys } from "../services/services-query-keys";
 
 import { appointmentQueryKeys } from "./appointments-query-keys";
-
 
 interface CreateAppointmentBody {
   assistantId: string;
@@ -62,6 +62,8 @@ export function useCreateAppointment() {
         }),
       } as BuukiaAppointment;
 
+      const { start, end } = getWeekStartEndDate(newAppointment.time);
+
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: appointmentQueryKeys.all });
@@ -73,7 +75,11 @@ export function useCreateAppointment() {
 
       // Optimistically update to the new value
       queryClient.setQueryData(
-        appointmentQueryKeys.all,
+        [
+          ...appointmentQueryKeys.all,
+          new Date(start).toISOString(),
+          new Date(end).toISOString(),
+        ],
         (old: BuukiaAppointment[]) =>
           [...(old || []), item].sort(
             (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
@@ -84,24 +90,39 @@ export function useCreateAppointment() {
       return { previousItems };
     },
     onSuccess: (data) => {
-      queryClient.setQueryData<BuukiaAppointment[]>(
-        appointmentQueryKeys.all,
-        (old: BuukiaAppointment[] | undefined) =>
-          [...(old || [])].map((item) => {
-            if (item.id === "current-appointment") {
-              return data;
-            }
+      const { start, end } = getWeekStartEndDate(data.time);
 
-            return item;
-          }).sort(
-            (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-          ),
+      queryClient.setQueryData(appointmentQueryKeys.detail(data.id), data);
+      queryClient.setQueryData<BuukiaAppointment[]>(
+        [
+          ...appointmentQueryKeys.all,
+          new Date(start).toISOString(),
+          new Date(end).toISOString(),
+        ],
+        (old: BuukiaAppointment[] | undefined) =>
+          [...(old || [])]
+            .map((item) => {
+              if (item.id === "current-appointment") {
+                return data;
+              }
+
+              return item;
+            })
+            .sort(
+              (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+            ),
       );
     },
-    onError: (_error, _variables, context) => {
+    onError: (_error, variables, context) => {
+      const { start, end } = getWeekStartEndDate(variables.time);
+
       if (context) {
         queryClient.setQueryData(
-          appointmentQueryKeys.all,
+          [
+            ...appointmentQueryKeys.all,
+            new Date(start).toISOString(),
+            new Date(end).toISOString(),
+          ],
           context.previousItems,
         );
       }

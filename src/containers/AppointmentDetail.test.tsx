@@ -8,7 +8,6 @@ import {
   useServices,
   useClients,
   useUpdateAppointment,
-  appointmentQueryKeys,
   useCreateAppointment,
 } from "@/api";
 import type { BuukiaAppointment, BuukiaClient, BuukiaService } from "@/types";
@@ -17,13 +16,19 @@ import { createAssistant, createClient, createService } from "@/utils";
 import data from "../routes/data.json";
 
 // Mock the API hooks
-vi.mock("@/api", () => ({
+vi.mock("@/api", async (importOriginal) => ({
   useAppointment: vi.fn(),
   useServices: vi.fn(),
   useClients: vi.fn(),
   useCreateAppointment: vi.fn(),
   useUpdateAppointment: vi.fn(),
-  appointmentQueryKeys: vi.fn(),
+  appointmentQueryKeys: (
+    (await importOriginal()) as { appointmentQueryKeys: unknown }
+  ).appointmentQueryKeys,
+  clientQueryKeys: ((await importOriginal()) as { clientQueryKeys: unknown })
+    .clientQueryKeys,
+  serviceQueryKeys: ((await importOriginal()) as { serviceQueryKeys: unknown })
+    .serviceQueryKeys,
 }));
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (value: string) => value }),
@@ -69,9 +74,6 @@ const mockUseUpdateAppointment = useUpdateAppointment as unknown as ReturnType<
   typeof vi.fn
 >;
 const mockUseCreateAppointment = useCreateAppointment as unknown as ReturnType<
-  typeof vi.fn
->;
-const mockAppointmentQueryKeys = appointmentQueryKeys as unknown as ReturnType<
   typeof vi.fn
 >;
 
@@ -130,7 +132,6 @@ describe("weekly/$assistantId/$appointmentId", () => {
     mockUseCreateAppointment.mockReturnValue({
       mutate: mockMutate,
     });
-    mockAppointmentQueryKeys.mockReturnValue({ all: "appointments-all" });
   });
 
   describe("Drawer", () => {

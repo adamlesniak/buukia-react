@@ -60,6 +60,13 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
       &.selected {
         background-color: #fbfbfb;
       }
+
+      &.no-results {
+        &:hover {
+          background: transparent;
+          cursor: default;
+        }
+      }
     }
   }
 `;
@@ -303,7 +310,10 @@ export function Combobox(
                     searchChangeDebounce($event.target.value);
                   }
                 }}
-                onBlur={() => setIsOpen(false)}
+                onBlur={() => {
+                  searchChangeDebounce("");
+                  setIsOpen(false);
+                }}
               />
             </StyledComboboxSearch>
           )}
@@ -314,7 +324,7 @@ export function Combobox(
             role="listbox"
           >
             {props.items.length === 0 && (
-              <li role="option" key={"no-results"}>
+              <li role="option" className={"no-results"} key={"no-results"}>
                 {t("common.noResults")}
               </li>
             )}

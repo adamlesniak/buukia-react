@@ -7,8 +7,8 @@ import type { BuukiaAppointment } from "@/types";
 import { appointmentQueryKeys } from "./appointments-query-keys";
 
 interface useAppointmentsParams {
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
   assistantId?: string;
 }
 
@@ -18,12 +18,7 @@ export const useAppointments = (params: useAppointmentsParams) => {
   const { isLoading, error, data, isFetching, refetch } = useQuery<
     BuukiaAppointment[]
   >({
-    queryKey: [
-      appointmentQueryKeys.all,
-      params.startDate,
-      params.endDate,
-      params.assistantId,
-    ],
+    queryKey: [...appointmentQueryKeys.all, params.startDate, params.endDate],
     queryFn: async () => {
       const response = await fetch(
         `/api/appointments?${queryString.stringify(params)}`,
