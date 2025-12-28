@@ -187,7 +187,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                 setShowModal((showModal) => !showModal);
               }}
               type="button"
-              disabled={props.isLoading}
+              disabled={props.servicesRefetching}
             >
               {t("appointments.detail.addService")}
             </Button>
@@ -239,27 +239,27 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                   onClose={modalClose}
                   label={t("common.closeModal")}
                 />
+                <SearchInput data-testid="search" style={{ marginBottom: 8 }}>
+                  {props.servicesRefetching ? (
+                    <LoaderCircle size={20} />
+                  ) : (
+                    <Search size={20} />
+                  )}
+                  <Input
+                    type="text"
+                    id={"services-search-input"}
+                    aria-autocomplete="none"
+                    aria-label={t("common.search")}
+                    autoComplete="off"
+                    tabIndex={0}
+                    onChange={($event) => {
+                      servicesChangeDebounce($event.target.value);
+                      $event.preventDefault();
+                      $event.stopPropagation();
+                    }}
+                  />
+                </SearchInput>
                 <ModalBody tabIndex={-1} data-testid="services-list">
-                  <SearchInput data-testid="search" style={{ marginBottom: 8 }}>
-                    {props.servicesRefetching ? (
-                      <LoaderCircle size={20} />
-                    ) : (
-                      <Search size={20} />
-                    )}
-                    <Input
-                      type="text"
-                      id={"services-search-input"}
-                      aria-autocomplete="none"
-                      aria-label={t("common.search")}
-                      autoComplete="off"
-                      tabIndex={0}
-                      onChange={($event) => {
-                        servicesChangeDebounce($event.target.value);
-                        $event.preventDefault();
-                        $event.stopPropagation();
-                      }}
-                    />
-                  </SearchInput>
                   {props.services.map((service) => (
                     <MemoizedServiceCard
                       key={service.id}

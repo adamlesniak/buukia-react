@@ -23,9 +23,19 @@
     "toggleViewWeek": "Week View"
   },
   "services": {
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "category": "Category",
+    "duration": "Duration",
+    "price": "Price",
     "unavailable": "Unavailable",
     "searchServices": "Search services...",
-    "noServicesFound": "No services found."
+    "noServicesFound": "No services found.",
+    "loadingError": "Error retrieving services. Please try again later.",
+    "title": "Services",
+    "addService": "Add Service",
+    "importServices": "Import Services"
   },
   "appointments": {
     "newAppointment": "New Appointment",
@@ -60,6 +70,8 @@
     "selectAnItem": "Please select an item.",
     "search": "Search",
     "dropdownItems": "Dropdown items",
-    "unknownError": "An unknown error occurred."
+    "unknownError": "An unknown error occurred.",
+    "total": "Total",
+    "items": "items"
   }
 }

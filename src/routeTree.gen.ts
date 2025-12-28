@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as ErrorIndexRouteImport } from './routes/error/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
 import { Route as AppointmentsDailyDateRouteImport } from './routes/appointments/daily/$date'
@@ -22,6 +23,11 @@ import { Route as AppointmentsDailyDateNewAssistantIdTimeRouteImport } from './r
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ErrorIndexRoute = ErrorIndexRouteImport.update({
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/appointments/': typeof AppointmentsIndexRoute
   '/error/': typeof ErrorIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/error'
+    | '/services'
     | '/appointments/daily/$date'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/error'
+    | '/services'
     | '/appointments/daily/$date'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments/'
     | '/error/'
+    | '/services/'
     | '/appointments/daily/$date'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppointmentsIndexRoute: typeof AppointmentsIndexRoute
   ErrorIndexRoute: typeof ErrorIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
   AppointmentsDailyDateRoute: typeof AppointmentsDailyDateRouteWithChildren
   AppointmentsWeeklyDateAssistantIdRoute: typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
 }
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/error/': {
@@ -255,6 +275,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppointmentsIndexRoute: AppointmentsIndexRoute,
   ErrorIndexRoute: ErrorIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
   AppointmentsDailyDateRoute: AppointmentsDailyDateRouteWithChildren,
   AppointmentsWeeklyDateAssistantIdRoute:
     AppointmentsWeeklyDateAssistantIdRouteWithChildren,

@@ -15,10 +15,9 @@ import { useAppointments, useAssistants } from "@/api";
 import {
   Calendar,
   CalendarBody,
-  CalendarError,
   CalendarHeader,
 } from "@/components/Calendar";
-import { ErrorDetail } from "@/components/Error";
+import { ErrorContainer, ErrorDetail } from "@/components/Error";
 import { MAX_ASSISTANTS, ViewType } from "@/constants.ts";
 
 // TODO: Handle error and pagination
@@ -139,9 +138,9 @@ export default function CalendarDaily() {
   return (
     <>
       {isError && (
-        <CalendarError>
+        <ErrorContainer>
           <ErrorDetail message={t("common.unknownError")} />
-        </CalendarError>
+        </ErrorContainer>
       )}
       {!isError && (
         <>

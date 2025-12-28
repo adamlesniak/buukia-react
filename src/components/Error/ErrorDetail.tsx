@@ -3,6 +3,13 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
+export const ErrorContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+`;
+
 const ErrorDetailContainer = styled.div`
   border-radius: 4px;
   font-weight: bold;

@@ -7,6 +7,7 @@ const StyledForm = styled.form`
   margin: 12px 0px;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 `;
 
 type FormProps = {
