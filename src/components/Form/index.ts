@@ -3,6 +3,8 @@ export * from "./Field";
 export * from "./Input";
 export * from "./Label";
 export * from "./Combobox";
+export * from "./SearchInput";
+export * from "./TextArea";
 
 import styled from "styled-components";
 
@@ -22,7 +24,9 @@ export const FormSummary = styled.div`
   border-top: 1px solid #f4f4f4;
 `;
 
-export const FieldError = styled.span<{ $textAlign?: "left" | "right" | "center" }>`
+export const FieldError = styled.span<{
+  $textAlign?: "left" | "right" | "center";
+}>`
   color: red;
   font-size: 12px;
   margin-top: 8px;

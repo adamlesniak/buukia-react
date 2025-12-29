@@ -35,7 +35,15 @@
     "loadingError": "Error retrieving services. Please try again later.",
     "title": "Services",
     "addService": "Add Service",
-    "importServices": "Import Services"
+    "importServices": "Import Services",
+    "service": "Service",
+    "detail": {
+      "name": "Name",
+      "description": "Description",
+      "category": "Category",
+      "duration": "Duration",
+      "price": "Price"
+    }
   },
   "appointments": {
     "newAppointment": "New Appointment",

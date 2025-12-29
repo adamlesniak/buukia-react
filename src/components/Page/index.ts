@@ -9,3 +9,4 @@ export const PageContainer = styled.div`
 
 export * from "./PageBody";
 export * from "./PageHeader";
+export * from "./PageSection";

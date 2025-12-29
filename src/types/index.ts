@@ -12,13 +12,31 @@ export interface UpdateAppointmentBody {
   time: string;
   serviceIds: string[];
 }
+export interface CreateServiceBody {
+  name: string;
+  category: string;
+  duration: number;
+  description: string;
+  price: number;
+}
 
+export interface UpdateServiceBody extends CreateServiceBody {
+  id: string;
+}
 
 export type AppointmentFormValues = {
   assistantName: string;
   clientName: string;
   time: string;
   services: BuukiaService[];
+};
+
+export type ServiceFormValues = {
+  category: string;
+  description: string;
+  duration: number;
+  name: string;
+  price: number;
 };
 
 export type BuukiaAssistant = {

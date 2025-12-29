@@ -1,3 +1,4 @@
+import type { HTMLAttributes } from "react";
 import styled from "styled-components";
 
 export const PageHeaderIcon = styled.div`
@@ -15,25 +16,25 @@ export const PageHeaderItem = styled.div`
   }
 
   button {
-    margin: 8px;
+    margin-left: 8px;
   }
 `;
 
 const PageHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
-  flex: 1;
   justify-content: space-between;
-  max-height: 90px;
 `;
 
 type PageHeaderProps = {
   children?: React.ReactNode;
 };
 
-export const PageHeader = (props: PageHeaderProps) => {
+export const PageHeader = (
+  props: PageHeaderProps & HTMLAttributes<HTMLDivElement>,
+) => {
   return (
-    <PageHeaderContainer data-testid="page-header">
+    <PageHeaderContainer {...props} data-testid="page-header">
       {props.children}
     </PageHeaderContainer>
   );
