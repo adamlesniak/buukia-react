@@ -104,7 +104,7 @@ export default function ServiceDetail() {
           title={t("services.service")}
           label={t("common.closeDrawer")}
         />
-        <DrawerContentBody>
+        <DrawerContentBody justifyContent={"start"}>
           {isError && (
             <ErrorDetail
               message={isError?.message || t("common.unknownError")}

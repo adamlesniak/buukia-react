@@ -15,7 +15,7 @@ export interface UpdateAppointmentBody {
 export interface CreateServiceBody {
   name: string;
   category: string;
-  duration: number;
+  duration: string;
   description: string;
   price: number;
 }
@@ -34,7 +34,7 @@ export type AppointmentFormValues = {
 export type ServiceFormValues = {
   category: string;
   description: string;
-  duration: number;
+  duration: string;
   name: string;
   price: number;
 };

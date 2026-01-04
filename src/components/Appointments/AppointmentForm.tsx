@@ -167,7 +167,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
 
   return (
     <>
-      <Form data-testid="appointment-form" onSubmit={handleSubmit(onSubmit)}>
+      <Form fullHeight={true} data-testid="appointment-form" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <MemoizedAppointmentFormFields
             register={register}

@@ -68,7 +68,7 @@ export default function Services() {
   } = useServices({ limit: MAX_PAGINATION, query: servicesQuery });
 
   const isError = !!servicesError;
-  console.log(services);
+
   return (
     <>
       {isError && (
@@ -144,7 +144,21 @@ export default function Services() {
                 </TableHeader>
                 <TableBody>
                   {services.map((service) => (
-                    <TableRow $type="body" key={service.id}>
+                    <TableRow
+                      onClick={() => {
+                        navigate({ to: `/services/${service.id}` });
+                      }}
+                      onKeyDown={(
+                        $event: React.KeyboardEvent<HTMLTableRowElement>,
+                      ) => {
+                        if ($event.key === "Enter") {
+                          navigate({ to: `/services/${service.id}` });
+                        }
+                      }}
+                      $type="body"
+                      key={service.id}
+                      tabIndex={0}
+                    >
                       <TableRowItem>{service.name}</TableRowItem>
                       <TableRowItem>{service.category}</TableRowItem>
                       <TableRowItem>{service.duration}</TableRowItem>

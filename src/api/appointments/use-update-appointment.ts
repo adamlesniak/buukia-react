@@ -95,8 +95,5 @@ export function useUpdateAppointment() {
         );
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: appointmentQueryKeys.all });
-    },
   });
 }

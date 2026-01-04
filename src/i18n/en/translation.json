@@ -37,12 +37,23 @@
     "addService": "Add Service",
     "importServices": "Import Services",
     "service": "Service",
+    "testService": "Basic Haircut",
+    "testDescription": "A simple haircut service.",
     "detail": {
       "name": "Name",
       "description": "Description",
       "category": "Category",
       "duration": "Duration",
-      "price": "Price"
+      "price": "Price",
+      "minutes": "minutes"
+    },
+    "form": {
+      "errors": {
+        "nameError": "Name is required",
+        "priceError": "Price is required",
+        "timeError": "Time is required",
+        "descriptionError": "Description is required"
+      }
     }
   },
   "appointments": {
@@ -76,6 +87,7 @@
     "closeDrawer": "Close Drawer",
     "noResults": "No results matching the term.",
     "selectAnItem": "Please select an item.",
+    "selectDuration": "Please select duration.",
     "search": "Search",
     "dropdownItems": "Dropdown items",
     "unknownError": "An unknown error occurred.",

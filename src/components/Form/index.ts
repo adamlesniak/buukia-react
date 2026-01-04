@@ -5,6 +5,7 @@ export * from "./Label";
 export * from "./Combobox";
 export * from "./SearchInput";
 export * from "./TextArea";
+export * from "./Select";
 
 import styled from "styled-components";
 
@@ -29,7 +30,7 @@ export const FieldError = styled.span<{
 }>`
   color: red;
   font-size: 12px;
-  margin-top: 8px;
+  /* margin-top: 8px; */
 
   ${({ $textAlign }) => $textAlign && `text-align: ${$textAlign};`}
 `;

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { MAX_PAGINATION } from "@/constants.ts";
 import type { BuukiaService, CreateServiceBody } from "@/types";
 
 import { serviceQueryKeys } from "./services-query-keys";
@@ -31,18 +32,22 @@ export function useCreateService() {
 
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: serviceQueryKeys.all });
+      await queryClient.cancelQueries({
+        queryKey: [...serviceQueryKeys.all, MAX_PAGINATION, ""],
+      });
 
       // Snapshot the previous value
-      const previousItems = queryClient.getQueryData<BuukiaService[]>(
-        serviceQueryKeys.all,
-      );
+      const previousItems = queryClient.getQueryData<BuukiaService[]>([
+        ...serviceQueryKeys.all,
+        MAX_PAGINATION,
+        "",
+      ]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(serviceQueryKeys.all, (old: BuukiaService[]) => [
-        ...(old || []),
-        item,
-      ]);
+      queryClient.setQueryData(
+        [...serviceQueryKeys.all, MAX_PAGINATION, ""],
+        (old: BuukiaService[]) => [item, ...(old || [])],
+      );
 
       // Return a context object with the snapshotted value
       return { previousItems };
@@ -50,7 +55,7 @@ export function useCreateService() {
     onSuccess: (data) => {
       queryClient.setQueryData(serviceQueryKeys.detail(data.id), data);
       queryClient.setQueryData<BuukiaService[]>(
-        [...serviceQueryKeys.all],
+        [...serviceQueryKeys.all, MAX_PAGINATION, ""],
         (old: BuukiaService[] | undefined) =>
           [...(old || [])].map((item) => {
             if (item.id === "current-service") {
@@ -64,7 +69,7 @@ export function useCreateService() {
     onError: (_error, _variables, context) => {
       if (context) {
         queryClient.setQueryData(
-          [...serviceQueryKeys.all],
+          [...serviceQueryKeys.all, MAX_PAGINATION, ""],
           context.previousItems,
         );
       }

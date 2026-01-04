@@ -7,7 +7,9 @@ import type {
   BuukiaClient,
   BuukiaService,
   CreateAppointmentBody,
+  CreateServiceBody,
   UpdateAppointmentBody,
+  UpdateServiceBody,
 } from "@/types";
 
 import data from "../routes/data.json";
@@ -48,6 +50,64 @@ export const handlers = [
         .slice(0, limit),
     );
   }),
+  http.get("/api/services/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = services.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Service not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post<never, CreateServiceBody>("/api/services", async ({ request }) => {
+    const body = await request.json();
+
+    const id = uuidv4();
+
+    const service = {
+      id,
+      name: body.name,
+      category: body.category,
+      duration: body.duration,
+      description: body.description,
+      price: body.price,
+    } as BuukiaService;
+    services.set(id, service);
+
+    return HttpResponse.json(service);
+  }),
+
+  http.put<never, UpdateServiceBody>(
+    "/api/services/:id",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const item = services.get(body.id);
+
+      if (!item) {
+        throw new Error("Item not found");
+      }
+
+      const service = {
+        id: item.id,
+        name: body.name,
+        category: body.category,
+        duration: body.duration,
+        description: body.description,
+        price: body.price,
+      } as BuukiaService;
+      services.set(item.id, service);
+
+      return HttpResponse.json(service);
+    },
+  ),
+
   http.get("/api/assistants", () =>
     HttpResponse.json(Array.from(assistants.values())),
   ),

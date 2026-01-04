@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { MAX_PAGINATION } from "@/constants.ts";
 import type { BuukiaService, UpdateServiceBody } from "@/types";
 
 import { serviceQueryKeys } from "./services-query-keys";
@@ -22,24 +23,30 @@ export function useUpdateService() {
     onMutate: async (service) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: serviceQueryKeys.all });
+      await queryClient.cancelQueries({
+        queryKey: [...serviceQueryKeys.all, MAX_PAGINATION, ""],
+      });
 
       // Snapshot the previous value
-      const previousItems = queryClient.getQueryData<BuukiaService[]>(
-        serviceQueryKeys.all,
-      );
+      const previousItems = queryClient.getQueryData<BuukiaService[]>([
+        ...serviceQueryKeys.all,
+        MAX_PAGINATION,
+        "",
+      ]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(serviceQueryKeys.all, (old: BuukiaService[]) =>
-        [...(old || [])].map((item) => {
-          if (item.id === service.id) {
-            return {
-              ...item,
-            };
-          }
+      queryClient.setQueryData(
+        [...serviceQueryKeys.all, MAX_PAGINATION, ""],
+        (old: BuukiaService[]) =>
+          [...(old || [])].map((item) => {
+            if (item.id === service.id) {
+              return {
+                ...service,
+              };
+            }
 
-          return item;
-        }),
+            return item;
+          }),
       );
 
       // Return a context object with the snapshotted value
@@ -51,13 +58,10 @@ export function useUpdateService() {
     onError: (_error, _variables, context) => {
       if (context) {
         queryClient.setQueryData(
-          [...serviceQueryKeys.all],
+          [...serviceQueryKeys.all, MAX_PAGINATION, ""],
           context.previousItems,
         );
       }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: serviceQueryKeys.all });
     },
   });
 }

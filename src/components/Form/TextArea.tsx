@@ -9,6 +9,7 @@ const StyledTextArea = styled.textarea`
   border: 1px solid #e0e0e0;
   margin: 4px 0px;
   font-size: 14px;
+  resize: none;
 `;
 
 type TextAreaProps = {
