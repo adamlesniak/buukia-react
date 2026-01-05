@@ -24,6 +24,14 @@ export interface UpdateServiceBody extends CreateServiceBody {
   id: string;
 }
 
+export interface CreateCategoryBody {
+  name: string;
+}
+
+export interface UpdateCategoryBody extends CreateCategoryBody {
+  id: string;
+}
+
 export type AppointmentFormValues = {
   assistantName: string;
   clientName: string;
@@ -55,7 +63,7 @@ export type BuukiaService = {
   description: string;
   business: string;
   category: string;
-  duration: number;
+  duration: string;
   name: string;
   price: number;
 };
@@ -78,11 +86,17 @@ export type BuukiaAppointment = {
   services: BuukiaService[];
 };
 
+export type BuukiaCategory = {
+  id: string;
+  name: string;
+};
+
 export type MockData = {
   appointments: BuukiaAppointment[];
   assistants: BuukiaAssistant[];
   clients: BuukiaClient[];
   services: BuukiaService[];
+  categories: BuukiaCategory[];
 };
 
 // API Response Types

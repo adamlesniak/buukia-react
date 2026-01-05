@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
-import { ImportIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -89,12 +89,7 @@ export default function Services() {
             </PageHeaderItem>
 
             <PageHeaderItem>
-              <Button type="button">
-                <ImportIcon size={16} />
-                <span>{t("services.importServices")}</span>
-              </Button>
-
-              <Button
+               <Button
                 type="button"
                 onClick={() => {
                   navigate({ to: "/services/new" });
@@ -103,6 +98,8 @@ export default function Services() {
                 <PlusIcon size={16} />
                 <span>{t("services.addService")}</span>
               </Button>
+
+
             </PageHeaderItem>
           </PageHeader>
           <PageBody>

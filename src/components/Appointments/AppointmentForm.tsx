@@ -83,7 +83,8 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
       [currentServices],
     ),
     useMemo(
-      () => currentServices.reduce((sum, next) => sum + next.duration, 0),
+      () =>
+        currentServices.reduce((sum, next) => sum + parseInt(next.duration), 0),
       [currentServices],
     ),
   ];
@@ -167,7 +168,11 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
 
   return (
     <>
-      <Form fullHeight={true} data-testid="appointment-form" onSubmit={handleSubmit(onSubmit)}>
+      <Form
+        fullHeight={true}
+        data-testid="appointment-form"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div>
           <MemoizedAppointmentFormFields
             register={register}

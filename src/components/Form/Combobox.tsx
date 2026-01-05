@@ -1,5 +1,5 @@
 import debounce from "debounce";
-import { ChevronDown, LoaderCircle, Search } from "lucide-react";
+import { ChevronDown, LoaderCircle, PlusIcon, Search } from "lucide-react";
 import {
   useId,
   useRef,
@@ -71,6 +71,13 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
   }
 `;
 
+const StyledComboboxButton = styled.button`
+  cursor: pointer;
+  padding: 0px;
+  margin: 0px;
+  border-left: 1px solid #e0e0e0;
+`;
+
 const StyledComboboxSearch = styled(SearchInput)`
   border: 0px;
   border-bottom: 1px solid #e0e0e0;
@@ -115,6 +122,7 @@ const StyledComboboxContainerInput = styled.div<{ $disabled?: boolean }>`
 type ComboboxProps = {
   children?: React.ReactNode;
   onSearchChange?: (value: string) => void;
+  onAdd?: (item: unknown) => void;
   items: { id: string; name: string }[];
   limitItemsDisplay?: number;
   loading?: boolean;
@@ -315,6 +323,11 @@ export function Combobox(
                   setIsOpen(false);
                 }}
               />
+              {props.onAdd && (
+                <StyledComboboxButton onClick={props.onAdd}>
+                  <PlusIcon size={20} />
+                </StyledComboboxButton>
+              )}
             </StyledComboboxSearch>
           )}
 

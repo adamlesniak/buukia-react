@@ -30,7 +30,6 @@ export const FieldError = styled.span<{
 }>`
   color: red;
   font-size: 12px;
-  /* margin-top: 8px; */
 
   ${({ $textAlign }) => $textAlign && `text-align: ${$textAlign};`}
 `;

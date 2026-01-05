@@ -2,11 +2,16 @@ import { memo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import type { CreateServiceBody, ServiceFormValues } from "@/types";
+import type {
+  BuukiaCategory,
+  CreateServiceBody,
+  ServiceFormValues,
+} from "@/types";
 import { serviceFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
 import {
+  Combobox,
   Field,
   FieldError,
   Form,
@@ -21,6 +26,9 @@ type ServiceFormProps = {
   values: ServiceFormValues;
   serviceId: string;
   isLoading: boolean;
+  categories: BuukiaCategory[];
+  categoriesIsLoading: boolean;
+  onCategorySearch: (query: string) => void;
   onSubmit: (data: CreateServiceBody) => void;
 };
 
@@ -38,7 +46,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
     },
     resolver: validateResolver(serviceFormSchema),
   });
-
+  console.log("props.categories", props.categories);
   const onSubmit = (data: ServiceFormValues) => {
     const body: CreateServiceBody = {
       name: data.name,
@@ -76,23 +84,20 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           <Label id={"service-category-label"} htmlFor="service-category-input">
             {t("services.detail.category")}
           </Label>
-          <Select
+          <Combobox
             {...register("category")}
-            data-testid="service-category-input"
             id="service-category-input"
-          >
-            <option value="" disabled selected>
-              {t("common.selectAnItem")}
-            </option>
-            {["Beauty", "Health", "Wellness"].map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </Select>
+            data-testid="service-category-input"
+            valueKey="name"
+            items={props.categories}
+            disabled={false}
+            onSearchChange={props.onCategorySearch}
+            loading={props.isLoading}
+            search={true}
+          ></Combobox>
           {errors.category && (
             <FieldError role="alert">
-              {t("services.form.errors.nameError")}
+              {t("services.form.errors.categoryError")}
             </FieldError>
           )}
         </Field>
@@ -140,7 +145,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
             data-testid="service-duration-input"
             id="service-duration-input"
           >
-            <option value="0" disabled selected>
+            <option value="" disabled selected>
               {t("common.selectAnItem")}
             </option>
             {[15, 30, 45, 60, 75, 90, 105, 120].map((duration) => (

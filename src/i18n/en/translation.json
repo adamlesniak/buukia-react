@@ -35,6 +35,7 @@
     "loadingError": "Error retrieving services. Please try again later.",
     "title": "Services",
     "addService": "Add Service",
+    "addCategory": "Add category",
     "importServices": "Import Services",
     "service": "Service",
     "testService": "Basic Haircut",
@@ -52,7 +53,8 @@
         "nameError": "Name is required",
         "priceError": "Price is required",
         "timeError": "Time is required",
-        "descriptionError": "Description is required"
+        "descriptionError": "Description is required",
+        "categoryError": "Category is required"
       }
     }
   },

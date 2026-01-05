@@ -1,8 +1,9 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useCreateService, useService, useUpdateService } from "@/api";
+import { useCategories } from "@/api/categories";
 import {
   Drawer,
   DrawerContent,
@@ -11,6 +12,7 @@ import {
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error";
 import { ServiceForm } from "@/components/Services/ServiceForm";
+import { MAX_PAGINATION } from "@/constants.ts";
 import type {
   BuukiaService,
   CreateServiceBody,
@@ -22,6 +24,7 @@ export default function ServiceDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [categoriesQuery, setCategoriesQuery] = useState("");
   const [createService, updateService] = [
     useCreateService(),
     useUpdateService(),
@@ -59,6 +62,13 @@ export default function ServiceDetail() {
   );
 
   const {
+    data: categories = [],
+    error: categoriesError,
+    isLoading: categoriesLoading,
+    refetch: refetchCategories,
+    isRefetching: categoriesIsRefetching,
+  } = useCategories({ limit: MAX_PAGINATION, query: "" });
+  const {
     data: service,
     isLoading: serviceLoading,
     error: serviceError,
@@ -68,7 +78,7 @@ export default function ServiceDetail() {
           business: "",
           category: "",
           description: "",
-          duration: 0,
+          duration: "",
           id: "",
           name: "",
           price: 0,
@@ -82,15 +92,21 @@ export default function ServiceDetail() {
     () => ({
       category: service?.category || "",
       description: service?.description || "",
-      duration: service?.duration || 0,
+      duration: service?.duration.toString() || "",
       price: service?.price || 0,
       name: service?.name || "",
     }),
     [service?.id],
   );
 
-  const isError = serviceError;
-  const isLoading = serviceLoading;
+  useEffect(() => {
+    if (categoriesQuery !== "") {
+      refetchCategories();
+    }
+  }, [categoriesQuery]);
+
+  const isError = serviceError || categoriesError;
+  const isLoading = serviceLoading || categoriesLoading;
 
   const onClose = () => {
     navigate({ to: `/services` });
@@ -113,6 +129,9 @@ export default function ServiceDetail() {
           {!isError && (
             <ServiceForm
               serviceId={service?.id || ""}
+              categories={categories}
+              onCategorySearch={(query) => setCategoriesQuery(query)}
+              categoriesIsLoading={categoriesIsRefetching}
               values={formValues}
               onSubmit={submit}
               isLoading={isLoading}
