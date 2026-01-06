@@ -5,9 +5,7 @@ import type {
   BuukiaService,
 } from "@/types";
 
-import { Card } from "../Card";
-
-import { ServiceCardDescription } from "./ServiceCardDescription";
+import { Card, CardDescription } from "../Card";
 
 import { ServiceCardActions } from ".";
 
@@ -25,7 +23,7 @@ export type MemoizedServiceCardProps = {
 export const MemoizedServiceCard = memo((props: MemoizedServiceCardProps) => {
   return (
     <Card data-testid="services-list-item" key={props.service.id}>
-      <ServiceCardDescription
+      <CardDescription
         title={`${props.service.name} (${props.service.duration} min)`}
         description={props.service.description}
         price={`€${props.service.price}`}

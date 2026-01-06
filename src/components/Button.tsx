@@ -13,7 +13,7 @@ const StyledButton = styled.button<{
   text-align: center;
   justify-content: center;
   flex-direction: row;
-
+  align-items: center;
   color: ${(props) => (props.$disabled ? "gray" : "initial")};
 
   span {

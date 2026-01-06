@@ -122,7 +122,7 @@ const StyledComboboxContainerInput = styled.div<{ $disabled?: boolean }>`
 type ComboboxProps = {
   children?: React.ReactNode;
   onSearchChange?: (value: string) => void;
-  onAdd?: (item: unknown) => void;
+  onAdd?: (item: MouseEvent<HTMLDivElement>) => void;
   items: { id: string; name: string }[];
   limitItemsDisplay?: number;
   loading?: boolean;
@@ -290,39 +290,47 @@ export function Combobox(
         >
           {props.search && (
             <StyledComboboxSearch data-testid="search">
-              {props.loading ? (
-                <LoaderCircle size={20} />
+              {props.onSearchChange ? (
+                props.loading ? (
+                  <LoaderCircle size={20} />
+                ) : (
+                  <Search size={20} />
+                )
               ) : (
-                <Search size={20} />
+                <></>
               )}
-              <Input
-                type="text"
-                id={inputId}
-                aria-autocomplete="none"
-                aria-label={t("common.search")}
-                autoComplete="off"
-                role={"combobox"}
-                tabIndex={0}
-                ref={inputSearchRef}
-                onKeyDown={($event: KeyboardEvent<HTMLInputElement>) => {
-                  if (
-                    $event.key === "ArrowDown" ||
-                    $event.key === "ArrowUp" ||
-                    $event.key === "Enter"
-                  ) {
-                    handleDropdownSelection($event);
-                  }
-                }}
-                onChange={($event: ChangeEvent<HTMLInputElement>) => {
-                  if (props.onSearchChange) {
-                    searchChangeDebounce($event.target.value);
-                  }
-                }}
-                onBlur={() => {
-                  searchChangeDebounce("");
-                  setIsOpen(false);
-                }}
-              />
+              {props.onSearchChange ? (
+                <Input
+                  type="text"
+                  id={inputId}
+                  aria-autocomplete="none"
+                  aria-label={t("common.search")}
+                  autoComplete="off"
+                  role={"combobox"}
+                  tabIndex={0}
+                  ref={inputSearchRef}
+                  onKeyDown={($event: KeyboardEvent<HTMLInputElement>) => {
+                    if (
+                      $event.key === "ArrowDown" ||
+                      $event.key === "ArrowUp" ||
+                      $event.key === "Enter"
+                    ) {
+                      handleDropdownSelection($event);
+                    }
+                  }}
+                  onChange={($event: ChangeEvent<HTMLInputElement>) => {
+                    if (props.onSearchChange) {
+                      searchChangeDebounce($event.target.value);
+                    }
+                  }}
+                  onBlur={() => {
+                    searchChangeDebounce("");
+                    setIsOpen(false);
+                  }}
+                />
+              ) : (
+                <></>
+              )}
               {props.onAdd && (
                 <StyledComboboxButton onClick={props.onAdd}>
                   <PlusIcon size={20} />

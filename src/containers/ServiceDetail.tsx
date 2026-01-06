@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useCreateService, useService, useUpdateService } from "@/api";
-import { useCategories } from "@/api/categories";
+import { useCategories, useCreateCategory } from "@/api/categories";
 import {
   Drawer,
   DrawerContent,
@@ -15,6 +15,7 @@ import { ServiceForm } from "@/components/Services/ServiceForm";
 import { MAX_PAGINATION } from "@/constants.ts";
 import type {
   BuukiaService,
+  CreateCategoryBody,
   CreateServiceBody,
   ServiceFormValues,
   UpdateServiceBody,
@@ -25,9 +26,10 @@ export default function ServiceDetail() {
   const navigate = useNavigate();
 
   const [categoriesQuery, setCategoriesQuery] = useState("");
-  const [createService, updateService] = [
+  const [createService, updateService, createCategory] = [
     useCreateService(),
     useUpdateService(),
+    useCreateCategory(),
   ];
 
   const {
@@ -40,23 +42,28 @@ export default function ServiceDetail() {
   const isNew = !serviceId;
 
   const submit = useCallback(
-    async (data: CreateServiceBody) => {
-      if (isNew) {
-        return createService.mutate(data, {
-          onSuccess: () => {
-            onClose();
+    async (data: CreateServiceBody | CreateCategoryBody) => {
+      console.log('submit', data);
+      if ("category" in data) {
+        if (isNew) {
+          return createService.mutate(data as CreateServiceBody, {
+            onSuccess: () => {
+              onClose();
+            },
+          });
+        }
+
+        return updateService.mutate(
+          { ...data, id: serviceId } as UpdateServiceBody,
+          {
+            onSuccess: () => {
+              onClose();
+            },
           },
-        });
+        );
       }
 
-      return updateService.mutate(
-        { ...data, id: serviceId } as UpdateServiceBody,
-        {
-          onSuccess: () => {
-            onClose();
-          },
-        },
-      );
+      return createCategory.mutate(data as CreateCategoryBody);
     },
     [serviceId],
   );

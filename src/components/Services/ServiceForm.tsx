@@ -1,15 +1,22 @@
-import { memo } from "react";
+import { TrashIcon } from "lucide-react";
+import { memo, useCallback, useState } from "react";
+import { FocusScope } from "react-aria";
+import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import type {
   BuukiaCategory,
+  CreateCategoryBody,
   CreateServiceBody,
+  NewCategoryFormValues,
   ServiceFormValues,
 } from "@/types";
 import { serviceFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
+import { Card, CardDescription } from "../Card";
+import { MemoizedDrawerHeaderH3 } from "../Drawer";
 import {
   Combobox,
   Field,
@@ -21,6 +28,7 @@ import {
   Select,
   TextArea,
 } from "../Form";
+import { Modal, ModalBody, Overlay } from "../Modal";
 
 type ServiceFormProps = {
   values: ServiceFormValues;
@@ -29,7 +37,7 @@ type ServiceFormProps = {
   categories: BuukiaCategory[];
   categoriesIsLoading: boolean;
   onCategorySearch: (query: string) => void;
-  onSubmit: (data: CreateServiceBody) => void;
+  onSubmit: (data: CreateServiceBody | CreateCategoryBody) => void;
 };
 
 export const ServiceForm = memo((props: ServiceFormProps) => {
@@ -46,18 +54,41 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
     },
     resolver: validateResolver(serviceFormSchema),
   });
-  console.log("props.categories", props.categories);
-  const onSubmit = (data: ServiceFormValues) => {
-    const body: CreateServiceBody = {
-      name: data.name,
-      category: data.category,
-      duration: data.duration,
-      price: data.price,
-      description: data.description,
-    };
+  const {
+    register: registerNewCategoryForm,
+    handleSubmit: handleSubmitNewCategoryForm,
+  } = useForm<NewCategoryFormValues>({
+    values: {
+      name: "",
+    },
+  });
 
-    props.onSubmit(body);
+  const [showModal, setShowModal] = useState(false);
+
+  const onSubmit = (data: ServiceFormValues | NewCategoryFormValues) => {
+    if ("category" in data) {
+      const body: CreateServiceBody = {
+        name: data.name,
+        category: data.category,
+        duration: data.duration,
+        price: data.price,
+        description: data.description,
+      };
+
+      props.onSubmit(body);
+    } else {
+      const body: CreateCategoryBody = {
+        name: data.name,
+      };
+
+      props.onSubmit(body);
+    }
   };
+
+  const modalClose = useCallback(() => {
+    props.onCategorySearch("");
+    setShowModal(false);
+  }, [props.serviceId]);
 
   return (
     <>
@@ -91,9 +122,13 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
             valueKey="name"
             items={props.categories}
             disabled={false}
-            onSearchChange={props.onCategorySearch}
             loading={props.isLoading}
             search={true}
+            onAdd={($event: React.MouseEvent<HTMLDivElement>) => {
+              setShowModal(true);
+              $event.preventDefault();
+              $event.stopPropagation();
+            }}
           ></Combobox>
           {errors.category && (
             <FieldError role="alert">
@@ -192,6 +227,81 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           </Button>
         </FormSummary>
       </Form>
+      {showModal &&
+        createPortal(
+          <Overlay onClick={() => setShowModal(false)}>
+            <Modal
+              onClick={($event) => {
+                $event.stopPropagation();
+              }}
+              data-testid="services-modal"
+            >
+              <FocusScope autoFocus restoreFocus contain>
+                <MemoizedDrawerHeaderH3
+                  title={t("services.addCategory")}
+                  onClose={modalClose}
+                  label={t("common.closeModal")}
+                />
+
+                <Form
+                  fullHeight={true}
+                  data-testid="add-category-form"
+                  onSubmit={handleSubmitNewCategoryForm(onSubmit)}
+                >
+                  <Field style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Input
+                      {...registerNewCategoryForm("name")}
+                      id="category-name-input"
+                      type="text"
+                      data-testid="category-name-input"
+                      placeholder={t("services.testCategory")}
+                      style={{ flex: 4, borderRadius: "12px 0px 0px 12px" }}
+                    />
+                    {errors.name && (
+                      <FieldError role="alert">
+                        {t("services.form.errors.nameError")}
+                      </FieldError>
+                    )}
+                    <Button
+                      size="sm"
+                      tabIndex={0}
+                      type="submit"
+                      style={{
+                        flex: 1,
+                        height: "37px",
+                        borderRadius: "0px 12px 12px 0px",
+                      }}
+                    >
+                      {t("services.addCategory")}
+                    </Button>
+                  </Field>
+
+                  <ModalBody tabIndex={-1} data-testid="create-category-modal">
+                    {props.categories &&
+                      props.categories.length > 0 &&
+                      props.categories.map((category) => (
+                        <Card
+                          data-testid="category-list-item"
+                          key={category.id}
+                        >
+                          <CardDescription title={`${category.name}`} />
+                          <Button
+                            size="sm"
+                            tabIndex={0}
+                            onClick={() => {}}
+                            type="button"
+                          >
+                            <TrashIcon />
+                          </Button>
+                        </Card>
+                      ))}
+                  </ModalBody>
+                </Form>
+              </FocusScope>
+            </Modal>
+          </Overlay>,
+          document.body,
+        )}
     </>
   );
 });

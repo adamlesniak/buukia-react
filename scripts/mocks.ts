@@ -45,6 +45,10 @@ const serviceCategories: BusinessCategory[] = [
   "Wellness",
   "Health",
   "Fitness",
+  "Facials",
+  "Massage",
+  "Haircare",
+  "Nailcare",
 ];
 
 export const createService = (): BuukiaService => {

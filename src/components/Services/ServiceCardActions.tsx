@@ -37,7 +37,7 @@ export function ServiceCardActions(props: ServiceCardActionsProps) {
         return isAfter(
           addMinutes(
             new Date(props.currentAppointment.time),
-            props.service.duration + props.servicesDurationSum,
+            parseInt(props.service.duration) + props.servicesDurationSum,
           ).toISOString(),
           appointment.time,
         );

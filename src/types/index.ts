@@ -39,6 +39,10 @@ export type AppointmentFormValues = {
   services: BuukiaService[];
 };
 
+export type NewCategoryFormValues = {
+  name: string;
+};
+
 export type ServiceFormValues = {
   category: string;
   description: string;
@@ -122,7 +126,7 @@ export type ComboboxItem = {
 };
 
 // Business Types
-export type BusinessCategory = "Beauty" | "Wellness" | "Health" | "Fitness";
+export type BusinessCategory = string;
 
 export type AvailabilitySlot = {
   dayOfWeek: number;
