@@ -223,4 +223,171 @@ describe("ServiceForm", () => {
       ).toBeInTheDocument();
     });
   });
+
+  describe("modal", () => {
+    it("should show list of categories", async () => {
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceForm
+            serviceId={createService().id}
+            onSubmit={() => {}}
+            values={testProps}
+            isLoading={false}
+            categories={data.categories}
+            categoriesIsLoading={false}
+            deleteCategory={() => {}}
+            onCategorySearch={() => {}}
+          />
+        </QueryClientProvider>,
+      );
+      await user.click(screen.getByTestId("combobox-container-input"));
+      await user.click(screen.getByText("services.addCategory"));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("services.manageCategories"),
+        ).toBeInTheDocument();
+        expect(screen.getByTestId("category-name-input")).toBeInTheDocument();
+
+        const categories = screen.queryAllByTestId("category-list-item");
+
+        expect(categories.length).toEqual(data.categories.length);
+      });
+    });
+
+    it("should show error on add new category submit when input is empty", async () => {
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceForm
+            serviceId={createService().id}
+            onSubmit={() => {}}
+            values={testProps}
+            isLoading={false}
+            categories={data.categories}
+            categoriesIsLoading={false}
+            deleteCategory={() => {}}
+            onCategorySearch={() => {}}
+          />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByTestId("combobox-container-input"));
+      await user.click(screen.getByText("services.addCategory"));
+
+      await waitFor(async () => {
+        const addCategoryForm = screen.getByTestId("add-category-form");
+
+        const button = addCategoryForm.querySelector("button");
+        await user.click(button!);
+
+        expect(screen.getByText("common.requiredField")).toBeInTheDocument();
+      });
+    });
+
+    it("should call deleteCategory props", async () => {
+      const deleteCategoryMock = vi.fn();
+
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceForm
+            serviceId={createService().id}
+            onSubmit={() => {}}
+            values={testProps}
+            isLoading={false}
+            categories={data.categories}
+            categoriesIsLoading={false}
+            deleteCategory={deleteCategoryMock}
+            onCategorySearch={() => {}}
+          />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByTestId("combobox-container-input"));
+      await user.click(screen.getByText("services.addCategory"));
+
+      await waitFor(async () => {
+        await user.click(
+          screen
+            .getAllByTestId("category-list-item")[0]
+            .querySelector("button")!,
+        );
+
+        expect(deleteCategoryMock).toHaveBeenCalledWith(data.categories[0].id);
+      });
+    });
+
+    it("should close modal and call onSubmit", async () => {
+      const onSubmitMock = vi.fn();
+
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceForm
+            serviceId={createService().id}
+            onSubmit={onSubmitMock}
+            values={testProps}
+            isLoading={false}
+            categories={data.categories}
+            categoriesIsLoading={false}
+            deleteCategory={() => {}}
+            onCategorySearch={() => {}}
+          />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByTestId("combobox-container-input"));
+      await user.click(screen.getByText("services.addCategory"));
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByTestId("category-name-input"),
+          "New Category",
+        );
+        const addCategoryForm = screen.getByTestId("add-category-form");
+
+        const button = addCategoryForm.querySelector("button");
+        await user.click(button!);
+
+        expect(onSubmitMock).toHaveBeenCalledWith({ name: "New Category" });
+      });
+    });
+
+     it("should close modal on close button select", async () => {
+      const onSubmitMock = vi.fn();
+
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceForm
+            serviceId={createService().id}
+            onSubmit={onSubmitMock}
+            values={testProps}
+            isLoading={false}
+            categories={data.categories}
+            categoriesIsLoading={false}
+            deleteCategory={() => {}}
+            onCategorySearch={() => {}}
+          />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByTestId("combobox-container-input"));
+      await user.click(screen.getByText("services.addCategory"));
+      await user.click(screen.getByLabelText("common.closeModal"));
+
+      await waitFor(async () => {
+        expect(
+          screen.queryByText("services.manageCategories"),
+        ).not.toBeInTheDocument();
+      });
+    });
+  });
 });

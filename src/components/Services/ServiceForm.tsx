@@ -247,7 +247,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
             >
               <FocusScope autoFocus restoreFocus contain>
                 <MemoizedDrawerHeaderH3
-                  title={t("services.addCategory")}
+                  title={t("services.manageCategories")}
                   onClose={modalClose}
                   label={t("common.closeModal")}
                 />
