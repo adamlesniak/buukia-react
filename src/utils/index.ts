@@ -5,6 +5,7 @@ import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys
 import type {
   BuukiaAppointment,
   BuukiaAssistant,
+  BuukiaCategory,
   BuukiaClient,
   BuukiaService,
 } from "@/types";
@@ -91,6 +92,12 @@ export const createClient = (item?: Partial<BuukiaClient>) => ({
   email: "",
   phone: "",
   appointments: [],
+  ...item,
+});
+
+export const createCategory = (item?: Partial<BuukiaCategory>) => ({
+  id: "",
+  name: "",
   ...item,
 });
 

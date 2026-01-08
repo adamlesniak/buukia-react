@@ -315,7 +315,7 @@ describe("AppointmentForm", () => {
       });
     });
 
-    it("should ensure that inputs and buttons are disabled when loading", async () => {
+    it("should ensure that submit button is disabled when loading", async () => {
       const queryClient = new QueryClient();
 
       render(
@@ -341,13 +341,71 @@ describe("AppointmentForm", () => {
         expect(
           screen.queryByText("appointments.detail.client"),
         ).toBeInTheDocument();
+        expect(screen.queryByText("common.submit")).toBeDisabled();
+      });
+    });
+
+    it("should ensure that clients inputs disabled when loading", async () => {
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AppointmentForm
+            appointmentId={createAppointment().id}
+            assistantId={createAssistant().id}
+            clients={data.clients}
+            onClientsSearch={() => {}}
+            onServicesSearch={() => {}}
+            services={data.services}
+            onSubmit={() => {}}
+            todaysAppointments={[]}
+            values={testProps}
+            isLoading={false}
+            clientsRefetching={false}
+            servicesRefetching={true}
+          />
+        </QueryClientProvider>,
+      );
+
+      await waitFor(() => {
         expect(
-          screen.queryByTestId("client-name-input")?.querySelector("input"),
-        ).toBeDisabled();
+          screen.queryByText("appointments.detail.client"),
+        ).toBeInTheDocument();
         expect(
           screen.queryByText("appointments.detail.addService"),
         ).toBeDisabled();
-        expect(screen.queryByText("common.submit")).toBeDisabled();
+      });
+    });
+
+    it("should ensure that client input is disabled when loading", async () => {
+      const queryClient = new QueryClient();
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AppointmentForm
+            appointmentId={createAppointment().id}
+            assistantId={createAssistant().id}
+            clients={data.clients}
+            onClientsSearch={() => {}}
+            onServicesSearch={() => {}}
+            services={data.services}
+            onSubmit={() => {}}
+            todaysAppointments={[]}
+            values={testProps}
+            isLoading={false}
+            clientsRefetching={true}
+            servicesRefetching={false}
+          />
+        </QueryClientProvider>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText("appointments.detail.client"),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByTestId("client-name-input")?.querySelector("input"),
+        ).toBeDisabled();
       });
     });
   });

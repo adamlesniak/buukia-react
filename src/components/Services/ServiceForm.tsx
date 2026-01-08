@@ -12,7 +12,11 @@ import type {
   NewCategoryFormValues,
   ServiceFormValues,
 } from "@/types";
-import { serviceFormSchema, validateResolver } from "@/validators";
+import {
+  serviceFormSchema,
+  validateResolver,
+  categoryFormSchema,
+} from "@/validators";
 
 import { Button } from "../Button";
 import { Card, CardDescription } from "../Card";
@@ -36,6 +40,7 @@ type ServiceFormProps = {
   isLoading: boolean;
   categories: BuukiaCategory[];
   categoriesIsLoading: boolean;
+  deleteCategory: (categoryId: string) => void;
   onCategorySearch: (query: string) => void;
   onSubmit: (data: CreateServiceBody | CreateCategoryBody) => void;
 };
@@ -57,10 +62,12 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
   const {
     register: registerNewCategoryForm,
     handleSubmit: handleSubmitNewCategoryForm,
+    formState: { errors: errorsNewCategoryForm },
   } = useForm<NewCategoryFormValues>({
     values: {
       name: "",
     },
+    resolver: validateResolver(categoryFormSchema),
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -124,7 +131,8 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
             disabled={false}
             loading={props.isLoading}
             search={true}
-            onAdd={($event: React.MouseEvent<HTMLDivElement>) => {
+            addButtonText={t("services.addCategory")}
+            onAdd={($event: React.MouseEvent<HTMLButtonElement>) => {
               setShowModal(true);
               $event.preventDefault();
               $event.stopPropagation();
@@ -248,32 +256,43 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
                   data-testid="add-category-form"
                   onSubmit={handleSubmitNewCategoryForm(onSubmit)}
                 >
-                  <Field style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Input
-                      {...registerNewCategoryForm("name")}
-                      id="category-name-input"
-                      type="text"
-                      data-testid="category-name-input"
-                      placeholder={t("services.testCategory")}
-                      style={{ flex: 4, borderRadius: "12px 0px 0px 12px" }}
-                    />
-                    {errors.name && (
-                      <FieldError role="alert">
-                        {t("services.form.errors.nameError")}
-                      </FieldError>
-                    )}
-                    <Button
-                      size="sm"
-                      tabIndex={0}
-                      type="submit"
+                  <Field>
+                    <div
                       style={{
-                        flex: 1,
-                        height: "37px",
-                        borderRadius: "0px 12px 12px 0px",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginBottom: "0px",
+                        width: "100%",
+                        display: "flex",
                       }}
                     >
-                      {t("services.addCategory")}
-                    </Button>
+                      <Input
+                        {...registerNewCategoryForm("name")}
+                        id="category-name-input"
+                        type="text"
+                        data-testid="category-name-input"
+                        placeholder={t("services.testCategory")}
+                        style={{ flex: 4, borderRadius: "12px 0px 0px 12px" }}
+                      />
+
+                      <Button
+                        size="sm"
+                        tabIndex={0}
+                        type="submit"
+                        style={{
+                          flex: 1,
+                          height: "37px",
+                          borderRadius: "0px 12px 12px 0px",
+                        }}
+                      >
+                        {t("services.addCategory")}
+                      </Button>
+                    </div>
+                    {errorsNewCategoryForm.name && (
+                      <FieldError role="alert">
+                        {t("common.requiredField")}
+                      </FieldError>
+                    )}
                   </Field>
 
                   <ModalBody tabIndex={-1} data-testid="create-category-modal">
@@ -288,7 +307,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
                           <Button
                             size="sm"
                             tabIndex={0}
-                            onClick={() => {}}
+                            onClick={() => props.deleteCategory(category.id)}
                             type="button"
                           >
                             <TrashIcon />

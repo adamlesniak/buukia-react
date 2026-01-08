@@ -71,6 +71,7 @@ export const handlers = [
         .slice(0, limit),
     );
   }),
+
   http.get("/api/categories/:id", (req) => {
     const { id } = req.params as { id: string };
 
@@ -123,6 +124,21 @@ export const handlers = [
     },
   ),
 
+  http.delete("/api/categories/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = categories.delete(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Category not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
   http.get("/api/services", ({ request }) => {
     const [limitParam, query] = [
       new URL(request.url).searchParams.get("limit"),
@@ -138,6 +154,7 @@ export const handlers = [
         .slice(0, limit),
     );
   }),
+
   http.get("/api/services/:id", (req) => {
     const { id } = req.params as { id: string };
 
@@ -195,6 +212,21 @@ export const handlers = [
       return HttpResponse.json(service);
     },
   ),
+
+  http.delete("/api/services/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = services.delete(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Service not found" },
+        { status: 404 },
+      );
+    }
+  }),
 
   http.get("/api/assistants", () =>
     HttpResponse.json(Array.from(assistants.values())),

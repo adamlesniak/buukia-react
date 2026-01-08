@@ -79,13 +79,20 @@ describe("Combobox Component", () => {
   });
 
   it("should render the search input", async () => {
-    render(<Combobox valueKey="name" search={true} items={mockItems} />);
+    render(
+      <Combobox
+        valueKey="name"
+        search={true}
+        items={mockItems}
+        onSearchChange={() => {}}
+      />,
+    );
 
     await user.click(screen.getByTestId("combobox-container-input"));
 
     const search = screen.getByTestId("combobox-dropdown");
 
     expect(search).toBeInTheDocument();
-    expect(search.querySelector('svg')).toBeInTheDocument();
+    expect(search.querySelector("svg")).toBeInTheDocument();
   });
 });

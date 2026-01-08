@@ -2,8 +2,14 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useCreateService, useService, useUpdateService } from "@/api";
-import { useCategories, useCreateCategory } from "@/api/categories";
+import {
+  useCreateService,
+  useService,
+  useUpdateService,
+  useCategories,
+  useCreateCategory,
+  useDeleteCategory,
+} from "@/api";
 import {
   Drawer,
   DrawerContent,
@@ -26,10 +32,11 @@ export default function ServiceDetail() {
   const navigate = useNavigate();
 
   const [categoriesQuery, setCategoriesQuery] = useState("");
-  const [createService, updateService, createCategory] = [
+  const [createService, updateService, createCategory, deleteCategory] = [
     useCreateService(),
     useUpdateService(),
     useCreateCategory(),
+    useDeleteCategory(),
   ];
 
   const {
@@ -43,7 +50,6 @@ export default function ServiceDetail() {
 
   const submit = useCallback(
     async (data: CreateServiceBody | CreateCategoryBody) => {
-      console.log('submit', data);
       if ("category" in data) {
         if (isNew) {
           return createService.mutate(data as CreateServiceBody, {
@@ -105,7 +111,7 @@ export default function ServiceDetail() {
     }),
     [service?.id],
   );
-
+  console.log(formValues)
   useEffect(() => {
     if (categoriesQuery !== "") {
       refetchCategories();
@@ -142,6 +148,7 @@ export default function ServiceDetail() {
               values={formValues}
               onSubmit={submit}
               isLoading={isLoading}
+              deleteCategory={(categoryId) => deleteCategory.mutate(categoryId)}
             />
           )}
         </DrawerContentBody>

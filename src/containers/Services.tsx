@@ -1,10 +1,10 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { useServices } from "@/api";
+import { useDeleteService, useServices } from "@/api";
 import { Button } from "@/components/Button";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
 import {
@@ -56,6 +56,8 @@ export default function Services() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [deleteService] = [useDeleteService()];
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [servicesQuery, _setServicesQuery] = useState("");
 
@@ -89,7 +91,7 @@ export default function Services() {
             </PageHeaderItem>
 
             <PageHeaderItem>
-               <Button
+              <Button
                 type="button"
                 onClick={() => {
                   navigate({ to: "/services/new" });
@@ -98,38 +100,10 @@ export default function Services() {
                 <PlusIcon size={16} />
                 <span>{t("services.addService")}</span>
               </Button>
-
-
             </PageHeaderItem>
           </PageHeader>
           <PageBody>
             <PageSection>
-              {/* <div>
-                <SearchInput
-                  data-testid="search"
-                  style={{ marginBottom: 8, maxWidth: 300 }}
-                >
-                  {servicesIsRefetching ? (
-                    <LoaderCircle size={20} />
-                  ) : (
-                    <Search size={20} />
-                  )}
-                  <Input
-                    type="text"
-                    id={"services-search-input"}
-                    aria-autocomplete="none"
-                    placeholder={t("services.searchServices")}
-                    aria-label={t("common.search")}
-                    autoComplete="off"
-                    tabIndex={0}
-                    onChange={($event) => {
-                      $event.preventDefault();
-                      $event.stopPropagation();
-                    }}
-                  />
-                </SearchInput>
-              </div> */}
-
               <Table>
                 <TableHeader>
                   <TableRow $type="header">
@@ -137,6 +111,7 @@ export default function Services() {
                     <TableHeaderItem>{t("services.category")}</TableHeaderItem>
                     <TableHeaderItem>{t("services.duration")}</TableHeaderItem>
                     <TableHeaderItem>{t("services.price")}</TableHeaderItem>
+                    <TableHeaderItem>{t("services.actions")}</TableHeaderItem>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -160,8 +135,22 @@ export default function Services() {
                       <TableRowItem>{service.category}</TableRowItem>
                       <TableRowItem>{service.duration}</TableRowItem>
                       <TableRowItem>€{service.price}</TableRowItem>
+                      <TableRowItem>
+                        <Button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteService.mutate(service.id);
+                          }}
+                        >
+                          <TrashIcon />
+                        </Button>
+                      </TableRowItem>
                     </TableRow>
                   ))}
+                  {services.length === 0 && (
+                    <p>{t("services.noServicesFound")}</p>
+                  )}
                 </TableBody>
               </Table>
             </PageSection>

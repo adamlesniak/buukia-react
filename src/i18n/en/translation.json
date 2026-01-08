@@ -42,6 +42,7 @@
     "testService": "Basic Haircut",
     "testDescription": "A simple haircut service.",
     "testCategory": "New Category Name",
+    "actions": "Actions",
     "detail": {
       "name": "Name",
       "description": "Description",
@@ -96,6 +97,7 @@
     "dropdownItems": "Dropdown items",
     "unknownError": "An unknown error occurred.",
     "total": "Total",
-    "items": "items"
+    "items": "items",
+    "requiredField": "This field is required"
   }
 }

@@ -4,6 +4,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { createService } from "@/utils";
 
 import { server } from "../../mocks/server";
+import data from "../../routes/data.json";
 
 import { ServiceForm } from "./ServiceForm";
 
@@ -38,6 +39,10 @@ describe("ServiceForm", () => {
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
+          categories={data.categories}
+          categoriesIsLoading={false}
+          deleteCategory={() => {}}
+          onCategorySearch={() => {}}
         />
       </QueryClientProvider>,
     );
@@ -63,18 +68,22 @@ describe("ServiceForm", () => {
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
+          categories={data.categories}
+          categoriesIsLoading={false}
+          deleteCategory={() => {}}
+          onCategorySearch={() => {}}
         />
       </QueryClientProvider>,
     );
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText("services.detail.category"),
+        screen.queryByText("services.detail.category"),
       ).toBeInTheDocument();
       expect(screen.queryByTestId("service-category-input")).not.toBeDisabled();
-      expect(screen.queryByTestId("service-category-input")).toHaveValue(
-        testProps.category,
-      );
+      expect(
+        screen.queryByTestId("service-category-input")?.querySelector("input"),
+      ).toHaveValue(testProps.category);
     });
   });
 
@@ -88,6 +97,10 @@ describe("ServiceForm", () => {
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
+          categories={data.categories}
+          categoriesIsLoading={false}
+          deleteCategory={() => {}}
+          onCategorySearch={() => {}}
         />
       </QueryClientProvider>,
     );
@@ -111,6 +124,10 @@ describe("ServiceForm", () => {
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
+          categories={data.categories}
+          categoriesIsLoading={false}
+          deleteCategory={() => {}}
+          onCategorySearch={() => {}}
         />
       </QueryClientProvider>,
     );
@@ -138,6 +155,10 @@ describe("ServiceForm", () => {
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
+          categories={data.categories}
+          categoriesIsLoading={false}
+          deleteCategory={() => {}}
+          onCategorySearch={() => {}}
         />
       </QueryClientProvider>,
     );
