@@ -294,54 +294,52 @@ export function Combobox(
           data-testid="combobox-dropdown"
           $loading={props.loading}
         >
-          {props.onSearchChange && (
-            <StyledComboboxSearch data-testid="search">
-              {props.onSearchChange ? (
-                <>
-                  {props.loading ? (
-                    <LoaderCircle size={20} />
-                  ) : (
-                    <Search size={20} />
-                  )}
-                  <Input
-                    type="text"
-                    id={inputId}
-                    aria-autocomplete="none"
-                    aria-label={t("common.search")}
-                    autoComplete="off"
-                    role={"combobox"}
-                    tabIndex={0}
-                    ref={inputSearchRef}
-                    onKeyDown={($event: KeyboardEvent<HTMLInputElement>) => {
-                      if (
-                        $event.key === "ArrowDown" ||
-                        $event.key === "ArrowUp" ||
-                        $event.key === "Enter"
-                      ) {
-                        handleDropdownSelection($event);
-                      }
-                    }}
-                    onChange={($event: ChangeEvent<HTMLInputElement>) => {
-                      if (props.onSearchChange) {
-                        searchChangeDebounce($event.target.value);
-                      }
-                    }}
-                    onBlur={() => {
-                      searchChangeDebounce("");
-                      setIsOpen(false);
-                    }}
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-              {props.onAdd && (
-                <StyledComboboxButton type="button" onClick={props.onAdd}>
-                  {props.addButtonText}
-                </StyledComboboxButton>
-              )}
-            </StyledComboboxSearch>
-          )}
+          <StyledComboboxSearch data-testid="search">
+            {props.onSearchChange ? (
+              <>
+                {props.loading ? (
+                  <LoaderCircle size={20} />
+                ) : (
+                  <Search size={20} />
+                )}
+                <Input
+                  type="text"
+                  id={inputId}
+                  aria-autocomplete="none"
+                  aria-label={t("common.search")}
+                  autoComplete="off"
+                  role={"combobox"}
+                  tabIndex={0}
+                  ref={inputSearchRef}
+                  onKeyDown={($event: KeyboardEvent<HTMLInputElement>) => {
+                    if (
+                      $event.key === "ArrowDown" ||
+                      $event.key === "ArrowUp" ||
+                      $event.key === "Enter"
+                    ) {
+                      handleDropdownSelection($event);
+                    }
+                  }}
+                  onChange={($event: ChangeEvent<HTMLInputElement>) => {
+                    if (props.onSearchChange) {
+                      searchChangeDebounce($event.target.value);
+                    }
+                  }}
+                  onBlur={() => {
+                    searchChangeDebounce("");
+                    setIsOpen(false);
+                  }}
+                />
+              </>
+            ) : (
+              <></>
+            )}
+            {props.onAdd && (
+              <StyledComboboxButton type="button" onClick={props.onAdd}>
+                {props.addButtonText}
+              </StyledComboboxButton>
+            )}
+          </StyledComboboxSearch>
 
           <ul
             id={listBoxId}

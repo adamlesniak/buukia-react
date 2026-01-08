@@ -187,8 +187,9 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
             {...register("duration")}
             data-testid="service-duration-input"
             id="service-duration-input"
+            defaultValue={""}
           >
-            <option value="" disabled selected>
+            <option value="" disabled>
               {t("common.selectAnItem")}
             </option>
             {[15, 30, 45, 60, 75, 90, 105, 120].map((duration) => (

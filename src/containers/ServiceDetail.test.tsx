@@ -100,6 +100,8 @@ describe("ServiceDetail", () => {
     mockNavigate.mockClear();
     mockMutate.mockClear();
     mockRouterState.mockClear();
+    mockUseService.mockClear();
+    mockUseCategories.mockClear();
 
     // Mock route params
     mockUseParams.mockReturnValue({
@@ -246,6 +248,42 @@ describe("ServiceDetail", () => {
           onSuccess: expect.any(Function),
         },
       );
+    });
+
+    it("should show error in case of services error", async () => {
+      mockUseService.mockReturnValue({
+        data: mockService,
+        error: new Error("Service error"),
+        isLoading: false,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceDetail.default />
+        </QueryClientProvider>,
+      );
+
+      const error = await screen.queryByText("Service error");
+
+      expect(error).toBeInTheDocument();
+    });
+
+    it("should show error in case of categories error", async () => {
+      mockUseService.mockReturnValue({
+        data: mockService,
+        error: new Error("Category error"),
+        isLoading: false,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceDetail.default />
+        </QueryClientProvider>,
+      );
+
+      const error = await screen.queryByText("Category error");
+
+      expect(error).toBeInTheDocument();
     });
   });
 });

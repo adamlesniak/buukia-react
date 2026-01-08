@@ -111,7 +111,7 @@ export default function ServiceDetail() {
     }),
     [service?.id],
   );
-  console.log(formValues)
+
   useEffect(() => {
     if (categoriesQuery !== "") {
       refetchCategories();

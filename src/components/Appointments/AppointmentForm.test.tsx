@@ -129,6 +129,45 @@ describe("AppointmentForm", () => {
     });
   });
 
+  it("should show errors", async () => {
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AppointmentForm
+          appointmentId={createAppointment().id}
+          assistantId={createAssistant().id}
+          clients={data.clients}
+          onClientsSearch={() => {}}
+          onServicesSearch={() => {}}
+          services={data.services}
+          onSubmit={() => {}}
+          todaysAppointments={[]}
+          values={{
+            assistantName: "",
+            clientName: "",
+            time: new Date("2025-11-30T16:20:57.842Z").toISOString(),
+            services: [],
+          }}
+          isLoading={false}
+          clientsRefetching={false}
+          servicesRefetching={false}
+        />
+      </QueryClientProvider>,
+    );
+
+    await user.click(screen.getByText("common.submit"));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("appointments.form.errors.clientNameError"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("appointments.form.errors.servicesError"),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe("service field", () => {
     it("should show service label with button", async () => {
       const queryClient = new QueryClient();

@@ -1,6 +1,5 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
 import { PlusIcon, TrashIcon } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -59,7 +58,7 @@ export default function Services() {
   const [deleteService] = [useDeleteService()];
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [servicesQuery, _setServicesQuery] = useState("");
+  // const [servicesQuery, _setServicesQuery] = useState("");
 
   const {
     data: services = [],
@@ -67,7 +66,7 @@ export default function Services() {
     // isLoading: servicesLoading,
     // refetch: refetchServices,
     // isRefetching: servicesIsRefetching,
-  } = useServices({ limit: MAX_PAGINATION, query: servicesQuery });
+  } = useServices({ limit: MAX_PAGINATION, query: "" });
 
   const isError = !!servicesError;
 
@@ -130,6 +129,7 @@ export default function Services() {
                       $type="body"
                       key={service.id}
                       tabIndex={0}
+                      data-testid="service-row"
                     >
                       <TableRowItem>{service.name}</TableRowItem>
                       <TableRowItem>{service.category}</TableRowItem>
@@ -138,9 +138,10 @@ export default function Services() {
                       <TableRowItem>
                         <Button
                           type="button"
+                          data-testid="service-row-delete"
                           onClick={(e) => {
-                            e.stopPropagation();
                             deleteService.mutate(service.id);
+                            e.stopPropagation();
                           }}
                         >
                           <TrashIcon />
@@ -148,11 +149,9 @@ export default function Services() {
                       </TableRowItem>
                     </TableRow>
                   ))}
-                  {services.length === 0 && (
-                    <p>{t("services.noServicesFound")}</p>
-                  )}
                 </TableBody>
               </Table>
+              {services.length === 0 && <p>{t("services.noServicesFound")}</p>}
             </PageSection>
           </PageBody>
           <Outlet />
