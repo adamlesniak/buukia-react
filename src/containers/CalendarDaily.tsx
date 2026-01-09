@@ -12,13 +12,9 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppointments, useAssistants } from "@/api";
-import {
-  Calendar,
-  CalendarBody,
-  CalendarHeader,
-} from "@/components/Calendar";
+import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
-import { MAX_ASSISTANTS, ViewType } from "@/constants.ts";
+import { MAX_ASSISTANTS, MAX_PAGINATION, ViewType } from "@/constants.ts";
 
 // TODO: Handle error and pagination
 export default function CalendarDaily() {
@@ -49,7 +45,7 @@ export default function CalendarDaily() {
     data: assistants,
     error: assistantsError,
     isLoading: assistantsLoading,
-  } = useAssistants();
+  } = useAssistants({ limit: MAX_PAGINATION, query: "" });
   const {
     data: appointments,
     error: appointmentsError,

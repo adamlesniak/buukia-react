@@ -22,13 +22,38 @@
     "toggleViewDay": "Day View",
     "toggleViewWeek": "Week View"
   },
+  "assistants": {
+    "title": "Assistants",
+    "addAssistant": "Add Assistant",
+    "hours": "hours",
+    "noAssistantsFound": "No assistants found.",
+    "loadingError": "Error retrieving assistants. Please try again later.",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "email": "Email",
+      "actions": "Actions",
+      "specialisations": "Specialisations",
+      "availability": "Availability"
+    },
+    "form": {
+      "errors": {
+        "firstNameError": "First name is required",
+        "lastNameError": "Last name is required",
+        "emailError": "Valid email is required"
+      }
+    }
+  },
   "services": {
     "id": "ID",
-    "name": "Name",
-    "description": "Description",
-    "category": "Category",
-    "duration": "Duration",
-    "price": "Price",
+    "table": {
+      "name": "Name",
+      "description": "Description",
+      "category": "Category",
+      "duration": "Duration",
+      "price": "Price",
+      "actions": "Actions"
+    },
     "unavailable": "Unavailable",
     "searchServices": "Search services...",
     "noServicesFound": "No services found.",

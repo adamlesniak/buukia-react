@@ -85,18 +85,25 @@ export const createAssistant = (): BuukiaAssistant => {
     id: faker.string.uuid(),
     firstName,
     lastName,
+    email: faker.internet.email({ firstName, lastName }),
     name: `${firstName} ${lastName}`,
     initials: firstName[0] + lastName[0],
+    categories: Array.from({ length: faker.number.int({ min: 1, max: 3 }) }).map(
+      () =>
+        serviceCategories[
+          faker.number.int({ min: 0, max: serviceCategories.length - 1 })
+        ],
+    ),
     availability: {
-      regular: Array.from({ length: faker.number.int({ min: 3, max: 7 }) }).map(
-        () => ({
-          dayOfWeek: faker.number.int({ min: 0, max: 6 }),
+      regular: Array.from({ length: 7 }).map(
+        (_value, index) => ({
+          dayOfWeek: index,
           startTime: "09:00",
           endTime: "17:00",
         }),
       ),
-      exceptions: [],
-      holidays: [],
+      // exceptions: [],
+      // holidays: [],
     },
     business:
       businessNames[

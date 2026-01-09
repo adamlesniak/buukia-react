@@ -25,7 +25,7 @@ const StyledButton = styled.button<{
       return `padding: .6em;`;
     }
 
-    return `padding: 1em;`;
+    return `padding: 12px;`;
   }}
 
   ${(props) => {

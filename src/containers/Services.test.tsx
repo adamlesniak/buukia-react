@@ -99,12 +99,11 @@ describe("Services", () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText("services.name")).toBeInTheDocument();
-      expect(screen.queryByText("services.category")).toBeInTheDocument();
-      expect(screen.queryByText("services.duration")).toBeInTheDocument();
-      expect(screen.queryByText("services.price")).toBeInTheDocument();
-      expect(screen.queryByText("services.actions")).toBeInTheDocument();
-
+      expect(screen.queryByText("services.table.name")).toBeInTheDocument();
+      expect(screen.queryByText("services.table.category")).toBeInTheDocument();
+      expect(screen.queryByText("services.table.duration")).toBeInTheDocument();
+      expect(screen.queryByText("services.table.price")).toBeInTheDocument();
+      expect(screen.queryByText("services.table.actions")).toBeInTheDocument();
       data.services.forEach((service) => {
         expect(screen.queryAllByText(service.name)).toBeDefined();
         expect(screen.queryAllByText(service.category)).toBeDefined();

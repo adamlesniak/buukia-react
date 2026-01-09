@@ -10,11 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as AssistantsRouteImport } from './routes/assistants'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ErrorIndexRouteImport } from './routes/error/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
 import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
+import { Route as AssistantsAssistantIdRouteImport } from './routes/assistants/$assistantId'
 import { Route as ServicesNewIndexRouteImport } from './routes/services/new/index'
+import { Route as AssistantsNewIndexRouteImport } from './routes/assistants/new/index'
 import { Route as AppointmentsDailyDateRouteImport } from './routes/appointments/daily/$date'
 import { Route as AppointmentsWeeklyDateAssistantIdRouteImport } from './routes/appointments/weekly/$date/$assistantId'
 import { Route as AppointmentsDailyDateAppointmentIdRouteImport } from './routes/appointments/daily/$date/$appointmentId'
@@ -25,6 +28,11 @@ import { Route as AppointmentsDailyDateNewAssistantIdTimeRouteImport } from './r
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssistantsRoute = AssistantsRouteImport.update({
+  id: '/assistants',
+  path: '/assistants',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -47,10 +55,20 @@ const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
   path: '/$serviceId',
   getParentRoute: () => ServicesRoute,
 } as any)
+const AssistantsAssistantIdRoute = AssistantsAssistantIdRouteImport.update({
+  id: '/$assistantId',
+  path: '/$assistantId',
+  getParentRoute: () => AssistantsRoute,
+} as any)
 const ServicesNewIndexRoute = ServicesNewIndexRouteImport.update({
   id: '/new/',
   path: '/new/',
   getParentRoute: () => ServicesRoute,
+} as any)
+const AssistantsNewIndexRoute = AssistantsNewIndexRouteImport.update({
+  id: '/new/',
+  path: '/new/',
+  getParentRoute: () => AssistantsRoute,
 } as any)
 const AppointmentsDailyDateRoute = AppointmentsDailyDateRouteImport.update({
   id: '/appointments/daily/$date',
@@ -90,11 +108,14 @@ const AppointmentsDailyDateNewAssistantIdTimeRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/assistants/$assistantId': typeof AssistantsAssistantIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
+  '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -104,11 +125,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/assistants/$assistantId': typeof AssistantsAssistantIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
+  '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -119,11 +143,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/assistants/$assistantId': typeof AssistantsAssistantIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/appointments/': typeof AppointmentsIndexRoute
   '/error/': typeof ErrorIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
+  '/assistants/new/': typeof AssistantsNewIndexRoute
   '/services/new/': typeof ServicesNewIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
@@ -135,11 +162,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/assistants'
     | '/services'
+    | '/assistants/$assistantId'
     | '/services/$serviceId'
     | '/appointments'
     | '/error'
     | '/appointments/daily/$date'
+    | '/assistants/new'
     | '/services/new'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -149,11 +179,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/assistants'
     | '/services'
+    | '/assistants/$assistantId'
     | '/services/$serviceId'
     | '/appointments'
     | '/error'
     | '/appointments/daily/$date'
+    | '/assistants/new'
     | '/services/new'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -163,11 +196,14 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/assistants'
     | '/services'
+    | '/assistants/$assistantId'
     | '/services/$serviceId'
     | '/appointments/'
     | '/error/'
     | '/appointments/daily/$date'
+    | '/assistants/new/'
     | '/services/new/'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
@@ -178,6 +214,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AssistantsRoute: typeof AssistantsRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
   AppointmentsIndexRoute: typeof AppointmentsIndexRoute
   ErrorIndexRoute: typeof ErrorIndexRoute
@@ -192,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assistants': {
+      id: '/assistants'
+      path: '/assistants'
+      fullPath: '/assistants'
+      preLoaderRoute: typeof AssistantsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -222,12 +266,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesServiceIdRouteImport
       parentRoute: typeof ServicesRoute
     }
+    '/assistants/$assistantId': {
+      id: '/assistants/$assistantId'
+      path: '/$assistantId'
+      fullPath: '/assistants/$assistantId'
+      preLoaderRoute: typeof AssistantsAssistantIdRouteImport
+      parentRoute: typeof AssistantsRoute
+    }
     '/services/new/': {
       id: '/services/new/'
       path: '/new'
       fullPath: '/services/new'
       preLoaderRoute: typeof ServicesNewIndexRouteImport
       parentRoute: typeof ServicesRoute
+    }
+    '/assistants/new/': {
+      id: '/assistants/new/'
+      path: '/new'
+      fullPath: '/assistants/new'
+      preLoaderRoute: typeof AssistantsNewIndexRouteImport
+      parentRoute: typeof AssistantsRoute
     }
     '/appointments/daily/$date': {
       id: '/appointments/daily/$date'
@@ -273,6 +331,20 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AssistantsRouteChildren {
+  AssistantsAssistantIdRoute: typeof AssistantsAssistantIdRoute
+  AssistantsNewIndexRoute: typeof AssistantsNewIndexRoute
+}
+
+const AssistantsRouteChildren: AssistantsRouteChildren = {
+  AssistantsAssistantIdRoute: AssistantsAssistantIdRoute,
+  AssistantsNewIndexRoute: AssistantsNewIndexRoute,
+}
+
+const AssistantsRouteWithChildren = AssistantsRoute._addFileChildren(
+  AssistantsRouteChildren,
+)
 
 interface ServicesRouteChildren {
   ServicesServiceIdRoute: typeof ServicesServiceIdRoute
@@ -325,6 +397,7 @@ const AppointmentsWeeklyDateAssistantIdRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AssistantsRoute: AssistantsRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,
   AppointmentsIndexRoute: AppointmentsIndexRoute,
   ErrorIndexRoute: ErrorIndexRoute,

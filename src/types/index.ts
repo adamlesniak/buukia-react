@@ -32,6 +32,18 @@ export interface UpdateCategoryBody extends CreateCategoryBody {
   id: string;
 }
 
+export interface CreateAssistantBody {
+  firstName: string;
+  lastName: string;
+  email: string;
+  categories: string[];
+  availability: Availability;
+}
+
+export interface UpdateAssistantBody extends CreateAssistantBody {
+  id: string;
+}
+
 export type AppointmentFormValues = {
   assistantName: string;
   clientName: string;
@@ -53,12 +65,14 @@ export type ServiceFormValues = {
 
 export type BuukiaAssistant = {
   id: string;
-  firstName: string;
-  lastName: string;
-  name: string;
-  initials: string;
   availability: Availability;
   business: string;
+  categories: string[];
+  email: string;
+  firstName: string;
+  initials: string;
+  lastName: string;
+  name: string;
   type: string;
 };
 
@@ -142,6 +156,6 @@ export type AvailabilityException = {
 
 export type Availability = {
   regular: AvailabilitySlot[];
-  exceptions: AvailabilityException[];
-  holidays: string[];
+  // exceptions: AvailabilityException[];
+  // holidays: string[];
 };

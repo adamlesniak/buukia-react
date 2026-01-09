@@ -1,7 +1,6 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 
 import { useDeleteService, useServices } from "@/api";
 import { Button } from "@/components/Button";
@@ -13,43 +12,8 @@ import {
   PageHeaderItem,
   PageSection,
 } from "@/components/Page";
+import { Table, TableBody, TableHeader, TableHeaderItem, TableRow, TableRowItem } from "@/components/Table";
 import { MAX_PAGINATION } from "@/constants.ts";
-
-const Table = styled.table`
-  text-align: left;
-  width: 100%;
-  border-collapse: collapse;
-`;
-
-const TableHeader = styled.thead``;
-
-const TableBody = styled.tbody``;
-
-const TableRow = styled.tr<{ $type?: "header" | "body" }>`
-  border-bottom: 1px solid #e0e0e0;
-
-  ${(props) => props.$type === "header" && `cursor: initial;`}
-  ${(props) => props.$type === "body" && `cursor: pointer;`}
-
-  height: 48px;
-
-  ${(props) =>
-    props.$type === "body" &&
-    `
-      &:hover {
-        background-color: #fbfbfb;
-      }
-  `}
-`;
-
-const TableRowItem = styled.td`
-  padding: 8px;
-`;
-
-const TableHeaderItem = styled.th`
-  padding: 8px;
-  /* padding: 0 20px; */
-`;
 
 export default function Services() {
   const { t } = useTranslation();
@@ -106,11 +70,11 @@ export default function Services() {
               <Table>
                 <TableHeader>
                   <TableRow $type="header">
-                    <TableHeaderItem>{t("services.name")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.category")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.duration")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.price")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.actions")}</TableHeaderItem>
+                    <TableHeaderItem>{t("services.table.name")}</TableHeaderItem>
+                    <TableHeaderItem>{t("services.table.category")}</TableHeaderItem>
+                    <TableHeaderItem>{t("services.table.duration")}</TableHeaderItem>
+                    <TableHeaderItem>{t("services.table.price")}</TableHeaderItem>
+                    <TableHeaderItem>{t("services.table.actions")}</TableHeaderItem>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -144,7 +108,7 @@ export default function Services() {
                             e.stopPropagation();
                           }}
                         >
-                          <TrashIcon />
+                          <TrashIcon size={21} />
                         </Button>
                       </TableRowItem>
                     </TableRow>
