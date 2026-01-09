@@ -65,8 +65,8 @@ export function useUpdateAppointment() {
                   id: appointment.clientId,
                 },
                 time: appointment.time,
-                services: item.services.map((service) =>
-                  queryClient.getQueryData(serviceQueryKeys.detail(service.id)),
+                services: appointment.serviceIds.map((serviceId) =>
+                  queryClient.getQueryData(serviceQueryKeys.detail(serviceId)),
                 ),
               };
             }
@@ -94,9 +94,6 @@ export function useUpdateAppointment() {
           context.previousItems,
         );
       }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: appointmentQueryKeys.all });
     },
   });
 }

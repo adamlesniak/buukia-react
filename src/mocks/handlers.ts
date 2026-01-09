@@ -4,10 +4,14 @@ import { v4 as uuidv4 } from "uuid";
 import type {
   BuukiaAppointment,
   BuukiaAssistant,
+  BuukiaCategory,
   BuukiaClient,
   BuukiaService,
   CreateAppointmentBody,
+  CreateServiceBody,
   UpdateAppointmentBody,
+  UpdateCategoryBody,
+  UpdateServiceBody,
 } from "@/types";
 
 import data from "../routes/data.json";
@@ -18,21 +22,123 @@ import data from "../routes/data.json";
 // /api/payments
 // /api/settings
 
-const [assistants, clients, services, appointments]: [
+const [assistants, clients, services, appointments, categories]: [
   Map<string, BuukiaAssistant>,
   Map<string, BuukiaClient>,
   Map<string, BuukiaService>,
   Map<string, BuukiaAppointment>,
+  Map<string, BuukiaCategory>,
 ] = [
   new Map(data.assistants.map((assistant) => [assistant.id, assistant])),
   new Map(data.clients.map((client) => [client.id, client])),
-  new Map(data.services.map((service) => [service.id, service])),
   new Map(
-    data.appointments.map((appointment) => [appointment.id, appointment]),
+    data.services.map((service) => [
+      service.id,
+      {
+        ...service,
+        duration: service.duration.toString(),
+      },
+    ]),
   ),
+  new Map(
+    data.appointments.map((appointment) => [
+      appointment.id,
+      {
+        ...appointment,
+        services: appointment.services.map((service) => ({
+          ...service,
+          duration: service.duration.toString(),
+        })),
+      },
+    ]),
+  ),
+  new Map(data.categories.map((category) => [category.id, category])),
 ];
 
 export const handlers = [
+  http.get("/api/categories", ({ request }) => {
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+    return HttpResponse.json(
+      Array.from(categories.values())
+        .filter((service) =>
+          service.name.toLowerCase().includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
+  }),
+
+  http.get("/api/categories/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = categories.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Category not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post<never, CreateServiceBody>(
+    "/api/categories",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const id = uuidv4();
+
+      const category = {
+        id,
+        name: body.name,
+      } as BuukiaCategory;
+      categories.set(id, category);
+
+      return HttpResponse.json(category);
+    },
+  ),
+
+  http.put<never, UpdateCategoryBody>(
+    "/api/categories/:id",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const item = categories.get(body.id);
+      if (!item) {
+        throw new Error("Item not found");
+      }
+
+      const category = {
+        id: item.id,
+        name: body.name,
+      } as BuukiaCategory;
+      categories.set(item.id, category);
+
+      return HttpResponse.json(category);
+    },
+  ),
+
+  http.delete("/api/categories/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = categories.delete(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Category not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
   http.get("/api/services", ({ request }) => {
     const [limitParam, query] = [
       new URL(request.url).searchParams.get("limit"),
@@ -48,6 +154,80 @@ export const handlers = [
         .slice(0, limit),
     );
   }),
+
+  http.get("/api/services/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = services.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Service not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post<never, CreateServiceBody>("/api/services", async ({ request }) => {
+    const body = await request.json();
+
+    const id = uuidv4();
+
+    const service = {
+      id,
+      name: body.name,
+      category: body.category,
+      duration: body.duration,
+      description: body.description,
+      price: body.price,
+    } as BuukiaService;
+    services.set(id, service);
+
+    return HttpResponse.json(service);
+  }),
+
+  http.put<never, UpdateServiceBody>(
+    "/api/services/:id",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const item = services.get(body.id);
+
+      if (!item) {
+        throw new Error("Item not found");
+      }
+
+      const service = {
+        id: item.id,
+        name: body.name,
+        category: body.category,
+        duration: body.duration,
+        description: body.description,
+        price: body.price,
+      } as BuukiaService;
+      services.set(item.id, service);
+
+      return HttpResponse.json(service);
+    },
+  ),
+
+  http.delete("/api/services/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = services.delete(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Service not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
   http.get("/api/assistants", () =>
     HttpResponse.json(Array.from(assistants.values())),
   ),

@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+export * from "./CardDescription";
+
 export const Card = styled.div`
   padding: 10px;
   border: 1px solid #f4f4f4;

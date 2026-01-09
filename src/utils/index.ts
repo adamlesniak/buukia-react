@@ -5,6 +5,7 @@ import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys
 import type {
   BuukiaAppointment,
   BuukiaAssistant,
+  BuukiaCategory,
   BuukiaClient,
   BuukiaService,
 } from "@/types";
@@ -65,7 +66,7 @@ export const createService = (item?: Partial<BuukiaService>) => ({
   name: "",
   description: "",
   price: 0,
-  duration: 15,
+  duration: "15",
   business: "",
   category: "",
   ...item,
@@ -94,6 +95,12 @@ export const createClient = (item?: Partial<BuukiaClient>) => ({
   ...item,
 });
 
+export const createCategory = (item?: Partial<BuukiaCategory>) => ({
+  id: "",
+  name: "",
+  ...item,
+});
+
 export const createCurrentAppointment = (
   queryClient: QueryClient,
   assistantId: string,
@@ -111,7 +118,7 @@ export const createCurrentAppointment = (
             id: "current-appointment",
             assistant: createAssistant({ id: assistantId }),
             client: createClient({ name: clientName }),
-            services: [createService({ duration: 15 })],
+            services: [createService({ duration: "15" })],
             time: new Date(time).toISOString(),
           }),
         ];
@@ -125,7 +132,7 @@ export const createCurrentAppointment = (
           client: createClient({ name: clientName }),
           services: [
             createService({
-              duration: servicesDuration || 15,
+              duration: servicesDuration.toString() || "15",
             }),
           ],
           time: new Date(time).toISOString(),
@@ -154,7 +161,7 @@ export const updateExistingAppointment = (
             client: createClient({ name: clientName }),
             services: [
               createService({
-                duration: servicesDuration || 15,
+                duration: servicesDuration.toString() || "15",
               }),
             ],
             time: new Date(time).toISOString(),

@@ -19,7 +19,7 @@ const AppOutletContainer = styled.div`
   display: flex;
   flex: 1;
   padding: 1em;
-  margin-left: 17rem;
+  margin-left: 16rem;
   position: relative;
 `;
 

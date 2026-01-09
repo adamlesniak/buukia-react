@@ -75,7 +75,7 @@ export function Sidebar() {
         </SidebarMenuItem>
         <SidebarMenuItem
           to={`/services`}
-          activeOptions={{ exact: true }}
+          activeOptions={{ exact: false }}
           key={t("nav.services")}
         >
           <Bell size={24} />

@@ -15,10 +15,9 @@ import { useAppointments } from "@/api";
 import {
   Calendar,
   CalendarBody,
-  CalendarError,
   CalendarHeader,
 } from "@/components/Calendar";
-import { ErrorDetail } from "@/components/Error";
+import { ErrorContainer, ErrorDetail } from "@/components/Error";
 import { ViewType } from "@/constants.ts";
 
 export default function CalendarWeekly() {
@@ -129,9 +128,9 @@ export default function CalendarWeekly() {
   return (
     <>
       {isError && (
-        <CalendarError>
+        <ErrorContainer>
           <ErrorDetail message={t("common.unknownError")} />
-        </CalendarError>
+        </ErrorContainer>
       )}
       {!isError && (
         <>

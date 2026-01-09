@@ -67,7 +67,7 @@ const queryClient = new QueryClient({
 
 const user = userEvent.setup();
 
-describe("daily/$date", () => {
+describe("CalendarDaily", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 

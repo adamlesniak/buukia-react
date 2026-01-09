@@ -69,7 +69,7 @@ const queryClient = new QueryClient({
 
 const user = userEvent.setup();
 
-describe("weekly/$date/$assistantId", () => {
+describe("CalendarWeekly", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -169,7 +169,7 @@ describe("weekly/$date/$assistantId", () => {
       await user.click(previousButton);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/weekly/1765065600000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
+        to: `/appointments/weekly/1765065600000/${mockAssistant.id}/`,
       });
 
       await user.click(nextButton);
@@ -178,7 +178,7 @@ describe("weekly/$date/$assistantId", () => {
       expect(nextButton).toBeInTheDocument();
       expect(mockNavigate).toHaveBeenCalledTimes(2);
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: "/appointments/weekly/1765065600000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9/",
+        to: `/appointments/weekly/1765065600000/${mockAssistant.id}/`,
       });
     });
 

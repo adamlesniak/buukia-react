@@ -23,9 +23,43 @@
     "toggleViewWeek": "Week View"
   },
   "services": {
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "category": "Category",
+    "duration": "Duration",
+    "price": "Price",
     "unavailable": "Unavailable",
     "searchServices": "Search services...",
-    "noServicesFound": "No services found."
+    "noServicesFound": "No services found.",
+    "loadingError": "Error retrieving services. Please try again later.",
+    "title": "Services",
+    "addService": "Add Service",
+    "addCategory": "Add Category",
+    "manageCategories": "Manage Categories",
+    "importServices": "Import Services",
+    "service": "Service",
+    "testService": "Basic Haircut",
+    "testDescription": "A simple haircut service.",
+    "testCategory": "New Category Name",
+    "actions": "Actions",
+    "detail": {
+      "name": "Name",
+      "description": "Description",
+      "category": "Category",
+      "duration": "Duration",
+      "price": "Price",
+      "minutes": "minutes"
+    },
+    "form": {
+      "errors": {
+        "nameError": "Name is required",
+        "priceError": "Price is required",
+        "timeError": "Time is required",
+        "descriptionError": "Description is required",
+        "categoryError": "Category is required"
+      }
+    }
   },
   "appointments": {
     "newAppointment": "New Appointment",
@@ -58,8 +92,12 @@
     "closeDrawer": "Close Drawer",
     "noResults": "No results matching the term.",
     "selectAnItem": "Please select an item.",
+    "selectDuration": "Please select duration.",
     "search": "Search",
     "dropdownItems": "Dropdown items",
-    "unknownError": "An unknown error occurred."
+    "unknownError": "An unknown error occurred.",
+    "total": "Total",
+    "items": "items",
+    "requiredField": "This field is required"
   }
 }

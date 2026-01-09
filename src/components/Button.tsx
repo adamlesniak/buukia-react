@@ -12,9 +12,13 @@ const StyledButton = styled.button<{
   font-size: 14px;
   text-align: center;
   justify-content: center;
-  flex-direction: column;
-
+  flex-direction: row;
+  align-items: center;
   color: ${(props) => (props.$disabled ? "gray" : "initial")};
+
+  span {
+    margin-left: 8px;
+  }
 
   ${(props) => {
     if (props.$size === "sm") {

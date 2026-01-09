@@ -14,6 +14,8 @@ import {
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
+import { Button } from "../Button";
+
 import { Input } from "./Input";
 import { SearchInput } from "./SearchInput";
 
@@ -71,6 +73,16 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
   }
 `;
 
+const StyledComboboxButton = styled(Button)`
+  cursor: pointer;
+  padding: 8px;
+  margin: 0px;
+  border-left: 1px solid #e0e0e0;
+  width: 100%;
+  border-radius: 0px;
+  border: 0px;
+`;
+
 const StyledComboboxSearch = styled(SearchInput)`
   border: 0px;
   border-bottom: 1px solid #e0e0e0;
@@ -115,6 +127,8 @@ const StyledComboboxContainerInput = styled.div<{ $disabled?: boolean }>`
 type ComboboxProps = {
   children?: React.ReactNode;
   onSearchChange?: (value: string) => void;
+  addButtonText?: string;
+  onAdd?: (item: MouseEvent<HTMLButtonElement>) => void;
   items: { id: string; name: string }[];
   limitItemsDisplay?: number;
   loading?: boolean;
@@ -280,43 +294,52 @@ export function Combobox(
           data-testid="combobox-dropdown"
           $loading={props.loading}
         >
-          {props.search && (
-            <StyledComboboxSearch data-testid="search">
-              {props.loading ? (
-                <LoaderCircle size={20} />
-              ) : (
-                <Search size={20} />
-              )}
-              <Input
-                type="text"
-                id={inputId}
-                aria-autocomplete="none"
-                aria-label={t("common.search")}
-                autoComplete="off"
-                role={"combobox"}
-                tabIndex={0}
-                ref={inputSearchRef}
-                onKeyDown={($event: KeyboardEvent<HTMLInputElement>) => {
-                  if (
-                    $event.key === "ArrowDown" ||
-                    $event.key === "ArrowUp" ||
-                    $event.key === "Enter"
-                  ) {
-                    handleDropdownSelection($event);
-                  }
-                }}
-                onChange={($event: ChangeEvent<HTMLInputElement>) => {
-                  if (props.onSearchChange) {
-                    searchChangeDebounce($event.target.value);
-                  }
-                }}
-                onBlur={() => {
-                  searchChangeDebounce("");
-                  setIsOpen(false);
-                }}
-              />
-            </StyledComboboxSearch>
-          )}
+          <StyledComboboxSearch data-testid="search">
+            {props.onSearchChange ? (
+              <>
+                {props.loading ? (
+                  <LoaderCircle size={20} />
+                ) : (
+                  <Search size={20} />
+                )}
+                <Input
+                  type="text"
+                  id={inputId}
+                  aria-autocomplete="none"
+                  aria-label={t("common.search")}
+                  autoComplete="off"
+                  role={"combobox"}
+                  tabIndex={0}
+                  ref={inputSearchRef}
+                  onKeyDown={($event: KeyboardEvent<HTMLInputElement>) => {
+                    if (
+                      $event.key === "ArrowDown" ||
+                      $event.key === "ArrowUp" ||
+                      $event.key === "Enter"
+                    ) {
+                      handleDropdownSelection($event);
+                    }
+                  }}
+                  onChange={($event: ChangeEvent<HTMLInputElement>) => {
+                    if (props.onSearchChange) {
+                      searchChangeDebounce($event.target.value);
+                    }
+                  }}
+                  onBlur={() => {
+                    searchChangeDebounce("");
+                    setIsOpen(false);
+                  }}
+                />
+              </>
+            ) : (
+              <></>
+            )}
+            {props.onAdd && (
+              <StyledComboboxButton type="button" onClick={props.onAdd}>
+                {props.addButtonText}
+              </StyledComboboxButton>
+            )}
+          </StyledComboboxSearch>
 
           <ul
             id={listBoxId}

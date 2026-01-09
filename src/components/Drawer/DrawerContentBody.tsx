@@ -1,9 +1,16 @@
 import styled from "styled-components";
 
-const DrawerContentBodyContainer = styled.div`
+const DrawerContentBodyContainer = styled.div<{
+  $justifyContent?:
+    | "start"
+    | "center"
+    | "end"
+    | "space-between"
+    | "space-around";
+}>`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: ${(props) => props.$justifyContent || "center"};
   align-items: center;
   flex: 1;
   overflow: hidden;
@@ -12,10 +19,18 @@ const DrawerContentBodyContainer = styled.div`
 
 export type DrawerContentBodyProps = {
   children: React.ReactNode;
+  justifyContent?:
+    | "start"
+    | "center"
+    | "end"
+    | "space-between"
+    | "space-around";
 };
 
 export function DrawerContentBody(props: DrawerContentBodyProps) {
   return (
-    <DrawerContentBodyContainer>{props.children}</DrawerContentBodyContainer>
+    <DrawerContentBodyContainer $justifyContent={props.justifyContent}>
+      {props.children}
+    </DrawerContentBodyContainer>
   );
 }

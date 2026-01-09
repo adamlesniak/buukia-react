@@ -7,13 +7,6 @@ export const CalendarContainer = styled.div`
   justify-items: center;
 `;
 
-export const CalendarError = styled.div`
-  display: flex;
-  align-items: center;
-  flex: 1;
-  justify-content: center;
-`;
-
 
 export function Calendar({ children }: { children: React.ReactNode }) {
   return <CalendarContainer>{children}</CalendarContainer>;

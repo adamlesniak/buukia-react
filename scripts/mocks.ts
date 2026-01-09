@@ -21,6 +21,7 @@ import type {
   BuukiaClient,
   MockData,
   BuukiaService,
+  BuukiaCategory,
 } from "../src/types";
 
 const serviceNames = [
@@ -44,6 +45,10 @@ const serviceCategories: BusinessCategory[] = [
   "Wellness",
   "Health",
   "Fitness",
+  "Facials",
+  "Massage",
+  "Haircare",
+  "Nailcare",
 ];
 
 export const createService = (): BuukiaService => {
@@ -58,7 +63,7 @@ export const createService = (): BuukiaService => {
       serviceCategories[
         faker.number.int({ min: 0, max: serviceCategories.length - 1 })
       ],
-    duration: faker.number.int({ min: 15, max: 30, multipleOf: 15 }),
+    duration: faker.number.int({ min: 15, max: 30, multipleOf: 15 }).toString(),
     name: serviceNames[
       faker.number.int({ min: 0, max: serviceNames.length - 1 })
     ],
@@ -142,9 +147,17 @@ export const createAppointment = (): BuukiaAppointment => {
   };
 };
 
-const [assistants, clients]: [BuukiaAssistant[], BuukiaClient[]] = [
+const [assistants, clients, categories]: [
+  BuukiaAssistant[],
+  BuukiaClient[],
+  BuukiaCategory[],
+] = [
   Array.from({ length: 4 }).map(() => createAssistant()),
   Array.from({ length: 20 }).map(() => createClient()),
+  serviceCategories.map((name) => ({
+    id: faker.string.uuid(),
+    name,
+  })),
 ];
 
 const dayStartDate = addMinutes(addHours(startOfDay(new Date()), 8), 0);
@@ -195,6 +208,7 @@ const main = async (): Promise<void> => {
     assistants,
     clients,
     services,
+    categories,
   };
 
   const formattedCode = await prettier.format(JSON.stringify(data), {

@@ -89,7 +89,7 @@ const queryClient = new QueryClient({
 
 const user = userEvent.setup();
 
-describe("weekly/$assistantId/$appointmentId", () => {
+describe("AppointmentDetail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -277,9 +277,9 @@ describe("weekly/$assistantId/$appointmentId", () => {
       expect(mockMutate).toHaveBeenCalledWith(
         {
           id: mockAppointment.id,
-          assistantId: "3b5d8fda-f136-4696-b91d-4d3f28d4a9f9",
-          clientId: "0105b195-3533-4be8-a143-8f8d53b4bce7",
-          serviceIds: ["0f15e666-855d-4dfe-ae57-b925cee00452"],
+          assistantId: mockAppointment.assistant.id,
+          clientId: mockAppointment.client.id,
+          serviceIds: mockAppointment.services.map((service) => service.id),
           time: "2025-12-15T10:00:00.000Z",
         },
         {
@@ -306,14 +306,14 @@ describe("weekly/$assistantId/$appointmentId", () => {
       await user.click(button!);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/appointments/weekly/1765670400000/3b5d8fda-f136-4696-b91d-4d3f28d4a9f9`,
+        to: `/appointments/weekly/1765670400000/${mockAppointment.assistant.id}`,
       });
       expect(mockMutate).toHaveBeenCalledWith(
         {
           id: mockAppointment.id,
-          assistantId: "3b5d8fda-f136-4696-b91d-4d3f28d4a9f9",
-          clientId: "0105b195-3533-4be8-a143-8f8d53b4bce7",
-          serviceIds: ["0f15e666-855d-4dfe-ae57-b925cee00452"],
+          assistantId: mockAppointment.assistant.id,
+          clientId: mockAppointment.client.id,
+          serviceIds: mockAppointment.services.map((service) => service.id),
           time: "2025-12-15T10:00:00.000Z",
         },
         {
