@@ -85,7 +85,7 @@ export const CalendarBodyWeekly = memo((props: CalendarBodyWeeklyProps) => {
 
               const duration =
                 matchedAppointment?.services.reduce(
-                  (acc, service) => acc + service.duration,
+                  (acc, service) => acc + Number(service.duration),
                   0,
                 ) || 0;
 

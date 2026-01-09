@@ -36,10 +36,7 @@ export const CalendarBodyDaily = (props: CalendarBodyDailyProps) => {
         hoursOpen={props.hoursOpen}
       />
       {props.columns?.map((column) => (
-        <CalendarBodyColumn
-          data-testid={column.id}
-          key={column.id}
-        >
+        <CalendarBodyColumn data-testid={column.id} key={column.id}>
           <MemoizedColumnHeaderDay
             columnName={column.name}
             columnId={"assistant-" + column.id}
@@ -59,9 +56,16 @@ export const CalendarBodyDaily = (props: CalendarBodyDailyProps) => {
 
             const duration =
               matchedAppointment?.services.reduce(
-                (acc, service) => acc + service.duration,
+                (acc, service) => acc + Number(service.duration),
                 0,
               ) || 0;
+
+            if (
+              matchedAppointment?.id === "c69eb848-22b4-4431-9d34-db340086fc61"
+            ) {
+              console.log("matchedAppointment", matchedAppointment, duration);
+              console.log(typeof duration);
+            }
 
             return (
               <MemoizedAppointmentSlot
