@@ -37,7 +37,7 @@ const mockAppointments: BuukiaAppointment[] = [
       {
         id: "service1",
         name: "Consultation",
-        duration: 30,
+        duration: "30",
         price: 50,
         description: "Basic consultation",
         business: "business1",

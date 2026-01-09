@@ -79,7 +79,6 @@ export function useUpdateAppointment() {
       return { previousItems };
     },
     onSuccess: (data) => {
-      console.log(appointmentQueryKeys.detail(data.id), data);
       queryClient.setQueryData(appointmentQueryKeys.detail(data.id), data);
     },
     onError: (_error, variables, context) => {
