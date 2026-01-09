@@ -60,13 +60,6 @@ export const CalendarBodyDaily = (props: CalendarBodyDailyProps) => {
                 0,
               ) || 0;
 
-            if (
-              matchedAppointment?.id === "c69eb848-22b4-4431-9d34-db340086fc61"
-            ) {
-              console.log("matchedAppointment", matchedAppointment, duration);
-              console.log(typeof duration);
-            }
-
             return (
               <MemoizedAppointmentSlot
                 key={slot.time.toISOString()}
