@@ -12,7 +12,14 @@ import {
   PageHeaderItem,
   PageSection,
 } from "@/components/Page";
-import { Table, TableBody, TableHeader, TableHeaderItem, TableRow, TableRowItem } from "@/components/Table";
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderItem,
+  TableRow,
+  TableRowItem,
+} from "@/components/Table";
 import { MAX_PAGINATION } from "@/constants.ts";
 
 export default function Services() {
@@ -70,11 +77,21 @@ export default function Services() {
               <Table>
                 <TableHeader>
                   <TableRow $type="header">
-                    <TableHeaderItem>{t("services.table.name")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.table.category")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.table.duration")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.table.price")}</TableHeaderItem>
-                    <TableHeaderItem>{t("services.table.actions")}</TableHeaderItem>
+                    <TableHeaderItem>
+                      {t("services.table.name")}
+                    </TableHeaderItem>
+                    <TableHeaderItem>
+                      {t("services.table.category")}
+                    </TableHeaderItem>
+                    <TableHeaderItem>
+                      {t("services.table.duration")}
+                    </TableHeaderItem>
+                    <TableHeaderItem>
+                      {t("services.table.price")}
+                    </TableHeaderItem>
+                    <TableHeaderItem>
+                      {t("services.table.actions")}
+                    </TableHeaderItem>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -88,6 +105,8 @@ export default function Services() {
                       ) => {
                         if ($event.key === "Enter") {
                           navigate({ to: `/services/${service.id}` });
+                          $event.preventDefault();
+                          $event.stopPropagation();
                         }
                       }}
                       $type="body"
@@ -96,16 +115,24 @@ export default function Services() {
                       data-testid="service-row"
                     >
                       <TableRowItem>{service.name}</TableRowItem>
-                      <TableRowItem>{service.category}</TableRowItem>
+                      <TableRowItem>{service.category.name}</TableRowItem>
                       <TableRowItem>{service.duration}</TableRowItem>
                       <TableRowItem>€{service.price}</TableRowItem>
                       <TableRowItem>
                         <Button
                           type="button"
                           data-testid="service-row-delete"
-                          onClick={(e) => {
+                          onClick={($event) => {
                             deleteService.mutate(service.id);
-                            e.stopPropagation();
+                            $event.preventDefault();
+                            $event.stopPropagation();
+                          }}
+                          onKeyDown={($event) => {
+                            if ($event.key === "Enter") {
+                              deleteService.mutate(service.id);
+                              $event.preventDefault();
+                              $event.stopPropagation();
+                            }
                           }}
                         >
                           <TrashIcon size={21} />

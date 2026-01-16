@@ -83,7 +83,7 @@ export function Sidebar() {
         </SidebarMenuItem>
         <SidebarMenuItem
           to={`/assistants`}
-          activeOptions={{ exact: true }}
+          activeOptions={{ exact: false }}
           key={t("nav.assistants")}
         >
           <UserRound size={24} />

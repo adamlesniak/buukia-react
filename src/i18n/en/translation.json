@@ -23,11 +23,22 @@
     "toggleViewWeek": "Week View"
   },
   "assistants": {
+    "assistant": "Assistant",
     "title": "Assistants",
     "addAssistant": "Add Assistant",
     "hours": "hours",
     "noAssistantsFound": "No assistants found.",
     "loadingError": "Error retrieving assistants. Please try again later.",
+    "addCategory": "Add Category",
+    "manageAvailability": "Manage Availability",
+    "detail": {
+      "availability": "Availability",
+      "categories": "Categories",
+      "email": "Email",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "editAvailability": "Edit Availability"
+    },
     "table": {
       "id": "ID",
       "name": "Name",
@@ -123,6 +134,16 @@
     "unknownError": "An unknown error occurred.",
     "total": "Total",
     "items": "items",
-    "requiredField": "This field is required"
+    "requiredField": "This field is required",
+    "moreItems": "and {{count}} more items",
+    "daysOfWeek": {
+      "sunday": "Sun",
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat"
+    }
   }
 }

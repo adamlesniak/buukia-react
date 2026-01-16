@@ -1,4 +1,3 @@
-// import { useQueryClient } from "@tanstack/react-query";
 import debounce from "debounce";
 import { LoaderCircle, Search } from "lucide-react";
 import { useState, useMemo, memo, useCallback } from "react";
@@ -13,7 +12,6 @@ import {
   type BuukiaService,
   type CreateAppointmentBody,
 } from "@/types";
-// import { createCurrentAppointment, updateExistingAppointment } from "@/utils";
 import { appointmentFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
@@ -29,7 +27,7 @@ import { MemoizedAppointmentFormSummary } from "./MemoizedAppointmentFormSummary
 
 type AppointmentFormValues = {
   assistantName: string;
-  clientName: string;
+  client: BuukiaClient[];
   time: string;
   services: BuukiaService[];
 };
@@ -59,6 +57,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
     setValue,
     watch,
     getValues,
+    control,
     formState: { errors },
   } = useForm<AppointmentFormValues>({
     resolver: validateResolver(appointmentFormSchema),
@@ -146,19 +145,9 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
   }, [props.appointmentId]);
 
   const onSubmit = (data: AppointmentFormValues) => {
-    const client = props.clients.find(
-      (client) => client.name === data.clientName,
-    );
-
-    if (!client) {
-      // Handle error - show message to user
-      console.error("Client not found");
-      return;
-    }
-
     const body: CreateAppointmentBody = {
       assistantId: props.assistantId,
-      clientId: client.id,
+      clientId: data.client.length > 0 ? data.client[0].id : "",
       time: new Date(data.time).toISOString(),
       serviceIds: data.services.map((service) => service.id),
     };
@@ -175,6 +164,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
       >
         <div>
           <MemoizedAppointmentFormFields
+            control={control}
             register={register}
             errors={errors}
             clients={props.clients}

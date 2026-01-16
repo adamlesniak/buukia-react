@@ -8,8 +8,10 @@ import type {
   BuukiaClient,
   BuukiaService,
   CreateAppointmentBody,
+  CreateAssistantBody,
   CreateServiceBody,
   UpdateAppointmentBody,
+  UpdateAssistantBody,
   UpdateCategoryBody,
   UpdateServiceBody,
 } from "@/types";
@@ -56,6 +58,97 @@ const [assistants, clients, services, appointments, categories]: [
 ];
 
 export const handlers = [
+  http.get("/api/assistants", ({ request }) => {
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+    return HttpResponse.json(
+      Array.from(assistants.values())
+        .filter((assistant) =>
+          assistant.name.toLowerCase().includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
+  }),
+
+  http.get("/api/assistants/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = assistants.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Assistant not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post<never, CreateAssistantBody>(
+    "/api/assistants",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const id = uuidv4();
+
+      const assistant = {
+        id,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        categories: body.categories,
+        availability: body.availability,
+      } as BuukiaAssistant;
+      assistants.set(id, assistant);
+
+      return HttpResponse.json(assistant);
+    },
+  ),
+
+  http.put<never, UpdateAssistantBody>(
+    "/api/assistants/:id",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const item = assistants.get(body.id);
+      if (!item) {
+        throw new Error("Item not found");
+      }
+
+      const assistant = {
+        id: item.id,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        categories: body.categories,
+        availability: body.availability,
+      } as BuukiaAssistant;
+      assistants.set(item.id, assistant);
+
+      return HttpResponse.json(assistant);
+    },
+  ),
+
+  http.delete("/api/assistants/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = assistants.delete(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Assistant not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
   http.get("/api/categories", ({ request }) => {
     const [limitParam, query] = [
       new URL(request.url).searchParams.get("limit"),

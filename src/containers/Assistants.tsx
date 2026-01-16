@@ -2,10 +2,10 @@ import { Outlet, useNavigate } from "@tanstack/react-router";
 import { differenceInHours } from "date-fns";
 import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 
 import { useAssistants } from "@/api";
 import { Button } from "@/components/Button";
+import { Chip } from "@/components/Chip";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
 import {
   PageBody,
@@ -24,15 +24,6 @@ import {
 } from "@/components/Table";
 import { MAX_PAGINATION } from "@/constants.ts";
 
-const Chip = styled.div`
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  display: inline-flex;
-  padding: 4px;
-  margin-right: 6px;
-  font-size: 13px;
-`;
-
 export default function Services() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -49,7 +40,6 @@ export default function Services() {
   } = useAssistants({ limit: MAX_PAGINATION, query: "" });
 
   const isError = !!assistantsError;
-
 
   return (
     <>
@@ -113,6 +103,8 @@ export default function Services() {
                       ) => {
                         if ($event.key === "Enter") {
                           navigate({ to: `/assistants/${assistant.id}` });
+                          $event.preventDefault();
+                          $event.stopPropagation();
                         }
                       }}
                       $type="body"
@@ -120,23 +112,33 @@ export default function Services() {
                       tabIndex={0}
                       data-testid="assistant-row"
                     >
-                      <TableRowItem>{assistant.name}</TableRowItem>
                       <TableRowItem>
-                        {assistant.categories.map((category) => <Chip key={category}>{category}</Chip>)}
+                        {assistant.firstName} {assistant.lastName}
+                      </TableRowItem>
+                      <TableRowItem
+                        style={{ display: "inline-flex", gap: "6px" }}
+                      >
+                        {assistant.categories.map((category) => (
+                          <Chip key={category.id}>{category.name}</Chip>
+                        ))}
                       </TableRowItem>
                       <TableRowItem>{assistant.email}</TableRowItem>
                       <TableRowItem>
-                        {assistant.availability.regular.reduce((acc, value) => {
-                          const [startTime, endTime] = [
-                            new Date().setHours(
-                              parseInt(value.startTime.split(":")[0], 10),
-                            ),
-                            new Date().setHours(
-                              parseInt(value.endTime.split(":")[0], 10),
-                            ),
-                          ];
+                        {assistant.availability.reduce((acc, day) => {
+                          const sum = day.times.reduce((acc, value) => {
+                            const [startTime, endTime] = [
+                              new Date().setHours(
+                                parseInt(value.start.split(":")[0], 10),
+                              ),
+                              new Date().setHours(
+                                parseInt(value.end.split(":")[0], 10),
+                              ),
+                            ];
 
-                          return acc + differenceInHours(endTime, startTime);
+                            return acc + differenceInHours(endTime, startTime);
+                          }, 0);
+
+                          return sum + acc;
                         }, 0)}
                       </TableRowItem>
                     </TableRow>

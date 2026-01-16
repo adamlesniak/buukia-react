@@ -1,5 +1,10 @@
 import { memo } from "react";
-import type { UseFormRegister, FieldErrors } from "react-hook-form";
+import {
+  type UseFormRegister,
+  type FieldErrors,
+  Controller,
+  type Control,
+} from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import type { AppointmentFormValues, BuukiaClient } from "@/types";
@@ -7,6 +12,7 @@ import type { AppointmentFormValues, BuukiaClient } from "@/types";
 import { Combobox, Field, FieldError, Input, Label, Fieldset } from "../Form";
 
 export type MemoizedAppointmentFormFieldsProps = {
+  control: Control<AppointmentFormValues, unknown, unknown>;
   register: UseFormRegister<AppointmentFormValues>;
   errors: FieldErrors<AppointmentFormValues>;
   clients: BuukiaClient[];
@@ -52,18 +58,28 @@ export const MemoizedAppointmentFormFields = memo(
           <Label id={"client-name-label"} htmlFor="client-name-input">
             {t("appointments.detail.client")}
           </Label>
-          <Combobox
-            {...props.register("clientName")}
-            id="client-name-input"
-            data-testid="client-name-input"
-            valueKey="name"
-            items={props.clients}
-            disabled={props.clientsLoading}
-            onSearchChange={props.clientsSearch}
-            loading={props.clientsLoading}
-            search={true}
-          ></Combobox>
-          {props.errors.clientName && (
+          <Controller
+            name="client"
+            control={props.control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Combobox
+                {...props.register("client")}
+                id="client-name-input"
+                data-testid="client-name-input"
+                valueKey="id"
+                displayKey="name"
+                items={props.clients}
+                disabled={false}
+                loading={props.clientsLoading}
+                search={true}
+                multiselect={false}
+                onChange={(e) => onChange(JSON.parse(e.target.value))}
+                onBlur={onBlur}
+                value={value ? value : []}
+              />
+            )}
+          />
+          {props.errors.client && (
             <FieldError role="alert">
               {t("appointments.form.errors.clientNameError")}
             </FieldError>

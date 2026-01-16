@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { MAX_PAGINATION } from "@/constants.ts";
-import type { BuukiaService } from "@/types";
+import type { BuukiaAssistant } from "@/types";
 
 import { assistantQueryKeys } from "./assistants-query-keys";
 
-export function useDeleteService() {
+export function useDeleteAssistant() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -24,7 +24,7 @@ export function useDeleteService() {
       });
 
       // Snapshot the previous value
-      const previousItems = queryClient.getQueryData<BuukiaService[]>([
+      const previousItems = queryClient.getQueryData<BuukiaAssistant[]>([
         ...assistantQueryKeys.all,
         MAX_PAGINATION,
         "",
@@ -33,7 +33,7 @@ export function useDeleteService() {
       // Optimistically update to the new value
       queryClient.setQueryData(
         [...assistantQueryKeys.all, MAX_PAGINATION, ""],
-        (old: BuukiaService[]) =>
+        (old: BuukiaAssistant[]) =>
           [...(old || [])].filter((item) => item.id !== assistantId),
       );
 

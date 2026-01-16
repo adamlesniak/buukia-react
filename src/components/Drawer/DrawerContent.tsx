@@ -11,6 +11,7 @@ const DrawerContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-basis: 500px;
+  max-width: 500px;
   background-color: #fff;
   padding: 16px;
   position: relative;

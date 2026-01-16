@@ -55,10 +55,9 @@ const mockService: BuukiaService = {
   id: "serviceId",
   name: "Service Name",
   description: "Service Description",
-  business: "businessId",
   duration: "60",
   price: 100,
-  category: data.categories[0].name,
+  category: data.categories[0],
 };
 const mockCategories: BuukiaCategory[] = [createCategory(data.categories[0])];
 
@@ -208,7 +207,7 @@ describe("ServiceDetail", () => {
 
       expect(serviceNameElement).toHaveValue(mockService.name);
       expect(categoryInputElement?.querySelector("input")).toHaveValue(
-        mockService.category,
+       '[{"id":"41d7ff31-a979-4a95-8619-075e56aeaf6b","name":"Beauty"}]',
       );
       expect(priceInputElement).toHaveValue(mockService.price.toString());
       expect(durationInputElement).toHaveValue(mockService.duration);
@@ -238,7 +237,10 @@ describe("ServiceDetail", () => {
       expect(mockMutate).toHaveBeenCalledWith(
         {
           id: "serviceId",
-          category: "Beauty",
+          category: {
+            id: "41d7ff31-a979-4a95-8619-075e56aeaf6b",
+            name: "Beauty",
+          },
           description: "Service Description",
           duration: "60",
           name: "Service Name",

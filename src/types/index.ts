@@ -14,7 +14,7 @@ export interface UpdateAppointmentBody {
 }
 export interface CreateServiceBody {
   name: string;
-  category: string;
+  category: BuukiaCategory;
   duration: string;
   description: string;
   price: number;
@@ -36,17 +36,25 @@ export interface CreateAssistantBody {
   firstName: string;
   lastName: string;
   email: string;
-  categories: string[];
-  availability: Availability;
+  categories: BuukiaCategory[];
+  availability: AvailabilitySlot[];
 }
 
 export interface UpdateAssistantBody extends CreateAssistantBody {
   id: string;
 }
 
+export type AssistantFormValues = {
+  availability: AvailabilitySlot[];
+  categories: BuukiaCategory[];
+  email: string;
+  firstName: string;
+  lastName: string;
+};
+
 export type AppointmentFormValues = {
   assistantName: string;
-  clientName: string;
+  client: BuukiaClient[];
   time: string;
   services: BuukiaService[];
 };
@@ -56,7 +64,7 @@ export type NewCategoryFormValues = {
 };
 
 export type ServiceFormValues = {
-  category: string;
+  category: BuukiaCategory[];
   description: string;
   duration: string;
   name: string;
@@ -65,22 +73,19 @@ export type ServiceFormValues = {
 
 export type BuukiaAssistant = {
   id: string;
-  availability: Availability;
-  business: string;
-  categories: string[];
+  availability: AvailabilitySlot[];
+  categories: BuukiaCategory[];
   email: string;
   firstName: string;
   initials: string;
   lastName: string;
   name: string;
-  type: string;
 };
 
 export type BuukiaService = {
   id: string;
   description: string;
-  business: string;
-  category: string;
+  category: BuukiaCategory;
   duration: string;
   name: string;
   price: number;
@@ -93,7 +98,6 @@ export type BuukiaClient = {
   name: string;
   email: string;
   phone: string;
-  appointments: BuukiaAppointment[];
 };
 
 export type BuukiaAppointment = {
@@ -142,10 +146,11 @@ export type ComboboxItem = {
 // Business Types
 export type BusinessCategory = string;
 
+type AvailabilitySlotTime = { start: string; end: string };
+
 export type AvailabilitySlot = {
+  times: AvailabilitySlotTime[];
   dayOfWeek: number;
-  startTime: string;
-  endTime: string;
 };
 
 export type AvailabilityException = {

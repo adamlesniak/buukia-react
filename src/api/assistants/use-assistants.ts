@@ -15,9 +15,11 @@ export const useAssistants = (params: useAssistantsParams) => {
   const queryClient = useQueryClient();
 
   const { isLoading, error, data, isFetching } = useQuery<BuukiaAssistant[]>({
-    queryKey: assistantQueryKeys.all,
+    queryKey: [...assistantQueryKeys.all, params.limit, params.query],
     queryFn: async () => {
-      const response = await fetch(`/api/assistants?${queryString.stringify(params)}`);
+      const response = await fetch(
+        `/api/assistants?${queryString.stringify(params)}`,
+      );
 
       const result = await response.json();
 

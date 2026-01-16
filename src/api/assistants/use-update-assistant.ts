@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { MAX_PAGINATION } from "@/constants.ts";
-import type { BuukiaAssistant, UpdateServiceBody } from "@/types";
+import type { BuukiaAssistant, UpdateAssistantBody } from "@/types";
 
 import { assistantQueryKeys } from "./assistants-query-keys";
 
-export function useUpdateService() {
+export function useUpdateAssistant() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: UpdateServiceBody) => {
+    mutationFn: async (data: UpdateAssistantBody) => {
       const response = await fetch(`/api/assistants/${data.id}`, {
         method: "PUT",
         headers: {

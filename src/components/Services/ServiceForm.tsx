@@ -1,10 +1,9 @@
-import { TrashIcon } from "lucide-react";
-import { memo, useCallback, useState } from "react";
-import { FocusScope } from "react-aria";
+import { memo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { ManageCategoriesFormModal } from "@/containers/ManageCategoriesFormModal";
 import type {
   BuukiaCategory,
   CreateCategoryBody,
@@ -12,15 +11,9 @@ import type {
   NewCategoryFormValues,
   ServiceFormValues,
 } from "@/types";
-import {
-  serviceFormSchema,
-  validateResolver,
-  categoryFormSchema,
-} from "@/validators";
+import { serviceFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
-import { Card, CardDescription } from "../Card";
-import { MemoizedDrawerHeaderH3 } from "../Drawer";
 import {
   Combobox,
   Field,
@@ -32,11 +25,9 @@ import {
   Select,
   TextArea,
 } from "../Form";
-import { Modal, ModalBody, Overlay } from "../Modal";
 
 type ServiceFormProps = {
   values: ServiceFormValues;
-  serviceId: string;
   isLoading: boolean;
   categories: BuukiaCategory[];
   categoriesIsLoading: boolean;
@@ -53,21 +44,11 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ServiceFormValues>({
+  } = useForm<Omit<ServiceFormValues, "id">>({
     values: {
       ...props.values,
     },
     resolver: validateResolver(serviceFormSchema),
-  });
-  const {
-    register: registerNewCategoryForm,
-    handleSubmit: handleSubmitNewCategoryForm,
-    formState: { errors: errorsNewCategoryForm },
-  } = useForm<NewCategoryFormValues>({
-    values: {
-      name: "",
-    },
-    resolver: validateResolver(categoryFormSchema),
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -76,7 +57,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
     if ("category" in data) {
       const body: CreateServiceBody = {
         name: data.name,
-        category: data.category,
+        category: data.category ? data.category[0] : { id: "", name: "" }, // Adjusted for single select
         duration: data.duration,
         price: data.price,
         description: data.description,
@@ -91,11 +72,6 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
       props.onSubmit(body);
     }
   };
-
-  const modalClose = useCallback(() => {
-    props.onCategorySearch("");
-    setShowModal(false);
-  }, [props.serviceId]);
 
   return (
     <>
@@ -122,22 +98,33 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           <Label id={"service-category-label"} htmlFor="service-category-input">
             {t("services.detail.category")}
           </Label>
-          <Combobox
-            {...register("category")}
-            id="service-category-input"
-            data-testid="service-category-input"
-            valueKey="name"
-            items={props.categories}
-            disabled={false}
-            loading={props.isLoading}
-            search={true}
-            addButtonText={t("services.addCategory")}
-            onAdd={($event: React.MouseEvent<HTMLButtonElement>) => {
-              setShowModal(true);
-              $event.preventDefault();
-              $event.stopPropagation();
-            }}
-          ></Combobox>
+          <Controller
+            name="category"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Combobox
+                {...register("category")}
+                id="service-category-input"
+                data-testid="service-category-input"
+                valueKey="id"
+                displayKey="name"
+                items={props.categories}
+                disabled={false}
+                loading={props.isLoading}
+                search={true}
+                addButtonText={t("services.addCategory")}
+                onChange={(e) => onChange(JSON.parse(e.target.value))}
+                onBlur={onBlur}
+                value={value ? value : []}
+                multiselect={false}
+                onAdd={($event: React.MouseEvent<HTMLButtonElement>) => {
+                  setShowModal(true);
+                  $event.preventDefault();
+                  $event.stopPropagation();
+                }}
+              />
+            )}
+          />
           {errors.category && (
             <FieldError role="alert">
               {t("services.form.errors.categoryError")}
@@ -236,90 +223,15 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           </Button>
         </FormSummary>
       </Form>
+
       {showModal &&
         createPortal(
-          <Overlay onClick={() => setShowModal(false)}>
-            <Modal
-              onClick={($event) => {
-                $event.stopPropagation();
-              }}
-              data-testid="services-modal"
-            >
-              <FocusScope autoFocus restoreFocus contain>
-                <MemoizedDrawerHeaderH3
-                  title={t("services.manageCategories")}
-                  onClose={modalClose}
-                  label={t("common.closeModal")}
-                />
-
-                <Form
-                  fullHeight={true}
-                  data-testid="add-category-form"
-                  onSubmit={handleSubmitNewCategoryForm(onSubmit)}
-                >
-                  <Field>
-                    <div
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginBottom: "0px",
-                        width: "100%",
-                        display: "flex",
-                      }}
-                    >
-                      <Input
-                        {...registerNewCategoryForm("name")}
-                        id="category-name-input"
-                        type="text"
-                        data-testid="category-name-input"
-                        placeholder={t("services.testCategory")}
-                        style={{ flex: 4, borderRadius: "12px 0px 0px 12px" }}
-                      />
-
-                      <Button
-                        size="sm"
-                        tabIndex={0}
-                        type="submit"
-                        style={{
-                          flex: 1,
-                          height: "37px",
-                          borderRadius: "0px 12px 12px 0px",
-                        }}
-                      >
-                        {t("services.addCategory")}
-                      </Button>
-                    </div>
-                    {errorsNewCategoryForm.name && (
-                      <FieldError role="alert">
-                        {t("common.requiredField")}
-                      </FieldError>
-                    )}
-                  </Field>
-
-                  <ModalBody tabIndex={-1} data-testid="create-category-modal">
-                    {props.categories &&
-                      props.categories.length > 0 &&
-                      props.categories.map((category) => (
-                        <Card
-                          data-testid="category-list-item"
-                          key={category.id}
-                        >
-                          <CardDescription title={`${category.name}`} />
-                          <Button
-                            size="sm"
-                            tabIndex={0}
-                            onClick={() => props.deleteCategory(category.id)}
-                            type="button"
-                          >
-                            <TrashIcon />
-                          </Button>
-                        </Card>
-                      ))}
-                  </ModalBody>
-                </Form>
-              </FocusScope>
-            </Modal>
-          </Overlay>,
+          <ManageCategoriesFormModal
+            categories={props.categories}
+            deleteCategory={props.deleteCategory}
+            onSubmit={props.onSubmit}
+            close={() => setShowModal(false)}
+          />,
           document.body,
         )}
     </>

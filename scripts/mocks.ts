@@ -17,7 +17,6 @@ import prettier from "prettier";
 import type {
   BuukiaAppointment,
   BuukiaAssistant,
-  BusinessCategory,
   BuukiaClient,
   MockData,
   BuukiaService,
@@ -33,14 +32,14 @@ const serviceNames = [
   "Yoga Session",
 ];
 
-const businessNames = [
-  "Elegance Salon",
-  "Urban Spa",
-  "Glamour Studio",
-  "Relaxation Haven",
-];
+export const createCategory = (): BuukiaCategory => {
+  return {
+    id: faker.string.uuid(),
+    name: faker.lorem.word(),
+  };
+};
 
-const serviceCategories: BusinessCategory[] = [
+const serviceCategories: BuukiaCategory[] = [
   "Beauty",
   "Wellness",
   "Health",
@@ -49,16 +48,15 @@ const serviceCategories: BusinessCategory[] = [
   "Massage",
   "Haircare",
   "Nailcare",
-];
+].map((name) => ({
+  ...createCategory(),
+  name,
+}));
 
 export const createService = (): BuukiaService => {
   return {
     id: faker.string.uuid(),
     description: faker.lorem.sentence(),
-    business:
-      businessNames[
-        faker.number.int({ min: 0, max: businessNames.length - 1 })
-      ],
     category:
       serviceCategories[
         faker.number.int({ min: 0, max: serviceCategories.length - 1 })
@@ -88,30 +86,29 @@ export const createAssistant = (): BuukiaAssistant => {
     email: faker.internet.email({ firstName, lastName }),
     name: `${firstName} ${lastName}`,
     initials: firstName[0] + lastName[0],
-    categories: Array.from({ length: faker.number.int({ min: 1, max: 3 }) }).map(
-      () =>
-        serviceCategories[
-          faker.number.int({ min: 0, max: serviceCategories.length - 1 })
-        ],
-    ),
-    availability: {
-      regular: Array.from({ length: 7 }).map(
-        (_value, index) => ({
-          dayOfWeek: index,
-          startTime: "09:00",
-          endTime: "17:00",
-        }),
-      ),
-      // exceptions: [],
-      // holidays: [],
-    },
-    business:
-      businessNames[
-        faker.number.int({ min: 0, max: businessNames.length - 1 })
-      ],
-    type: serviceCategories[
-      faker.number.int({ min: 0, max: serviceCategories.length - 1 })
+    categories: [
+      ...new Map(
+        Array.from({
+          length: faker.number.int({ min: 1, max: 3 }),
+        })
+          .map(
+            () =>
+              serviceCategories[
+                faker.number.int({ min: 0, max: serviceCategories.length - 1 })
+              ],
+          )
+          .map((item) => [item["id"], item]),
+      ).values(),
     ],
+    availability: Array.from({ length: 7 }).map((_value, index) => ({
+      dayOfWeek: index,
+      times: [
+        {
+          start: "09:00",
+          end: "17:00",
+        },
+      ],
+    })),
   };
 };
 
@@ -126,7 +123,6 @@ export const createClient = (): BuukiaClient => {
     name: `${firstName} ${lastName}`,
     email: faker.internet.email({ firstName, lastName }),
     phone: faker.phone.number(),
-    appointments: [],
   };
 };
 
@@ -161,10 +157,7 @@ const [assistants, clients, categories]: [
 ] = [
   Array.from({ length: 4 }).map(() => createAssistant()),
   Array.from({ length: 20 }).map(() => createClient()),
-  serviceCategories.map((name) => ({
-    id: faker.string.uuid(),
-    name,
-  })),
+  serviceCategories,
 ];
 
 const dayStartDate = addMinutes(addHours(startOfDay(new Date()), 8), 0);

@@ -1,9 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute('/assistants/$assistantId')({
-  component: RouteComponent,
-})
+import AssistantDetail from "@/containers/AssistantDetail";
 
-function RouteComponent() {
-  return <div>Hello "/assistants/$assistantId"!</div>
-}
+export const Route = createFileRoute("/assistants/$assistantId")({
+  component: AssistantDetail,
+});

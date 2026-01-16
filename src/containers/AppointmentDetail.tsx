@@ -82,15 +82,7 @@ export default function AppointmentDetail() {
           time: new Date(
             getUnixTime(new Date(Number(time))) * 1000,
           ).toISOString(),
-          client: {
-            id: "",
-            firstName: "",
-            lastName: "",
-            name: "",
-            email: "",
-            phone: "",
-            appointments: [],
-          },
+          client: null as any,
           services: [],
           assistant,
         } as BuukiaAppointment,
@@ -210,7 +202,7 @@ export default function AppointmentDetail() {
   const formValues: AppointmentFormValues = useMemo(
     () => ({
       assistantName: appointment?.assistant?.name || "",
-      clientName: appointment?.client?.name || "",
+      client: appointment?.client ? [appointment?.client] : [],
       time: format(
         appointment?.time ? new Date(appointment.time) : new Date(),
         "PPpp",

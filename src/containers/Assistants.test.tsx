@@ -108,15 +108,15 @@ describe("Assistants", () => {
       data.assistants.forEach((assistant) => {
         expect(screen.queryAllByText(assistant.name)).toBeDefined();
         for (const category of assistant.categories) {
-          expect(screen.queryAllByText(category)).toBeDefined();
+          expect(screen.queryAllByText(category.name)).toBeDefined();
         }
         expect(screen.queryAllByText(`${assistant.email}`)).toBeDefined();
 
-        const totalHours = assistant.availability.regular.reduce(
+        const totalHours = assistant.availability.reduce(
           (acc, value) => {
             const [startTime, endTime] = [
-              new Date().setHours(parseInt(value.startTime.split(":")[0], 10)),
-              new Date().setHours(parseInt(value.endTime.split(":")[0], 10)),
+              new Date().setHours(parseInt(value.times[0].start.split(":")[0], 10)),
+              new Date().setHours(parseInt(value.times[0].end.split(":")[0], 10)),
             ];
 
             return acc + differenceInHours(endTime, startTime);
