@@ -1,19 +1,28 @@
 import { Copy, PlusIcon, TrashIcon } from "lucide-react";
-import { useState, memo, useCallback } from "react";
+import { useState, memo, useEffect } from "react";
+import { FocusScope } from "react-aria";
 import { createPortal } from "react-dom";
-import { Controller, useForm } from "react-hook-form";
+import {
+  Controller,
+  useForm,
+  useFieldArray,
+  useFormContext,
+  FormProvider,
+} from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { ManageCategoriesFormModal } from "@/containers/ManageCategoriesFormModal";
 import {
   type AssistantFormValues,
+  type AvailabilitySlot,
   type BuukiaCategory,
   type CreateAssistantBody,
   type CreateCategoryBody,
   type NewCategoryFormValues,
 } from "@/types";
-import { getDayName } from "@/utils";
+import { getDayName, hasElementParentWithId } from "@/utils";
+import { validateResolver, assistantFormSchema } from "@/validators";
 
 import { Button } from "../Button";
 import {
@@ -41,8 +50,230 @@ const AvailabilityContainer = styled.div`
   flex: 1;
 `;
 
+const AssistantAvailabilityDropdown = styled.div`
+  display: flex;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  position: absolute;
+  left: -133px;
+  width: 100px;
+  top: 0px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    padding: 0px;
+    margin: 0px;
+  }
+`;
+
+const AssistantAvailabilityList = styled.ul`
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  margin-top: 16px;
+`;
+
+const AssistantAvailabilityListItem = styled.li`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+interface FormValues {
+  availability: AvailabilitySlot[];
+}
+
+type AvailabilityFieldProps = {
+  fieldIndex: number;
+};
+
+type AvailabilityFieldCopyFormValues = {
+  copyTo: {
+    day: number;
+    copy: boolean;
+  }[];
+};
+
+const AvailabilityField = memo(({ fieldIndex }: AvailabilityFieldProps) => {
+  const { t } = useTranslation();
+  const { register, getValues: getMainFormValues, setValue } = useFormContext();
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const {
+    control,
+    register: registerCopyForm,
+    getValues,
+  } = useForm<AvailabilityFieldCopyFormValues>({
+    values: {
+      copyTo: Array.from({ length: 7 }).map((_, index) => ({
+        day: index,
+        copy: false,
+      })),
+    },
+  });
+  const { fields: copyFields } = useFieldArray({
+    control,
+    name: "copyTo",
+  });
+
+  const submit = () => {
+    for (const day of getValues("copyTo")) {
+      getMainFormValues(`availability.${fieldIndex}.times`);
+
+      if (day.copy) {
+        setValue(
+          `availability.${day.day}.times`,
+          getMainFormValues(`availability.${fieldIndex}.times`),
+        );
+      }
+    }
+
+    setShowDropdown(false);
+  };
+
+  const handleClickOutside = ($event: MouseEvent) => {
+    const target = $event.target as Element;
+
+    // Don't close if clicking the copy button or inside the dropdown
+    if (hasElementParentWithId(target, "assistant-availability-dropdown")) {
+      return;
+    }
+
+    setShowDropdown(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  });
+
+  const {
+    fields,
+    append: appendChild,
+    remove: removeChild,
+  } = useFieldArray<FormValues>({
+    name: `availability.${fieldIndex}.times`,
+  });
+
+  return (
+    <Timeslot>
+      <h4>{t(`common.daysOfWeek.${getDayName(fieldIndex)}`)}</h4>
+      {fields.map((field, index) => (
+        <TimeslotFieldWrapper
+          data-testid={`timeslot-${fieldIndex}`}
+          key={field.id}
+        >
+          <TimeslotField
+            data-testid={`availability-${fieldIndex}-timeslot-${index}`}
+          >
+            <Input
+              type="time"
+              {...register(`availability.${fieldIndex}.times.${index}.start`)}
+              data-testid={`availability-${fieldIndex}-start-time-input-${index}`}
+              style={{ marginLeft: "0px" }}
+            />
+            -
+            <Input
+              type="time"
+              {...register(`availability.${fieldIndex}.times.${index}.end`)}
+              data-testid={`availability-${fieldIndex}-end-time-input-${index}`}
+            />
+            {fields.length > 1 && (
+              <Button
+                size="sm"
+                variant="transparent"
+                tabIndex={0}
+                onClick={() => removeChild(index)}
+                type="button"
+                data-testid={"delete-availability-button"}
+              >
+                <TrashIcon />
+              </Button>
+            )}
+          </TimeslotField>
+
+          {index === 0 && (
+            <TimeslotActions>
+              <Button
+                size="sm"
+                variant="transparent"
+                tabIndex={0}
+                className={showDropdown ? "active" : ""}
+                onClick={() => setShowDropdown(!showDropdown)}
+                type="button"
+                data-testid={"copy-availability-button"}
+              >
+                <Copy />
+              </Button>
+              <Button
+                size="sm"
+                variant="transparent"
+                tabIndex={0}
+                onClick={() => appendChild({ start: "", end: "" })}
+                type="button"
+                data-testid={"add-availability-button"}
+              >
+                <PlusIcon />
+              </Button>
+              {showDropdown && (
+                <AssistantAvailabilityDropdown
+                  id={"assistant-availability-dropdown"}
+                  data-testid={"assistant-availability-dropdown"}
+                >
+                  <FocusScope autoFocus restoreFocus contain>
+                    <b>{t(`common.copyTo`)}:</b>
+                    <AssistantAvailabilityList>
+                      {copyFields.map((_, dayIndex) => (
+                        <AssistantAvailabilityListItem key={dayIndex}>
+                          <label
+                            id={`copy-to-${dayIndex}-label`}
+                            data-testid={`copy-to-${dayIndex}-label`}
+                            htmlFor={`copy-to-${dayIndex}-input`}
+                          >
+                            {t(`common.daysOfWeek.${getDayName(dayIndex)}`)}
+                          </label>
+                          <Input
+                            id={`copy-to-${dayIndex}-input`}
+                            data-testid={`copy-to-${dayIndex}-input`}
+                            {...registerCopyForm(`copyTo.${dayIndex}.copy`)}
+                            type="checkbox"
+                          />
+                        </AssistantAvailabilityListItem>
+                      ))}
+                      <FormSummary>
+                        <Button
+                          size="sm"
+                          tabIndex={0}
+                          type="submit"
+                          data-testid={'submit-copy-availability-button'}
+                          onClick={($event) => {
+                            submit();
+                            $event.preventDefault();
+                            $event.stopPropagation();
+                          }}
+                        >
+                          {t("common.submit")}
+                        </Button>
+                      </FormSummary>
+                    </AssistantAvailabilityList>
+                  </FocusScope>
+                </AssistantAvailabilityDropdown>
+              )}
+            </TimeslotActions>
+          )}
+        </TimeslotFieldWrapper>
+      ))}
+    </Timeslot>
+  );
+});
+
 type AssistantFormProps = {
-  assistantId: string;
   categories: BuukiaCategory[];
   values: AssistantFormValues;
   isLoading: boolean;
@@ -56,20 +287,27 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
   const { t } = useTranslation();
 
   const [showModal, setShowModal] = useState(false);
+
+  const form = useForm<AssistantFormValues>({
+    values: {
+      ...props.values,
+    },
+    resolver: validateResolver(assistantFormSchema),
+  });
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm<AssistantFormValues>({
-    values: {
-      ...props.values,
-    },
+  } = form;
+  const { fields } = useFieldArray({
+    control,
+    name: "availability",
   });
 
-  const modalClose = useCallback(() => {
+  const modalClose = () => {
     setShowModal(false);
-  }, [props.assistantId]);
+  };
 
   const onSubmit = (data: AssistantFormValues | NewCategoryFormValues) => {
     if ("availability" in data) {
@@ -90,7 +328,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
   };
 
   return (
-    <>
+    <FormProvider {...form}>
       <Form
         fullHeight={true}
         data-testid="assistant-form"
@@ -106,6 +344,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
               id="first-name-input"
               type="text"
               data-testid="first-name-input"
+              placeholder={t("assistants.detail.firstName")}
             />
             {errors.firstName && (
               <FieldError role="alert">
@@ -123,6 +362,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
               id="last-name-input"
               type="text"
               data-testid="last-name-input"
+              placeholder={t("assistants.detail.lastName")}
             />
             {errors.lastName && (
               <FieldError role="alert">
@@ -140,6 +380,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
               id="email-input"
               type="text"
               data-testid="email-input"
+              placeholder={t("assistants.detail.email")}
             />
             {errors.email && (
               <FieldError role="alert">
@@ -182,7 +423,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
 
             {errors.categories && (
               <FieldError role="alert">
-                {t("assistants.form.errors.categoryError")}
+                {t("assistants.form.errors.categoriesError")}
               </FieldError>
             )}
           </Field>
@@ -193,63 +434,11 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
         </Label>
         <AvailabilityContainer>
           <TimeslotsContainer>
-            {props.values.availability.map((availability) => (
-              <Timeslot>
-                <h4>
-                  {t(`common.daysOfWeek.${getDayName(availability.dayOfWeek)}`)}
-                </h4>
-                <TimeslotFieldWrapper>
-                  <TimeslotField>
-                    <Input
-                      type="time"
-                      id="appointment"
-                      name="appointment"
-                      min="09:00"
-                      max="18:00"
-                      style={{ marginLeft: "0px" }}
-                      required
-                    />
-                    -
-                    <Input
-                      type="time"
-                      id="appointment"
-                      name="appointment"
-                      min="09:00"
-                      max="18:00"
-                      required
-                    />
-                    <Button
-                      size="sm"
-                      variant="transparent"
-                      tabIndex={0}
-                      onClick={() => {}}
-                      type="button"
-                    >
-                      <TrashIcon />
-                    </Button>
-                  </TimeslotField>
-                  <TimeslotActions>
-                    <Button
-                      size="sm"
-                      variant="transparent"
-                      tabIndex={0}
-                      onClick={() => {}}
-                      type="button"
-                    >
-                      <PlusIcon />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="transparent"
-                      tabIndex={0}
-                      onClick={() => {}}
-                      type="button"
-                    >
-                      <Copy />
-                    </Button>
-                  </TimeslotActions>
-                </TimeslotFieldWrapper>
-              </Timeslot>
+            {fields.map((field) => (
+              <AvailabilityField
+                key={field.dayOfWeek}
+                fieldIndex={field.dayOfWeek}
+              />
             ))}
           </TimeslotsContainer>
         </AvailabilityContainer>
@@ -276,6 +465,6 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
           />,
           document.body,
         )}
-    </>
+    </FormProvider>
   );
 });

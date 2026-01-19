@@ -38,6 +38,7 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
   top: 35px;
   width: calc(100% - 2px);
   position: absolute;
+  z-index: 1;
 
   ul {
     margin: 0px;

@@ -51,7 +51,8 @@
       "errors": {
         "firstNameError": "First name is required",
         "lastNameError": "Last name is required",
-        "emailError": "Valid email is required"
+        "emailError": "Valid email is required",
+        "categoriesError": "Category is required"
       }
     }
   },
@@ -136,6 +137,7 @@
     "items": "items",
     "requiredField": "This field is required",
     "moreItems": "and {{count}} more items",
+    "copyTo": "Copy to",
     "daysOfWeek": {
       "sunday": "Sun",
       "monday": "Mon",

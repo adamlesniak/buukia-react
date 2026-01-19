@@ -21,6 +21,7 @@ export const TimeslotActions = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
+  position: relative;
 `;
 
 export const TimeslotField = styled.div`
@@ -33,6 +34,7 @@ export const TimeslotFieldWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin: 4px 0px;
 `;
 
 export const TimeslotsContainer = styled.div`

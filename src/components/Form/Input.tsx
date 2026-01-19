@@ -10,6 +10,7 @@ const StyledInput = styled.input`
   margin: 4px 0px;
   font-size: 14px;
   height: 35px;
+  cursor: pointer;
 `;
 
 type InputProps = {

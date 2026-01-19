@@ -16,6 +16,10 @@ const StyledButton = styled.button<{
   align-items: center;
   color: ${(props) => (props.$disabled ? "gray" : "initial")};
 
+  &.active {
+    background-color: #f4f4f4;
+  }
+
   span {
     margin-left: 8px;
   }
@@ -38,6 +42,10 @@ const StyledButton = styled.button<{
 
   &:hover {
     background-color: #fbfbfb;
+
+    &.active {
+      background-color: #f4f4f4;
+    }
   }
 
   &:disabled {

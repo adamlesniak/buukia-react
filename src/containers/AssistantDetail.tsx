@@ -95,8 +95,8 @@ export default function AssistantDetail() {
             dayOfWeek: index,
             times: [
               {
-                start: "09:00",
-                end: "17:00",
+                start: "",
+                end: "",
               },
             ],
           })),
@@ -153,7 +153,6 @@ export default function AssistantDetail() {
           )}
           {!isError && (
             <AssistantForm
-              assistantId={assistantId}
               categories={categories}
               values={formValues}
               isLoading={isLoading}
