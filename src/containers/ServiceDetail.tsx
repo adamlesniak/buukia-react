@@ -141,7 +141,6 @@ export default function ServiceDetail() {
           )}
           {!isError && (
             <ServiceForm
-              serviceId={service?.id || ""}
               categories={categories}
               onCategorySearch={(query) => setCategoriesQuery(query)}
               categoriesIsLoading={categoriesIsRefetching}

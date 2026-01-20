@@ -87,7 +87,7 @@ describe("ServiceForm", () => {
       expect(screen.queryByTestId("service-category-input")).not.toBeDisabled();
       expect(
         screen.queryByTestId("service-category-input")?.querySelector("input"),
-      ).toHaveValue(testProps.category.name);
+      ).toHaveValue(JSON.stringify(testProps.category));
     });
   });
 

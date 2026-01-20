@@ -106,7 +106,7 @@ describe("Services", () => {
       expect(screen.queryByText("services.table.actions")).toBeInTheDocument();
       data.services.forEach((service) => {
         expect(screen.queryAllByText(service.name)).toBeDefined();
-        expect(screen.queryAllByText(service.category)).toBeDefined();
+        expect(screen.queryAllByText(service.category.name)).toBeDefined();
         expect(
           screen.queryAllByText(`${service.duration} common.minutes`),
         ).toBeDefined();
