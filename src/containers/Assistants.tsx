@@ -116,11 +116,20 @@ export default function Services() {
                         {assistant.firstName} {assistant.lastName}
                       </TableRowItem>
                       <TableRowItem
-                        style={{ display: "inline-flex", gap: "6px" }}
+                        style={{
+                          alignItems: "center",
+                        }}
                       >
-                        {assistant.categories.map((category) => (
+                        {assistant.categories.slice(0, 2).map((category) => (
                           <Chip key={category.id}>{category.name}</Chip>
                         ))}
+                        {assistant.categories.length > 2 ? (
+                          <small>
+                            {t("common.moreItems", {
+                              count: assistant.categories.length - 2,
+                            })}
+                          </small>
+                        ) : null}
                       </TableRowItem>
                       <TableRowItem>{assistant.email}</TableRowItem>
                       <TableRowItem>

@@ -1,34 +1,28 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { format } from "date-fns/format";
 
 import {
-  useAssistant,
-  useServices,
-  useClients,
   useUpdateAssistant,
   useCreateAssistant,
+  useCreateCategory,
+  useDeleteCategory,
+  useCategories,
+  useAssistant,
 } from "@/api";
-import type { BuukiaAssistant, BuukiaClient, BuukiaService } from "@/types";
-import { createAssistant, createClient, createService } from "@/utils";
+import type { BuukiaAssistant, BuukiaCategory } from "@/types";
+import { createAssistant } from "@/utils";
 
 import data from "../routes/data.json";
 
 // Mock the API hooks
-vi.mock("@/api", async (importOriginal) => ({
+vi.mock("@/api", async () => ({
   useAssistant: vi.fn(),
-  useServices: vi.fn(),
-  useClients: vi.fn(),
+  useCategories: vi.fn(),
   useCreateAssistant: vi.fn(),
+  useCreateCategory: vi.fn(),
+  useDeleteCategory: vi.fn(),
   useUpdateAssistant: vi.fn(),
-  appointmentQueryKeys: (
-    (await importOriginal()) as { appointmentQueryKeys: unknown }
-  ).appointmentQueryKeys,
-  clientQueryKeys: ((await importOriginal()) as { clientQueryKeys: unknown })
-    .clientQueryKeys,
-  serviceQueryKeys: ((await importOriginal()) as { serviceQueryKeys: unknown })
-    .serviceQueryKeys,
 }));
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (value: string) => value }),
@@ -40,6 +34,7 @@ const mockUseParams = vi.fn();
 const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
   onSuccess();
 });
+const mockMutateCategory = vi.fn().mockImplementation((_data) => {});
 const mockRouterState = vi.fn().mockReturnValue("daily");
 
 vi.mock("@tanstack/react-router", () => ({
@@ -55,27 +50,23 @@ vi.mock("@tanstack/react-router", () => ({
 }));
 
 // Create test data
-const mockAssistant: BuukiaAssistant = {
-  id: "appointmentId",
-  time: "2025-12-15T10:00:00.000Z",
-  assistant: createAssistant(data.assistants[0]),
-  client: createClient(data.clients[0]),
-  services: [createService(data.services[0])],
-};
-const mockServices: BuukiaService[] = [createService(data.services[0])];
-const mockClients: BuukiaClient[] = [createClient(data.clients[0])];
+const mockAssistant: BuukiaAssistant = createAssistant(data.assistants[0]);
+const mockCategories: BuukiaCategory[] = [...data.categories];
 
-const mockUseAssistant = useAssistant as unknown as ReturnType<
+const mockUseCreateCategory = useCreateCategory as unknown as ReturnType<
   typeof vi.fn
 >;
-const mockUseServices = useServices as unknown as ReturnType<typeof vi.fn>;
-const mockUseClients = useClients as unknown as ReturnType<typeof vi.fn>;
+const mockUseDeleteCategory = useDeleteCategory as unknown as ReturnType<
+  typeof vi.fn
+>;
 const mockUseUpdateAssistant = useUpdateAssistant as unknown as ReturnType<
   typeof vi.fn
 >;
 const mockUseCreateAssistant = useCreateAssistant as unknown as ReturnType<
   typeof vi.fn
 >;
+const mockUseCategories = useCategories as unknown as ReturnType<typeof vi.fn>;
+const mockUseAssistant = useAssistant as unknown as ReturnType<typeof vi.fn>;
 
 // Import the component after mocking
 const AssistantDetail = await import("./AssistantDetail");
@@ -100,31 +91,32 @@ describe("AssistantDetail", () => {
     mockNavigate.mockClear();
     mockMutate.mockClear();
     mockRouterState.mockClear();
+    mockMutateCategory.mockClear();
 
     // Mock route params
     mockUseParams.mockReturnValue({
-      appointmentId: mockAssistant.id,
-      date: String(new Date("2025-12-14").getTime()),
-      assistantId: mockAssistant.assistant.id,
+      assistantId: mockAssistant.id,
     });
 
-    // Default mock implementations
+    mockUseCategories.mockReturnValue({
+      data: mockCategories,
+      error: null,
+      isLoading: false,
+      refetch: vi.fn(),
+    });
     mockUseAssistant.mockReturnValue({
       data: mockAssistant,
       error: null,
       isLoading: false,
-    });
-    mockUseServices.mockReturnValue({
-      data: mockServices,
-      error: null,
-      isLoading: false,
       refetch: vi.fn(),
     });
-    mockUseClients.mockReturnValue({
-      data: mockClients,
-      error: null,
-      isLoading: false,
-      refetch: vi.fn(),
+
+    // Default mock implementations
+    mockUseCreateCategory.mockReturnValue({
+      mutate: mockMutateCategory,
+    });
+    mockUseDeleteCategory.mockReturnValue({
+      mutate: mockMutate,
     });
     mockUseUpdateAssistant.mockReturnValue({
       mutate: mockMutate,
@@ -142,7 +134,7 @@ describe("AssistantDetail", () => {
         </QueryClientProvider>,
       );
 
-      expect(screen.getByText("appointments.appointment")).toBeInTheDocument();
+      expect(screen.getByText("assistants.assistant")).toBeInTheDocument();
     });
 
     it("should render header title with functional close button", async () => {
@@ -157,7 +149,7 @@ describe("AssistantDetail", () => {
       await user.click(closeButton);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/appointments/daily/1765670400000`,
+        to: `/assistants`,
       });
     });
 
@@ -173,47 +165,30 @@ describe("AssistantDetail", () => {
       await user.click(overlay);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/appointments/daily/1765670400000`,
+        to: `/assistants`,
       });
     });
 
-    it("should display error when there is an appointment error", async () => {
+    it("should display error when there is categories error", async () => {
+      mockUseCategories.mockReturnValueOnce({
+        data: null,
+        error: new Error("Categories error"),
+        isLoading: false,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AssistantDetail.default />
+        </QueryClientProvider>,
+      );
+
+      expect(await screen.findByText("error.message")).toBeInTheDocument();
+    });
+
+    it("should display error when there is assistant error", async () => {
       mockUseAssistant.mockReturnValueOnce({
         data: null,
         error: new Error("Assistant error"),
-        isLoading: false,
-      });
-
-      render(
-        <QueryClientProvider client={queryClient}>
-          <AssistantDetail.default />
-        </QueryClientProvider>,
-      );
-
-      expect(await screen.findByText("error.message")).toBeInTheDocument();
-    });
-
-    it("should display error when there is an services error", async () => {
-      mockUseServices.mockReturnValueOnce({
-        data: null,
-        error: new Error("Services error"),
-        isLoading: false,
-        refetch: vi.fn(),
-      });
-
-      render(
-        <QueryClientProvider client={queryClient}>
-          <AssistantDetail.default />
-        </QueryClientProvider>,
-      );
-
-      expect(await screen.findByText("error.message")).toBeInTheDocument();
-    });
-
-    it("should display error when there is clients error", async () => {
-      mockUseClients.mockReturnValueOnce({
-        data: null,
-        error: new Error("Clients error"),
         isLoading: false,
         refetch: vi.fn(),
       });
@@ -234,62 +209,36 @@ describe("AssistantDetail", () => {
         </QueryClientProvider>,
       );
 
-      const timeInputElement = await (screen.queryByTestId(
-        "time-input",
+      const firstNameInputElement = await (screen.queryByTestId(
+        "first-name-input",
       ) as HTMLInputElement);
-      const assistantNameInputElement = await (screen.queryByTestId(
-        "assistant-name-input",
+      const lastNameInputElement = await (screen.queryByTestId(
+        "last-name-input",
+      ) as HTMLInputElement);
+      const emailInputElement = await (screen.queryByTestId(
+        "email-input",
+      ) as HTMLInputElement);
+      const categoriesInputElement = await (screen.queryByTestId(
+        "categories-input",
       ) as HTMLInputElement);
       const submitButton = (await screen.queryByText(
         "common.submit",
       )) as HTMLElement;
-      const elements = await screen.queryAllByTestId("services-list-item");
 
       await user.click(submitButton);
 
-      expect(elements.length).toEqual(mockAssistant.services.length);
-      expect(assistantNameInputElement).toHaveValue(
-        mockAssistant.assistant.name,
+      expect(firstNameInputElement).toHaveValue(mockAssistant.firstName);
+      expect(categoriesInputElement?.querySelector("input")).toHaveValue(
+        JSON.stringify(data.assistants[0].categories),
       );
-      expect(timeInputElement).toHaveValue(
-        format(new Date(mockAssistant.time), "PPpp"),
-      );
+      expect(lastNameInputElement).toHaveValue(mockAssistant.lastName);
+      expect(emailInputElement).toHaveValue(mockAssistant.email);
     });
 
-    it("should redirect to daily view after successful appointment creation", async () => {
-      render(
-        <QueryClientProvider client={queryClient}>
-          <AssistantDetail.default />
-        </QueryClientProvider>,
-      );
-
-      const button = screen.queryByText("common.submit");
-
-      if (!button) {
-        throw new Error("Button not found");
-      }
-
-      await user.click(button!);
-
-      expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/appointments/daily/1765670400000`,
+    it("should redirect to assistants view after successful assistant update", async () => {
+      mockUseParams.mockReturnValue({
+        assistantId: mockAssistant.id,
       });
-      expect(mockMutate).toHaveBeenCalledWith(
-        {
-          id: mockAssistant.id,
-          assistantId: mockAssistant.assistant.id,
-          clientId: mockAssistant.client.id,
-          serviceIds: mockAssistant.services.map((service) => service.id),
-          time: "2025-12-15T10:00:00.000Z",
-        },
-        {
-          onSuccess: expect.any(Function),
-        },
-      );
-    });
-
-    it("should redirect to weekly view after successful appointment creation", async () => {
-      mockRouterState.mockReturnValueOnce("weekly");
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -306,20 +255,133 @@ describe("AssistantDetail", () => {
       await user.click(button!);
 
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/appointments/weekly/1765670400000/${mockAssistant.assistant.id}`,
+        to: `/assistants`,
       });
       expect(mockMutate).toHaveBeenCalledWith(
         {
           id: mockAssistant.id,
-          assistantId: mockAssistant.assistant.id,
-          clientId: mockAssistant.client.id,
-          serviceIds: mockAssistant.services.map((service) => service.id),
-          time: "2025-12-15T10:00:00.000Z",
+          firstName: mockAssistant.firstName,
+          lastName: mockAssistant.lastName,
+          email: mockAssistant.email,
+          categories: mockAssistant.categories,
+          availability: mockAssistant.availability,
         },
         {
           onSuccess: expect.any(Function),
         },
       );
+    });
+
+    it("should redirect to assistants view after successful assistant create", async () => {
+      mockUseParams.mockReturnValue({
+        assistantId: undefined,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AssistantDetail.default />
+        </QueryClientProvider>,
+      );
+
+      const firstNameInputElement = await (screen.queryByTestId(
+        "first-name-input",
+      ) as HTMLInputElement);
+      const lastNameInputElement = await (screen.queryByTestId(
+        "last-name-input",
+      ) as HTMLInputElement);
+      const emailInputElement = await (screen.queryByTestId(
+        "email-input",
+      ) as HTMLInputElement);
+      const categoriesInputElement = await (screen.queryByTestId(
+        "categories-input",
+      ) as HTMLInputElement);
+
+      await user.type(firstNameInputElement, mockAssistant.firstName);
+      await user.type(lastNameInputElement, mockAssistant.lastName);
+      await user.type(emailInputElement, mockAssistant.email);
+      await user.click(
+        categoriesInputElement.querySelector(".combobox-container-input")!,
+      );
+
+      const items = categoriesInputElement
+        .querySelector(".combobox-dropdown")
+        ?.querySelectorAll("li");
+
+      if (!items || items.length === 0) {
+        throw new Error("No items found in combobox dropdown");
+      }
+
+      await user.click(items[0]);
+      await user.click(items[1]);
+
+      const button = screen.queryByText("common.submit");
+
+      if (!button) {
+        throw new Error("Button not found");
+      }
+
+      await user.click(button!);
+
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: `/assistants`,
+      });
+      expect(mockMutate).toHaveBeenCalledWith(
+        {
+          firstName: mockAssistant.firstName,
+          lastName: mockAssistant.lastName,
+          email: mockAssistant.email,
+          categories: [data.categories[0], data.categories[1]],
+          availability: Array.from({ length: 7 }).map((_, index) => ({
+            dayOfWeek: index,
+            times: [
+              {
+                start: "",
+                end: "",
+              },
+            ],
+          })),
+        },
+        {
+          onSuccess: expect.any(Function),
+        },
+      );
+    });
+
+    it("should create category", async () => {
+      mockUseParams.mockReturnValue({
+        assistantId: undefined,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <AssistantDetail.default />
+        </QueryClientProvider>,
+      );
+
+      const categoriesInputElement = await (screen.queryByTestId(
+        "categories-input",
+      ) as HTMLInputElement);
+
+      await user.click(
+        categoriesInputElement.querySelector(".combobox-container-input")!,
+      );
+
+      await user.click(screen.getByText("assistants.addCategory"));
+
+      await waitFor(async () => {
+        const addCategoryForm = screen.getByTestId("add-category-form");
+        await user.type(
+          screen.getByTestId("category-name-input"),
+          "New Category",
+        );
+
+        const button = addCategoryForm.querySelector("button");
+        await user.click(button!);
+
+        expect(mockMutateCategory).toHaveBeenCalledWith({
+          name: "New Category",
+        });
+      });
     });
   });
 });

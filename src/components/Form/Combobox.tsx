@@ -146,7 +146,6 @@ const ListItem = styled.li`
 const ComboboxResult = styled.div`
   flex-wrap: wrap;
   display: inline-flex;
-  gap: 6px;
   align-items: center;
 `;
 
@@ -324,6 +323,7 @@ export function Combobox(props: ComboboxProps) {
             handleDropdownSelection($event);
           }
         }}
+        className={"combobox-container-input"}
         data-testid="combobox-container-input"
       >
         <ComboboxResult
@@ -383,6 +383,7 @@ export function Combobox(props: ComboboxProps) {
       {isOpen && (
         <StyledComboboxDropdown
           data-testid="combobox-dropdown"
+          className={'combobox-dropdown'}
           $loading={props.loading}
         >
           <StyledComboboxSearch data-testid="search">

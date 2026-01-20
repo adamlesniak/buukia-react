@@ -251,7 +251,7 @@ const AvailabilityField = memo(({ fieldIndex }: AvailabilityFieldProps) => {
                           size="sm"
                           tabIndex={0}
                           type="submit"
-                          data-testid={'submit-copy-availability-button'}
+                          data-testid={"submit-copy-availability-button"}
                           onClick={($event) => {
                             submit();
                             $event.preventDefault();
@@ -274,6 +274,7 @@ const AvailabilityField = memo(({ fieldIndex }: AvailabilityFieldProps) => {
 });
 
 type AssistantFormProps = {
+  assistantId?: string;
   categories: BuukiaCategory[];
   values: AssistantFormValues;
   isLoading: boolean;
@@ -345,6 +346,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
               type="text"
               data-testid="first-name-input"
               placeholder={t("assistants.detail.firstName")}
+              disabled={props.assistantId !== undefined}
             />
             {errors.firstName && (
               <FieldError role="alert">
@@ -363,6 +365,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
               type="text"
               data-testid="last-name-input"
               placeholder={t("assistants.detail.lastName")}
+              disabled={props.assistantId!== undefined}
             />
             {errors.lastName && (
               <FieldError role="alert">

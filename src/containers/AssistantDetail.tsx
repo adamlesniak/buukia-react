@@ -27,6 +27,8 @@ import type {
   CreateCategoryBody,
 } from "@/types";
 
+
+// TODO: Add Manage section to provide options to delete assistant, performance, temporarily, hide archive, statistics, etc.
 export default function AssistantDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -153,6 +155,7 @@ export default function AssistantDetail() {
           )}
           {!isError && (
             <AssistantForm
+              assistantId={assistantId}
               categories={categories}
               values={formValues}
               isLoading={isLoading}

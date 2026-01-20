@@ -99,6 +99,34 @@ describe("AssistantForm", () => {
     });
   });
 
+  it("should ensure that certain fields are disabled once assistantId is set", async () => {
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AssistantForm
+          assistantId="testId"
+          categories={data.categories}
+          onCategorySearch={() => {}}
+          onSubmit={() => {}}
+          values={testProps}
+          isLoading={false}
+          categoriesIsLoading={false}
+          deleteCategory={() => {}}
+        />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText("assistants.detail.firstName"),
+      ).toBeDisabled();
+      expect(
+        screen.queryByLabelText("assistants.detail.lastName"),
+      ).toBeDisabled();
+    });
+  });
+
   it("should show email field", async () => {
     const queryClient = new QueryClient();
 
@@ -132,6 +160,7 @@ describe("AssistantForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AssistantForm
+
             categories={data.categories}
             onCategorySearch={() => {}}
             onSubmit={() => {}}
@@ -170,6 +199,7 @@ describe("AssistantForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <AssistantForm
+
             categories={data.categories}
             onCategorySearch={() => {}}
             onSubmit={() => {}}

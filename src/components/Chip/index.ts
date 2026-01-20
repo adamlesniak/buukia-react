@@ -6,4 +6,5 @@ export const Chip = styled.div`
   display: inline-flex;
   padding: 4px;
   font-size: 13px;
+  margin-right: 4px;
 `;

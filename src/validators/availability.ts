@@ -5,8 +5,8 @@ export const availabilitySchema = z.object({
   times: z
     .array(
       z.object({
-        start: z.string().min(1),
-        end: z.string().min(1),
+        start: z.string(),
+        end: z.string(),
       }),
     )
     .min(1),

@@ -4,6 +4,7 @@ export const Table = styled.table`
   text-align: left;
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 `;
 
 export const TableHeader = styled.thead``;
@@ -29,9 +30,14 @@ export const TableRow = styled.tr<{ $type?: "header" | "body" }>`
 
 export const TableRowItem = styled.td`
   padding: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const TableHeaderItem = styled.th`
   padding: 8px;
-  /* padding: 0 20px; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;

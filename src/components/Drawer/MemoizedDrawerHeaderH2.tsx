@@ -1,23 +1,33 @@
 import { X } from "lucide-react";
 import { memo } from "react";
+import styled from "styled-components";
 
 import { Button } from "../Button";
 
 import { DrawerContentHeader } from "./DrawerContentHeader";
+
+const DrawerContentTitleContainer = styled.div`
+  display: flex;
+`;
 
 export const MemoizedDrawerHeaderH2 = memo(
   ({
     onClose,
     title,
     label,
+    children,
   }: {
     onClose: () => void;
     title: string;
     label: string;
+    children?: React.ReactNode;
   }) => {
     return (
       <DrawerContentHeader>
-        <h2>{title}</h2>
+        <DrawerContentTitleContainer>
+          <h2>{title}</h2>
+          {children}
+        </DrawerContentTitleContainer>
         <Button
           variant="transparent"
           aria-label={label}
