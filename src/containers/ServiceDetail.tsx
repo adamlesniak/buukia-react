@@ -89,7 +89,7 @@ export default function ServiceDetail() {
     ? {
         data: {
           business: "",
-          category: "",
+          category: null as any,
           description: "",
           duration: "",
           id: "",
@@ -103,7 +103,7 @@ export default function ServiceDetail() {
 
   const formValues: ServiceFormValues = useMemo(
     () => ({
-      category: service?.category || "",
+      category: service?.category ? [service?.category] : [],
       description: service?.description || "",
       duration: service?.duration.toString() || "",
       price: service?.price || 0,
@@ -141,7 +141,6 @@ export default function ServiceDetail() {
           )}
           {!isError && (
             <ServiceForm
-              serviceId={service?.id || ""}
               categories={categories}
               onCategorySearch={(query) => setCategoriesQuery(query)}
               categoriesIsLoading={categoriesIsRefetching}

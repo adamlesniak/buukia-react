@@ -68,18 +68,23 @@ export const createService = (item?: Partial<BuukiaService>) => ({
   price: 0,
   duration: "15",
   business: "",
-  category: "",
+  category: {
+    id: "",
+    name: "",
+  },
   ...item,
 });
 
 export const createAssistant = (item?: Partial<BuukiaAssistant>) => ({
   id: "",
+  availability: [],
+  business: "",
+  categories: [],
+  email: "",
   firstName: "",
+  initials: "",
   lastName: "",
   name: "",
-  initials: "",
-  availability: { regular: [], exceptions: [], holidays: [] },
-  business: "",
   type: "",
   ...item,
 });
@@ -182,3 +187,28 @@ export const getWeekStartEndDate = (date: string) => {
 
   return { start, end };
 };
+
+export const hasElementParentWithId = (
+  element: Element,
+  targetId: string,
+): boolean => {
+  let current: Element | null = element;
+  while (current) {
+    if (current.id === targetId) {
+      return true;
+    }
+    current = current.parentElement;
+  }
+  return false;
+};
+
+export const getDayName = (dayIndex: number): string =>
+  [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ][dayIndex];

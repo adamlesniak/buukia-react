@@ -2,8 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createService } from "@/utils";
-
 import { server } from "../../mocks/server";
 import data from "../../routes/data.json";
 
@@ -26,7 +24,12 @@ const user = userEvent.setup();
 describe("ServiceForm", () => {
   const testProps = {
     name: "testName",
-    category: "Beauty",
+    category: [
+      {
+        id: "testId",
+        name: "Beauty",
+      },
+    ],
     duration: "45",
     price: 123,
     description: "testDescription",
@@ -38,7 +41,6 @@ describe("ServiceForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ServiceForm
-          serviceId={createService().id}
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
@@ -67,7 +69,6 @@ describe("ServiceForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ServiceForm
-          serviceId={createService().id}
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
@@ -86,7 +87,7 @@ describe("ServiceForm", () => {
       expect(screen.queryByTestId("service-category-input")).not.toBeDisabled();
       expect(
         screen.queryByTestId("service-category-input")?.querySelector("input"),
-      ).toHaveValue(testProps.category);
+      ).toHaveValue(JSON.stringify(testProps.category));
     });
   });
 
@@ -96,7 +97,6 @@ describe("ServiceForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ServiceForm
-          serviceId={createService().id}
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
@@ -123,7 +123,6 @@ describe("ServiceForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ServiceForm
-          serviceId={createService().id}
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
@@ -154,7 +153,6 @@ describe("ServiceForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ServiceForm
-          serviceId={createService().id}
           onSubmit={() => {}}
           values={testProps}
           isLoading={false}
@@ -185,11 +183,10 @@ describe("ServiceForm", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ServiceForm
-          serviceId={createService().id}
           onSubmit={() => {}}
           values={{
             name: "",
-            category: "",
+            category: [],
             duration: "",
             price: 0,
             description: "",
@@ -231,7 +228,6 @@ describe("ServiceForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <ServiceForm
-            serviceId={createService().id}
             onSubmit={() => {}}
             values={testProps}
             isLoading={false}
@@ -263,7 +259,6 @@ describe("ServiceForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <ServiceForm
-            serviceId={createService().id}
             onSubmit={() => {}}
             values={testProps}
             isLoading={false}
@@ -296,7 +291,6 @@ describe("ServiceForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <ServiceForm
-            serviceId={createService().id}
             onSubmit={() => {}}
             values={testProps}
             isLoading={false}
@@ -330,7 +324,6 @@ describe("ServiceForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <ServiceForm
-            serviceId={createService().id}
             onSubmit={onSubmitMock}
             values={testProps}
             isLoading={false}
@@ -344,22 +337,25 @@ describe("ServiceForm", () => {
 
       await user.click(screen.getByTestId("combobox-container-input"));
       await user.click(screen.getByText("services.addCategory"));
+      await user.type(
+        screen.getByTestId("category-name-input"),
+        "New Category",
+      );
 
       await waitFor(async () => {
-        await user.type(
-          screen.getByTestId("category-name-input"),
-          "New Category",
-        );
         const addCategoryForm = screen.getByTestId("add-category-form");
 
         const button = addCategoryForm.querySelector("button");
         await user.click(button!);
 
-        expect(onSubmitMock).toHaveBeenCalledWith({ name: "New Category" });
+        expect(onSubmitMock).toHaveBeenCalledWith(
+          { name: "New Category" },
+          expect.any(Object),
+        );
       });
     });
 
-     it("should close modal on close button select", async () => {
+    it("should close modal on close button select", async () => {
       const onSubmitMock = vi.fn();
 
       const queryClient = new QueryClient();
@@ -367,7 +363,6 @@ describe("ServiceForm", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <ServiceForm
-            serviceId={createService().id}
             onSubmit={onSubmitMock}
             values={testProps}
             isLoading={false}

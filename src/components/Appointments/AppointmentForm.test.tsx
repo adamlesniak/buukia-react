@@ -26,7 +26,7 @@ const user = userEvent.setup();
 describe("AppointmentForm", () => {
   const testProps = {
     assistantName: "assistantName",
-    clientName: "clientName",
+    client: [],
     serviceName: "serviceName",
     time: new Date("2025-11-30T16:20:57.842Z").toISOString(),
     services: [],
@@ -125,7 +125,7 @@ describe("AppointmentForm", () => {
       expect(screen.queryByTestId("client-name-input")).toBeInTheDocument();
       expect(
         screen.queryByTestId("client-name-input")?.querySelector("input"),
-      ).toHaveValue(testProps.clientName);
+      ).toHaveValue(JSON.stringify(testProps.client));
     });
   });
 
@@ -145,7 +145,7 @@ describe("AppointmentForm", () => {
           todaysAppointments={[]}
           values={{
             assistantName: "",
-            clientName: "",
+            client: [],
             time: new Date("2025-11-30T16:20:57.842Z").toISOString(),
             services: [],
           }}

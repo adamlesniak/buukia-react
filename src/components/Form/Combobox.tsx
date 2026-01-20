@@ -1,20 +1,22 @@
+import classNames from "classnames";
 import debounce from "debounce";
-import { ChevronDown, LoaderCircle, Search } from "lucide-react";
+import { Check, ChevronDown, LoaderCircle, Search } from "lucide-react";
 import {
   useId,
   useRef,
   useState,
   type MouseEvent,
   type KeyboardEvent,
-  type DetailedHTMLProps,
-  type InputHTMLAttributes,
   type RefCallback,
   type ChangeEvent,
+  useMemo,
+  useEffect,
 } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { Button } from "../Button";
+import { Chip } from "../Chip/index";
 
 import { Input } from "./Input";
 import { SearchInput } from "./SearchInput";
@@ -25,6 +27,7 @@ const StyledCombobox = styled.div`
   border-radius: 4px;
   font-size: 14px;
   position: relative;
+  cursor: pointer;
 `;
 
 const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
@@ -32,9 +35,10 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
   border: 1px solid #e0e0e0;
   font-size: 14px;
   background: #fff;
-  top: 32px;
+  top: 35px;
   width: calc(100% - 2px);
   position: absolute;
+  z-index: 1;
 
   ul {
     margin: 0px;
@@ -59,7 +63,7 @@ const StyledComboboxDropdown = styled.div<{ $loading?: boolean }>`
       padding: 8px;
       cursor: pointer;
       &:hover,
-      &.selected {
+      &.active {
         background-color: #fbfbfb;
       }
 
@@ -94,9 +98,10 @@ const StyledComboboxContainerInput = styled.div<{ $disabled?: boolean }>`
   border-radius: 4px;
   border: 1px solid #e0e0e0;
   font-size: 14px;
-  padding: 4px 8px;
+  padding: 0px 8px;
   justify-content: space-between;
   align-items: center;
+  height: 35px;
 
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
@@ -124,28 +129,52 @@ const StyledComboboxContainerInput = styled.div<{ $disabled?: boolean }>`
   }
 `;
 
+const Checkbox = styled.div`
+  width: 16px;
+  height: 16px;
+  border: 1px solid #e0e0e0;
+  position: relative;
+  border-radius: 4px;
+`;
+
+const ListItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ComboboxResult = styled.div`
+  flex-wrap: wrap;
+  display: inline-flex;
+  align-items: center;
+`;
+
+type ComboboxItem = {
+  [key: string]: string | number;
+};
+
 type ComboboxProps = {
   children?: React.ReactNode;
   onSearchChange?: (value: string) => void;
   addButtonText?: string;
   onAdd?: (item: MouseEvent<HTMLButtonElement>) => void;
-  items: { id: string; name: string }[];
+  items: ComboboxItem[];
+  multiselect?: boolean;
   limitItemsDisplay?: number;
   loading?: boolean;
   search?: boolean;
-  /**
-   * The key in each item object whose value should be displayed in the combobox.
-   * For example, if items are objects like { id: string, name: string }, and you want to display the name,
-   * set valueKey to "name".
-   */
   valueKey: string;
+  displayKey: string;
+  value: ComboboxItem[];
+  disabled: boolean;
+  id: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  name?: string;
   ref?: RefCallback<HTMLInputElement>;
 };
 
-export function Combobox(
-  props: ComboboxProps &
-    DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
-) {
+export function Combobox(props: ComboboxProps) {
   const { t } = useTranslation();
 
   const itemsDisplayLimit = props.limitItemsDisplay || 10;
@@ -159,17 +188,53 @@ export function Combobox(
     1000,
   );
 
+  const handleClickOutside = ($event: Event) => {
+    if (document.getElementById("overlay-modal")) {
+      return;
+    }
+
+    if (!comboboxContainerRef?.current?.contains($event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  });
+
+  const [selectedItems, setSelectedItems] = useState(props.value);
   const [activeItem, setActiveItem] = useState<number>(0);
   const [inputId, listBoxId] = [useId(), useId()];
   const [isOpen, setIsOpen] = useState(false);
 
-  const selectItem = (item: unknown) => {
+  const selectedItemsValueKeys = useMemo(
+    () => selectedItems.map((item) => item && item[props.valueKey]),
+    [selectedItems, props.valueKey],
+  );
+
+  const selectItem = (item: ComboboxItem) => {
     if (props.loading) {
       return;
     }
 
     if (comboboxContainerInputRef.current) {
-      comboboxContainerInputRef.current.value = (item as any)[props.valueKey];
+      if (props.multiselect) {
+        const items = selectedItems;
+
+        const newItems = selectedItemsValueKeys.includes(item[props.valueKey])
+          ? [...items].filter(
+              (currentItem) =>
+                currentItem[props.valueKey] !== item[props.valueKey],
+            )
+          : [...items, item];
+
+        setSelectedItems(newItems);
+        comboboxContainerInputRef.current.value = JSON.stringify(newItems);
+      } else {
+        setSelectedItems([item]);
+        comboboxContainerInputRef.current.value = JSON.stringify([item]);
+      }
     }
 
     if (props.onChange) {
@@ -181,7 +246,9 @@ export function Combobox(
       props.onChange(event);
     }
 
-    setIsOpen(false);
+    if (!props.multiselect) {
+      setIsOpen(false);
+    }
   };
 
   const handleDropdownSelection = ($event: KeyboardEvent<HTMLDivElement>) => {
@@ -256,9 +323,10 @@ export function Combobox(
             handleDropdownSelection($event);
           }
         }}
+        className={"combobox-container-input"}
         data-testid="combobox-container-input"
       >
-        <input
+        <ComboboxResult
           aria-expanded={isOpen}
           aria-controls={listBoxId}
           aria-activedescendant={
@@ -266,12 +334,34 @@ export function Combobox(
           }
           aria-haspopup="listbox"
           role="combobox"
+        >
+          {selectedItems.length === 0 && t("common.selectAnItem")}
+          {props.multiselect &&
+            selectedItems
+              .map(
+                (item, _) =>
+                  item && (
+                    <Chip key={item[props.valueKey]}>
+                      {item[props.displayKey]}
+                    </Chip>
+                  ),
+              )
+              .slice(0, 3)}
+          {selectedItems.length === 1 &&
+            !props.multiselect &&
+            selectedItems[0][props.displayKey]}
+          {selectedItems.length - 3 > 0
+            ? t("common.moreItems", { count: selectedItems.length - 3 })
+            : null}
+        </ComboboxResult>
+        <input
           placeholder={t("common.selectAnItem")}
           type="text"
-          disabled={props.disabled}
+          disabled={props.loading}
           id={inputId}
           autoComplete="off"
           name={props.name}
+          style={{ visibility: "hidden", width: "0px", height: "0px" }}
           onKeyDown={($event) => {
             if ($event.key === "Tab") {
               return false;
@@ -286,12 +376,14 @@ export function Combobox(
             props.ref?.(el);
             comboboxContainerInputRef.current = el;
           }}
+          value={JSON.stringify(selectedItems)}
         />
         <ChevronDown />
       </StyledComboboxContainerInput>
       {isOpen && (
         <StyledComboboxDropdown
           data-testid="combobox-dropdown"
+          className={'combobox-dropdown'}
           $loading={props.loading}
         >
           <StyledComboboxSearch data-testid="search">
@@ -308,7 +400,6 @@ export function Combobox(
                   aria-autocomplete="none"
                   aria-label={t("common.search")}
                   autoComplete="off"
-                  role={"combobox"}
                   tabIndex={0}
                   ref={inputSearchRef}
                   onKeyDown={($event: KeyboardEvent<HTMLInputElement>) => {
@@ -352,13 +443,15 @@ export function Combobox(
               </li>
             )}
             {props.items.slice(0, itemsDisplayLimit).map((item, i) => (
-              <li
+              <ListItem
                 ref={(el) => {
                   if (el) {
                     itemsRef.current[i] = el;
                   }
                 }}
-                className={activeItem === i ? "selected" : ""}
+                className={classNames({
+                  active: activeItem === i,
+                })}
                 aria-selected={activeItem === i}
                 onClick={($event: MouseEvent<HTMLLIElement>) => {
                   selectItem(item);
@@ -370,8 +463,15 @@ export function Combobox(
                 id={`${item.id}-option`}
                 key={item.id}
               >
-                {item.name}
-              </li>
+                <span>{item.name}</span>{" "}
+                {props.multiselect ? (
+                  <Checkbox>
+                    {selectedItemsValueKeys.includes(item[props.valueKey]) ? (
+                      <Check size={16} />
+                    ) : null}
+                  </Checkbox>
+                ) : null}
+              </ListItem>
             ))}
           </ul>
         </StyledComboboxDropdown>

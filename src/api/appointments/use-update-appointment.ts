@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { BuukiaAppointment } from "@/types";
 import { getWeekStartEndDate } from "@/utils";
 
+import { clientQueryKeys } from "../clients";
 import { serviceQueryKeys } from "../services/services-query-keys";
 
 import { appointmentQueryKeys } from "./appointments-query-keys";
@@ -60,10 +61,9 @@ export function useUpdateAppointment() {
                   ...item.assistant,
                   id: appointment.assistantId,
                 },
-                client: {
-                  ...item.client,
-                  id: appointment.clientId,
-                },
+                client: queryClient.getQueryData(
+                  clientQueryKeys.detail(appointment.clientId),
+                ),
                 time: appointment.time,
                 services: appointment.serviceIds.map((serviceId) =>
                   queryClient.getQueryData(serviceQueryKeys.detail(serviceId)),

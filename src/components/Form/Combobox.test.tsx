@@ -19,7 +19,18 @@ const user = userEvent.setup();
 
 describe("Combobox Component", () => {
   it("renders the initial dropdown", () => {
-    render(<Combobox valueKey="name" items={mockItems} />);
+    render(
+      <Combobox
+        id="testId"
+        value={[mockItems[0]]}
+        disabled={false}
+        onChange={() => {}}
+        onBlur={() => {}}
+        displayKey="name"
+        valueKey="id"
+        items={mockItems}
+      />,
+    );
 
     const inputElement = screen.getByRole("combobox");
 
@@ -27,7 +38,18 @@ describe("Combobox Component", () => {
   });
 
   it("renders initial prompt", () => {
-    render(<Combobox valueKey="name" items={mockItems} />);
+    render(
+      <Combobox
+        id="testId"
+        value={[mockItems[0]]}
+        disabled={false}
+        onChange={() => {}}
+        onBlur={() => {}}
+        displayKey="name"
+        valueKey="id"
+        items={mockItems}
+      />,
+    );
 
     const inputElement = screen.getByPlaceholderText("common.selectAnItem");
 
@@ -35,7 +57,18 @@ describe("Combobox Component", () => {
   });
 
   it("should not render the dropdown when it's closed", () => {
-    render(<Combobox valueKey="name" items={mockItems} />);
+    render(
+      <Combobox
+        id="testId"
+        value={[mockItems[0]]}
+        disabled={false}
+        onChange={() => {}}
+        onBlur={() => {}}
+        displayKey="name"
+        valueKey="id"
+        items={mockItems}
+      />,
+    );
 
     const dropdown = screen.queryByTestId("combobox-dropdown");
 
@@ -43,7 +76,18 @@ describe("Combobox Component", () => {
   });
 
   it("should render the dropdown with items when it's open", async () => {
-    render(<Combobox valueKey="name" items={mockItems} />);
+    render(
+      <Combobox
+        id="testId"
+        value={[mockItems[0]]}
+        disabled={false}
+        onChange={() => {}}
+        onBlur={() => {}}
+        displayKey="name"
+        valueKey="id"
+        items={mockItems}
+      />,
+    );
 
     await user.click(screen.getByTestId("combobox-container-input"));
 
@@ -57,7 +101,18 @@ describe("Combobox Component", () => {
   });
 
   it("should select the item when selected", async () => {
-    render(<Combobox valueKey="name" items={mockItems} />);
+    render(
+      <Combobox
+        id="testId"
+        value={[mockItems[0]]}
+        disabled={false}
+        onChange={() => {}}
+        onBlur={() => {}}
+        displayKey="name"
+        valueKey="id"
+        items={mockItems}
+      />,
+    );
 
     await user.click(screen.getByTestId("combobox-container-input"));
 
@@ -74,16 +129,57 @@ describe("Combobox Component", () => {
 
     expect(dropdown).not.toBeInTheDocument();
     expect(screen.getByPlaceholderText("common.selectAnItem")).toHaveValue(
-      item.textContent || "",
+      JSON.stringify([{ ...mockItems[0] }]),
+    );
+  });
+
+  it("should select multiple items when multiselect is true", async () => {
+    render(
+      <Combobox
+        id="testId"
+        value={[]}
+        disabled={false}
+        onChange={() => {}}
+        onBlur={() => {}}
+        displayKey="name"
+        valueKey="id"
+        multiselect={true}
+        items={mockItems}
+      />,
+    );
+
+    await user.click(screen.getByTestId("combobox-container-input"));
+
+    const dropdown = screen.queryByTestId("combobox-dropdown");
+    const items = screen
+      .queryByTestId("combobox-dropdown")
+      ?.querySelectorAll("li");
+
+    if (!items) {
+      throw Error("Item not found");
+    }
+
+    await user.click(items[0]);
+    await user.click(items[1]);
+
+    expect(dropdown).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("common.selectAnItem")).toHaveValue(
+      JSON.stringify([{ ...mockItems[0] }, { ...mockItems[1] }]),
     );
   });
 
   it("should render the search input", async () => {
     render(
       <Combobox
-        valueKey="name"
-        search={true}
+        id="testId"
+        value={[mockItems[0]]}
+        disabled={false}
+        onChange={() => {}}
+        onBlur={() => {}}
+        displayKey="name"
+        valueKey="id"
         items={mockItems}
+        search={true}
         onSearchChange={() => {}}
       />,
     );

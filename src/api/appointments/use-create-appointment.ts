@@ -35,17 +35,13 @@ export function useCreateAppointment() {
         id: "current-appointment",
         assistant: {
           id: newAppointment.assistantId,
+          availability: [],
+          categories: [],
+          email: "",
           firstName: "",
+          initials: "",
           lastName: "",
           name: "",
-          initials: "",
-          availability: {
-            regular: [],
-            exceptions: [],
-            holidays: [],
-          },
-          business: "",
-          type: "",
         },
         time: newAppointment.time,
         client: queryClient.getQueryData<BuukiaClient>(

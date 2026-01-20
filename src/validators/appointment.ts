@@ -1,21 +1,21 @@
 import { z } from "zod";
 
-import { serviceFormSchema } from "./service";
+import { clientSchema } from "./client";
+import { serviceSchema } from "./service";
 
 export const appointmentFormSchema = z.object({
-  clientName: z
-    .string()
-    .min(1, { message: "appointments.form.errors.clientNameError" }),
+  client: z
+    .array(clientSchema)
+    .min(1, { message: "appointments.form.errors.clientError" }),
   services: z
-    .array(
-      serviceFormSchema.extend({
-        id: z.string(),
-        business: z.string(),
-      }),
-    )
+    .array(serviceSchema)
     .min(1, { message: "appointments.form.errors.servicesError" }),
   assistantName: z
     .string()
     .min(1, { message: "appointments.form.errors.assistantNameError" }),
   time: z.string().min(1, { message: "appointments.form.errors.timeError" }),
+});
+
+export const appointmentSchema = appointmentFormSchema.extend({
+  id: z.string().min(1),
 });

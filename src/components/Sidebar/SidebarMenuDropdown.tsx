@@ -48,9 +48,6 @@ export function SidebarMenuDropdown({
       onClick={() => {
         setOpened(true);
       }}
-      onBlur={() => {
-        console.log("onblur");
-      }}
       className={opened ? "active" : ""}
     >
       {children}
