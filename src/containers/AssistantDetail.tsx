@@ -27,7 +27,6 @@ import type {
   CreateCategoryBody,
 } from "@/types";
 
-
 // TODO: Add Manage section to provide options to delete assistant, performance, temporarily, hide archive, statistics, etc.
 export default function AssistantDetail() {
   const { t } = useTranslation();
@@ -59,6 +58,10 @@ export default function AssistantDetail() {
     isRefetching: categoriesIsRefetching,
   } = useCategories({ limit: MAX_PAGINATION, query: "" });
 
+  const onClose = () => {
+    navigate({ to: `/assistants` });
+  };
+
   const submit = useCallback(
     async (data: CreateAssistantBody | CreateCategoryBody) => {
       if ("categories" in data) {
@@ -82,7 +85,7 @@ export default function AssistantDetail() {
 
       return createCategory.mutate(data as CreateCategoryBody);
     },
-    [assistantId],
+    [assistantId, createAssistant, updateAssistant, createCategory, onClose],
   );
 
   const {
@@ -134,10 +137,6 @@ export default function AssistantDetail() {
 
   const isError = assistantError || categoriesError;
   const isLoading = assistantLoading || categoriesLoading;
-
-  const onClose = () => {
-    navigate({ to: `/assistants` });
-  };
 
   return (
     <Drawer onOverlayClick={onClose} drawer="right">

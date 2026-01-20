@@ -24,7 +24,7 @@ import {
 } from "@/components/Table";
 import { MAX_PAGINATION } from "@/constants.ts";
 
-export default function Services() {
+export default function Assistants() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 

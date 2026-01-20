@@ -1,5 +1,5 @@
 import { Copy, PlusIcon, TrashIcon } from "lucide-react";
-import { useState, memo, useEffect } from "react";
+import { useState, memo, useEffect, useCallback } from "react";
 import { FocusScope } from "react-aria";
 import { createPortal } from "react-dom";
 import {
@@ -137,7 +137,7 @@ const AvailabilityField = memo(({ fieldIndex }: AvailabilityFieldProps) => {
     setShowDropdown(false);
   };
 
-  const handleClickOutside = ($event: MouseEvent) => {
+  const handleClickOutside = useCallback(($event: MouseEvent) => {
     const target = $event.target as Element;
 
     // Don't close if clicking the copy button or inside the dropdown
@@ -146,12 +146,12 @@ const AvailabilityField = memo(({ fieldIndex }: AvailabilityFieldProps) => {
     }
 
     setShowDropdown(false);
-  };
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  });
+  }, [handleClickOutside]);
 
   const {
     fields,
@@ -365,7 +365,7 @@ export const AssistantForm = memo((props: AssistantFormProps) => {
               type="text"
               data-testid="last-name-input"
               placeholder={t("assistants.detail.lastName")}
-              disabled={props.assistantId!== undefined}
+              disabled={props.assistantId !== undefined}
             />
             {errors.lastName && (
               <FieldError role="alert">
