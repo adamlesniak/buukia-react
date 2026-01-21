@@ -7,4 +7,5 @@ export const ServicesContainer = styled.div`
   flex-direction: column;
   overflow-y: scroll;
   flex: 1;
+
 `;

@@ -47,6 +47,7 @@ vi.mock("@tanstack/react-router", () => ({
   Outlet: () => <div data-testid="outlet" />,
   lazyRouteComponent: vi.fn(),
   useRouterState: mockRouterState,
+  Link: vi.fn(),
 }));
 
 // Create test data

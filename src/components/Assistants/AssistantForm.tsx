@@ -48,6 +48,10 @@ const AvailabilityContainer = styled.div`
   flex-direction: column;
   overflow-y: scroll;
   flex: 1;
+  border-top: 2px solid #f4f4f4;
+  border-bottom: 2px solid #f4f4f4;
+  padding-top: 6px;
+  padding-bottom: 6px;
 `;
 
 const AssistantAvailabilityDropdown = styled.div`

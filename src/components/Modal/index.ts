@@ -15,14 +15,31 @@ export const OverlayCenter = styled.div`
   z-index: 5;
 `;
 
-export const Modal = styled.div`
+export const Modal = styled.div<{
+  $variant?: string;
+}>`
   background: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
   width: 100%;
+
   min-height: 520px;
+
+
+  ${(props) => {
+    if (props.$variant === "center") {
+      return `
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        min-height: auto;
+      `;
+    }
+  }}
+
 `;
 
 export const ModalHeader = styled.div`
@@ -37,4 +54,7 @@ export const ModalHeader = styled.div`
 export const ModalBody = styled.div`
   max-height: 400px;
   overflow-y: auto;
+  border-top: 2px solid #f4f4f4;
+  border-bottom: 2px solid #f4f4f4;
+  padding-top: 12px;
 `;
