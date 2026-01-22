@@ -4,8 +4,10 @@ import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { useDeleteAssistant } from "@/api";
+import { useAssistant, useDeleteAssistant, useUpdateAssistant } from "@/api";
 import { Button } from "@/components/Button";
+import { ErrorDetail } from "@/components/Error/ErrorDetail";
+import { ToggleSlider } from "@/components/ToggleSlider";
 
 import AssistantDrawer from "./AssistantDrawer";
 import ConfirmationModal from "./ConfirmationModal";
@@ -54,27 +56,14 @@ const SettingsAction = styled.div`
   align-items: center;
 `;
 
-const RadioButton = styled.div`
-  border: 3px solid #e0e0e0;
-  border-radius: 24px;
-  width: 52px;
-  height: 21px;
-  padding: 4px;
-  cursor: pointer;
-`;
-
-const RadioButtonSelection = styled.div`
-  background: #e0e0e0;
-  border-radius: 24px;
-  height: 21px;
-  width: 21px;
-`;
-
 export default function AssistantSettings() {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const deleteAssistant = useDeleteAssistant();
+  const [updateAssistant, deleteAssistant] = [
+    useUpdateAssistant(),
+    useDeleteAssistant(),
+  ];
   const {
     assistantId,
   }: {
@@ -82,6 +71,24 @@ export default function AssistantSettings() {
   } = useParams({
     strict: false,
   });
+
+  const { data: assistant, error: assistantError } = useAssistant(assistantId);
+
+  const onHolidaysChange = (checked: boolean) => {
+    updateAssistant.mutate({
+      id: assistantId,
+      firstName: assistant?.firstName || "",
+      lastName: assistant?.lastName || "",
+      email: assistant?.email || "",
+      categories: assistant?.categories || [],
+      availability: assistant?.availability || [],
+      holidays: checked ? new Date().toISOString() : "",
+    });
+  };
+
+  const holidaysEnabled = Boolean(
+    assistant?.holidays && assistant.holidays.length > 0,
+  );
 
   const modalClose = (deleteConfirmed: boolean) => {
     if (deleteConfirmed) {
@@ -92,36 +99,47 @@ export default function AssistantSettings() {
     navigate({ to: `/assistants` });
   };
 
+  const isError = assistantError;
+
   return (
     <AssistantDrawer>
-      <SettingsContainer>
-        <h2>{t("settings.title")}</h2>
-        <SettingsItem>
-          <SettingsDescription>
-            <h4>{t("settings.holidays.title")}</h4>
-            {t("settings.holidays.description")
-              .split("<br/>")
-              .map((line, index) => (
-                <p key={index}>{line}</p>
-              ))}
-          </SettingsDescription>
-          <SettingsAction>
-            <RadioButton>
-              <RadioButtonSelection />
-            </RadioButton>
-          </SettingsAction>
-        </SettingsItem>
-      </SettingsContainer>
-      <SettingsActions>
-        <h2>{t("settings.actions.title")}</h2>
-        <Button
-          type="button"
-          variant="danger"
-          onClick={() => setShowModal(true)}
-        >
-          {t("settings.actions.deleteAssistant")}
-        </Button>
-      </SettingsActions>
+      {isError && (
+        <ErrorDetail message={isError?.message || t("common.unknownError")} />
+      )}
+      {!isError && (
+        <>
+          <SettingsContainer>
+            <h2>{t("settings.title")}</h2>
+            <SettingsItem>
+              <SettingsDescription>
+                <h4>{t("settings.holidays.title")}</h4>
+                {t("settings.holidays.description")
+                  .split("<br/>")
+                  .map((line, index) => (
+                    <p key={index}>{line}</p>
+                  ))}
+              </SettingsDescription>
+              <SettingsAction>
+                <ToggleSlider
+                  onClick={() => onHolidaysChange(!holidaysEnabled)}
+                  checked={holidaysEnabled}
+                  data-testid="holidays-toggle"
+                />
+              </SettingsAction>
+            </SettingsItem>
+          </SettingsContainer>
+          <SettingsActions>
+            <h2>{t("settings.actions.title")}</h2>
+            <Button
+              type="button"
+              variant="danger"
+              onClick={() => setShowModal(true)}
+            >
+              {t("settings.actions.deleteAssistant")}
+            </Button>
+          </SettingsActions>
+        </>
+      )}
       {showModal &&
         createPortal(<ConfirmationModal close={modalClose} />, document.body)}
     </AssistantDrawer>

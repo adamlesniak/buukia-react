@@ -58,32 +58,6 @@ export default function AssistantDetail() {
     navigate({ to: `/assistants` });
   };
 
-  const submit = useCallback(
-    async (data: CreateAssistantBody | CreateCategoryBody) => {
-      if ("categories" in data) {
-        if (isNew) {
-          return createAssistant.mutate(data as CreateAssistantBody, {
-            onSuccess: () => {
-              onClose();
-            },
-          });
-        }
-
-        return updateAssistant.mutate(
-          { ...data, id: assistantId } as UpdateAssistantBody,
-          {
-            onSuccess: () => {
-              onClose();
-            },
-          },
-        );
-      }
-
-      return createCategory.mutate(data as CreateCategoryBody);
-    },
-    [assistantId, createAssistant, updateAssistant, createCategory, onClose],
-  );
-
   const {
     data: assistant,
     isLoading: assistantLoading,
@@ -108,11 +82,42 @@ export default function AssistantDetail() {
           lastName: "",
           name: "",
           type: "",
+          holidays: "",
         } as BuukiaAssistant,
         isLoading: false,
         error: undefined,
       }
     : useAssistant(assistantId);
+
+  const submit = useCallback(
+    async (data: CreateAssistantBody | CreateCategoryBody) => {
+      if ("categories" in data) {
+        if (isNew) {
+          return createAssistant.mutate(data as CreateAssistantBody, {
+            onSuccess: () => {
+              onClose();
+            },
+          });
+        }
+
+        return updateAssistant.mutate(
+          {
+            ...data,
+            holidays: assistant?.holidays || "",
+            id: assistantId,
+          } as UpdateAssistantBody,
+          {
+            onSuccess: () => {
+              onClose();
+            },
+          },
+        );
+      }
+
+      return createCategory.mutate(data as CreateCategoryBody);
+    },
+    [assistantId, createAssistant, updateAssistant, createCategory, onClose],
+  );
 
   const formValues: AssistantFormValues = useMemo(
     () => ({

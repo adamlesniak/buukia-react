@@ -18,7 +18,11 @@ export function useUpdateAssistant() {
         body: JSON.stringify(data),
       });
 
-      return response.json();
+      const item = await response.json();
+
+      queryClient.setQueryData(assistantQueryKeys.detail(item.id), item);
+
+      return item;
     },
     onMutate: async (assistant) => {
       // Cancel any outgoing refetches

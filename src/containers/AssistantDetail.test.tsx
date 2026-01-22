@@ -266,6 +266,7 @@ describe("AssistantDetail", () => {
           email: mockAssistant.email,
           categories: mockAssistant.categories,
           availability: mockAssistant.availability,
+          holidays: "",
         },
         {
           onSuccess: expect.any(Function),
