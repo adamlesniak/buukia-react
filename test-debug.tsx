@@ -19,6 +19,7 @@ const mockAppointments: BuukiaAppointment[] = [
       initials: "JA",
       categories: [],
       availability: [],
+      holidays: "",
     },
     client: {
       id: "client1",
