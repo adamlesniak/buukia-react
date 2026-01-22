@@ -114,7 +114,7 @@ export default function AssistantSettings() {
               <SettingsDescription>
                 <h4>{t("settings.holidays.title")}</h4>
                 {t("settings.holidays.description")
-                  .split("<br/>")
+                  .split("\n")
                   .map((line, index) => (
                     <p key={index}>{line}</p>
                   ))}

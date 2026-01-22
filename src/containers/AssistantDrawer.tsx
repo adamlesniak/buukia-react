@@ -76,6 +76,9 @@ export default function AssistantDrawer(props: AssistantDrawerProps) {
             <DetailNavigationButton
               activeOptions={{ exact: true }}
               key={t("common.detail")}
+              disabled={!assistantId}
+              aria-disabled={!assistantId}
+              className={classNames({ disabled: !assistantId })}
               to={
                 assistantId ? `/assistants/${assistantId}` : `/assistants/new`
               }
@@ -86,6 +89,7 @@ export default function AssistantDrawer(props: AssistantDrawerProps) {
               activeOptions={{ exact: true }}
               key={t("common.settings")}
               disabled={!assistantId}
+              aria-disabled={!assistantId}
               className={classNames({ disabled: !assistantId })}
               to={`/assistants/${assistantId}/settings`}
             >

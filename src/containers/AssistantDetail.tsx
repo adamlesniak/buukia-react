@@ -116,7 +116,7 @@ export default function AssistantDetail() {
 
       return createCategory.mutate(data as CreateCategoryBody);
     },
-    [assistantId, createAssistant, updateAssistant, createCategory, onClose],
+    [assistantId, createAssistant, updateAssistant, createCategory, onClose, assistant],
   );
 
   const formValues: AssistantFormValues = useMemo(

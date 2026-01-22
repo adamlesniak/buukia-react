@@ -60,11 +60,8 @@ const StyledButton = styled.button<{
 
     return `
       border: 1px solid #f4f4f4;
-
     `;
   }}
-
-
 
   &:disabled {
     background: initial;
