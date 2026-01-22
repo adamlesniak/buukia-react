@@ -207,7 +207,7 @@ describe("ServiceDetail", () => {
 
       expect(serviceNameElement).toHaveValue(mockService.name);
       expect(categoryInputElement?.querySelector("input")).toHaveValue(
-       '[{"id":"41d7ff31-a979-4a95-8619-075e56aeaf6b","name":"Beauty"}]',
+        JSON.stringify([data.categories[0]]),
       );
       expect(priceInputElement).toHaveValue(mockService.price.toString());
       expect(durationInputElement).toHaveValue(mockService.duration);
@@ -237,10 +237,7 @@ describe("ServiceDetail", () => {
       expect(mockMutate).toHaveBeenCalledWith(
         {
           id: "serviceId",
-          category: {
-            id: "41d7ff31-a979-4a95-8619-075e56aeaf6b",
-            name: "Beauty",
-          },
+          category: data.categories[0],
           description: "Service Description",
           duration: "60",
           name: "Service Name",

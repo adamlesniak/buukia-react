@@ -47,6 +47,7 @@ vi.mock("@tanstack/react-router", () => ({
   Outlet: () => <div data-testid="outlet" />,
   lazyRouteComponent: vi.fn(),
   useRouterState: mockRouterState,
+  Link: vi.fn(),
 }));
 
 // Create test data
@@ -265,6 +266,7 @@ describe("AssistantDetail", () => {
           email: mockAssistant.email,
           categories: mockAssistant.categories,
           availability: mockAssistant.availability,
+          holidays: "",
         },
         {
           onSuccess: expect.any(Function),

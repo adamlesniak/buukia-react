@@ -8,3 +8,9 @@ export const STALE_TIME = 5 * 60 * 1000; // 5 minutes
 export const MAX_ASSISTANTS = 4;
 
 export const MAX_PAGINATION = 100;
+
+export enum AssistantDetailNavigation {
+  DETAIL = "detail",
+  SETTINGS = "settings",
+  STATISTICS = "statistics",
+}

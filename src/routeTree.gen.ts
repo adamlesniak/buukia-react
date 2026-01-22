@@ -15,9 +15,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ErrorIndexRouteImport } from './routes/error/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
 import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
-import { Route as AssistantsAssistantIdRouteImport } from './routes/assistants/$assistantId'
 import { Route as ServicesNewIndexRouteImport } from './routes/services/new/index'
 import { Route as AssistantsNewIndexRouteImport } from './routes/assistants/new/index'
+import { Route as AssistantsAssistantIdIndexRouteImport } from './routes/assistants/$assistantId/index'
+import { Route as AssistantsAssistantIdSettingsRouteImport } from './routes/assistants/$assistantId/settings'
 import { Route as AppointmentsDailyDateRouteImport } from './routes/appointments/daily/$date'
 import { Route as AppointmentsWeeklyDateAssistantIdRouteImport } from './routes/appointments/weekly/$date/$assistantId'
 import { Route as AppointmentsDailyDateAppointmentIdRouteImport } from './routes/appointments/daily/$date/$appointmentId'
@@ -55,11 +56,6 @@ const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
   path: '/$serviceId',
   getParentRoute: () => ServicesRoute,
 } as any)
-const AssistantsAssistantIdRoute = AssistantsAssistantIdRouteImport.update({
-  id: '/$assistantId',
-  path: '/$assistantId',
-  getParentRoute: () => AssistantsRoute,
-} as any)
 const ServicesNewIndexRoute = ServicesNewIndexRouteImport.update({
   id: '/new/',
   path: '/new/',
@@ -70,6 +66,18 @@ const AssistantsNewIndexRoute = AssistantsNewIndexRouteImport.update({
   path: '/new/',
   getParentRoute: () => AssistantsRoute,
 } as any)
+const AssistantsAssistantIdIndexRoute =
+  AssistantsAssistantIdIndexRouteImport.update({
+    id: '/$assistantId/',
+    path: '/$assistantId/',
+    getParentRoute: () => AssistantsRoute,
+  } as any)
+const AssistantsAssistantIdSettingsRoute =
+  AssistantsAssistantIdSettingsRouteImport.update({
+    id: '/$assistantId/settings',
+    path: '/$assistantId/settings',
+    getParentRoute: () => AssistantsRoute,
+  } as any)
 const AppointmentsDailyDateRoute = AppointmentsDailyDateRouteImport.update({
   id: '/appointments/daily/$date',
   path: '/appointments/daily/$date',
@@ -110,11 +118,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
-  '/assistants/$assistantId': typeof AssistantsAssistantIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
+  '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
+  '/assistants/$assistantId': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
@@ -127,11 +136,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
-  '/assistants/$assistantId': typeof AssistantsAssistantIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
+  '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
+  '/assistants/$assistantId': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
@@ -145,11 +155,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
-  '/assistants/$assistantId': typeof AssistantsAssistantIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/appointments/': typeof AppointmentsIndexRoute
   '/error/': typeof ErrorIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
+  '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
+  '/assistants/$assistantId/': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new/': typeof AssistantsNewIndexRoute
   '/services/new/': typeof ServicesNewIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
@@ -164,11 +175,12 @@ export interface FileRouteTypes {
     | '/'
     | '/assistants'
     | '/services'
-    | '/assistants/$assistantId'
     | '/services/$serviceId'
     | '/appointments'
     | '/error'
     | '/appointments/daily/$date'
+    | '/assistants/$assistantId/settings'
+    | '/assistants/$assistantId'
     | '/assistants/new'
     | '/services/new'
     | '/appointments/daily/$date/$appointmentId'
@@ -181,11 +193,12 @@ export interface FileRouteTypes {
     | '/'
     | '/assistants'
     | '/services'
-    | '/assistants/$assistantId'
     | '/services/$serviceId'
     | '/appointments'
     | '/error'
     | '/appointments/daily/$date'
+    | '/assistants/$assistantId/settings'
+    | '/assistants/$assistantId'
     | '/assistants/new'
     | '/services/new'
     | '/appointments/daily/$date/$appointmentId'
@@ -198,11 +211,12 @@ export interface FileRouteTypes {
     | '/'
     | '/assistants'
     | '/services'
-    | '/assistants/$assistantId'
     | '/services/$serviceId'
     | '/appointments/'
     | '/error/'
     | '/appointments/daily/$date'
+    | '/assistants/$assistantId/settings'
+    | '/assistants/$assistantId/'
     | '/assistants/new/'
     | '/services/new/'
     | '/appointments/daily/$date/$appointmentId'
@@ -266,13 +280,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesServiceIdRouteImport
       parentRoute: typeof ServicesRoute
     }
-    '/assistants/$assistantId': {
-      id: '/assistants/$assistantId'
-      path: '/$assistantId'
-      fullPath: '/assistants/$assistantId'
-      preLoaderRoute: typeof AssistantsAssistantIdRouteImport
-      parentRoute: typeof AssistantsRoute
-    }
     '/services/new/': {
       id: '/services/new/'
       path: '/new'
@@ -285,6 +292,20 @@ declare module '@tanstack/react-router' {
       path: '/new'
       fullPath: '/assistants/new'
       preLoaderRoute: typeof AssistantsNewIndexRouteImport
+      parentRoute: typeof AssistantsRoute
+    }
+    '/assistants/$assistantId/': {
+      id: '/assistants/$assistantId/'
+      path: '/$assistantId'
+      fullPath: '/assistants/$assistantId'
+      preLoaderRoute: typeof AssistantsAssistantIdIndexRouteImport
+      parentRoute: typeof AssistantsRoute
+    }
+    '/assistants/$assistantId/settings': {
+      id: '/assistants/$assistantId/settings'
+      path: '/$assistantId/settings'
+      fullPath: '/assistants/$assistantId/settings'
+      preLoaderRoute: typeof AssistantsAssistantIdSettingsRouteImport
       parentRoute: typeof AssistantsRoute
     }
     '/appointments/daily/$date': {
@@ -333,12 +354,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AssistantsRouteChildren {
-  AssistantsAssistantIdRoute: typeof AssistantsAssistantIdRoute
+  AssistantsAssistantIdSettingsRoute: typeof AssistantsAssistantIdSettingsRoute
+  AssistantsAssistantIdIndexRoute: typeof AssistantsAssistantIdIndexRoute
   AssistantsNewIndexRoute: typeof AssistantsNewIndexRoute
 }
 
 const AssistantsRouteChildren: AssistantsRouteChildren = {
-  AssistantsAssistantIdRoute: AssistantsAssistantIdRoute,
+  AssistantsAssistantIdSettingsRoute: AssistantsAssistantIdSettingsRoute,
+  AssistantsAssistantIdIndexRoute: AssistantsAssistantIdIndexRoute,
   AssistantsNewIndexRoute: AssistantsNewIndexRoute,
 }
 

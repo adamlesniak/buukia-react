@@ -103,6 +103,7 @@ export const handlers = [
         email: body.email,
         categories: body.categories,
         availability: body.availability,
+        holidays: body.holidays,
       } as BuukiaAssistant;
       assistants.set(id, assistant);
 
@@ -127,6 +128,7 @@ export const handlers = [
         email: body.email,
         categories: body.categories,
         availability: body.availability,
+        holidays: body.holidays,
       } as BuukiaAssistant;
       assistants.set(item.id, assistant);
 

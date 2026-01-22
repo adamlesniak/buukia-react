@@ -38,6 +38,7 @@ export interface CreateAssistantBody {
   email: string;
   categories: BuukiaCategory[];
   availability: AvailabilitySlot[];
+  holidays?: string;
 }
 
 export interface UpdateAssistantBody extends CreateAssistantBody {
@@ -80,6 +81,7 @@ export type BuukiaAssistant = {
   initials: string;
   lastName: string;
   name: string;
+  holidays: string;
 };
 
 export type BuukiaService = {

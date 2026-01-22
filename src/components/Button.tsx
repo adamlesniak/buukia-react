@@ -24,6 +24,14 @@ const StyledButton = styled.button<{
     margin-left: 8px;
   }
 
+  &:hover {
+    background-color: #fbfbfb;
+
+    &.active {
+      background-color: #f4f4f4;
+    }
+  }
+
   ${(props) => {
     if (props.$size === "sm") {
       return `padding: .6em;`;
@@ -37,19 +45,27 @@ const StyledButton = styled.button<{
       return ``;
     }
 
-    return `border: 1px solid #f4f4f4;`;
-  }}
+    if (props.$variant === "danger") {
+      return `
+        background: #ff5d5d;
+        font-weight: bold;
+        color: #FFF;
+        border: 1px solid #f4f4f4;
 
-  &:hover {
-    background-color: #fbfbfb;
-
-    &.active {
-      background-color: #f4f4f4;
+        &:hover {
+          background-color: #df4f4f;
+        }
+      `;
     }
-  }
+
+    return `
+      border: 1px solid #f4f4f4;
+    `;
+  }}
 
   &:disabled {
     background: initial;
+    color: #cecece;
   }
 `;
 
@@ -64,7 +80,7 @@ type ButtonProps = {
   type: "button" | "submit" | "reset";
   value?: string;
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "transparent";
+  variant?: "primary" | "secondary" | "transparent" | "danger";
   size?: "sm" | "md" | "lg";
 };
 

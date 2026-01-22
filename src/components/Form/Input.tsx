@@ -11,12 +11,19 @@ const StyledInput = styled.input`
   font-size: 14px;
   height: 35px;
   cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 `;
 
 type InputProps = {
   children?: React.ReactNode;
 };
 
-export function Input(props: InputProps & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) {
+export function Input(
+  props: InputProps &
+    DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+) {
   return <StyledInput {...props}>{props.children}</StyledInput>;
 }

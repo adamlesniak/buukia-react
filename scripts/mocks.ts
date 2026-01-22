@@ -109,6 +109,7 @@ export const createAssistant = (): BuukiaAssistant => {
         },
       ],
     })),
+    holidays: "",
   };
 };
 

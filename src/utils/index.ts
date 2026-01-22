@@ -81,6 +81,7 @@ export const createAssistant = (item?: Partial<BuukiaAssistant>) => ({
   business: "",
   categories: [],
   email: "",
+  holidays: "",
   firstName: "",
   initials: "",
   lastName: "",

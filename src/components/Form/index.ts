@@ -22,7 +22,6 @@ export const FormSummary = styled.div`
   flex-direction: column;
   margin-top: 16px;
   justify-content: end;
-  border-top: 1px solid #f4f4f4;
 `;
 
 export const FieldError = styled.span<{

@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { Button } from "../Button";
 
-import { DrawerContentHeader } from "./DrawerContentHeader";
+import { DrawerContentHeader, DrawerContentMainContainer } from "./DrawerContentHeader";
 
 const DrawerContentTitleContainer = styled.div`
   display: flex;
@@ -24,19 +24,21 @@ export const MemoizedDrawerHeaderH2 = memo(
   }) => {
     return (
       <DrawerContentHeader>
-        <DrawerContentTitleContainer>
-          <h2>{title}</h2>
-          {children}
-        </DrawerContentTitleContainer>
-        <Button
-          variant="transparent"
-          aria-label={label}
-          tabIndex={0}
-          type="button"
-          onClick={onClose}
-        >
-          <X />
-        </Button>
+        <DrawerContentMainContainer>
+          <DrawerContentTitleContainer>
+            <h2>{title}</h2>
+          </DrawerContentTitleContainer>
+          <Button
+            variant="transparent"
+            aria-label={label}
+            tabIndex={0}
+            type="button"
+            onClick={onClose}
+          >
+            <X />
+          </Button>
+        </DrawerContentMainContainer>
+        {children}
       </DrawerContentHeader>
     );
   },

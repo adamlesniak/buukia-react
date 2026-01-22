@@ -11,12 +11,6 @@ import {
   useUpdateAssistant,
 } from "@/api";
 import { AssistantForm } from "@/components/Assistants";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  MemoizedDrawerHeaderH2,
-} from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error/ErrorDetail";
 import { MAX_PAGINATION } from "@/constants.ts";
 import type {
@@ -27,7 +21,9 @@ import type {
   CreateCategoryBody,
 } from "@/types";
 
-// TODO: Add Manage section to provide options to delete assistant, performance, temporarily, hide archive, statistics, etc.
+import AssistantDrawer from "./AssistantDrawer";
+
+// TODO: Add Manage section to provide options to performance, statistics, etc.
 export default function AssistantDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -62,32 +58,6 @@ export default function AssistantDetail() {
     navigate({ to: `/assistants` });
   };
 
-  const submit = useCallback(
-    async (data: CreateAssistantBody | CreateCategoryBody) => {
-      if ("categories" in data) {
-        if (isNew) {
-          return createAssistant.mutate(data as CreateAssistantBody, {
-            onSuccess: () => {
-              onClose();
-            },
-          });
-        }
-
-        return updateAssistant.mutate(
-          { ...data, id: assistantId } as UpdateAssistantBody,
-          {
-            onSuccess: () => {
-              onClose();
-            },
-          },
-        );
-      }
-
-      return createCategory.mutate(data as CreateCategoryBody);
-    },
-    [assistantId, createAssistant, updateAssistant, createCategory, onClose],
-  );
-
   const {
     data: assistant,
     isLoading: assistantLoading,
@@ -112,11 +82,42 @@ export default function AssistantDetail() {
           lastName: "",
           name: "",
           type: "",
+          holidays: "",
         } as BuukiaAssistant,
         isLoading: false,
         error: undefined,
       }
     : useAssistant(assistantId);
+
+  const submit = useCallback(
+    async (data: CreateAssistantBody | CreateCategoryBody) => {
+      if ("categories" in data) {
+        if (isNew) {
+          return createAssistant.mutate(data as CreateAssistantBody, {
+            onSuccess: () => {
+              onClose();
+            },
+          });
+        }
+
+        return updateAssistant.mutate(
+          {
+            ...data,
+            holidays: assistant?.holidays || "",
+            id: assistantId,
+          } as UpdateAssistantBody,
+          {
+            onSuccess: () => {
+              onClose();
+            },
+          },
+        );
+      }
+
+      return createCategory.mutate(data as CreateCategoryBody);
+    },
+    [assistantId, createAssistant, updateAssistant, createCategory, onClose, assistant],
+  );
 
   const formValues: AssistantFormValues = useMemo(
     () => ({
@@ -139,33 +140,22 @@ export default function AssistantDetail() {
   const isLoading = assistantLoading || categoriesLoading;
 
   return (
-    <Drawer onOverlayClick={onClose} drawer="right">
-      <DrawerContent>
-        <MemoizedDrawerHeaderH2
-          onClose={onClose}
-          title={t("assistants.assistant")}
-          label={t("common.closeDrawer")}
+    <AssistantDrawer>
+      {isError && (
+        <ErrorDetail message={isError?.message || t("common.unknownError")} />
+      )}
+      {!isError && (
+        <AssistantForm
+          assistantId={assistantId}
+          categories={categories}
+          values={formValues}
+          isLoading={isLoading}
+          onSubmit={submit}
+          deleteCategory={(categoryId) => deleteCategory.mutate(categoryId)}
+          categoriesIsLoading={categoriesIsRefetching}
+          onCategorySearch={(query) => setCategoriesQuery(query)}
         />
-        <DrawerContentBody justifyContent={"start"}>
-          {isError && (
-            <ErrorDetail
-              message={isError?.message || t("common.unknownError")}
-            />
-          )}
-          {!isError && (
-            <AssistantForm
-              assistantId={assistantId}
-              categories={categories}
-              values={formValues}
-              isLoading={isLoading}
-              onSubmit={submit}
-              deleteCategory={(categoryId) => deleteCategory.mutate(categoryId)}
-              categoriesIsLoading={categoriesIsRefetching}
-              onCategorySearch={(query) => setCategoriesQuery(query)}
-            />
-          )}
-        </DrawerContentBody>
-      </DrawerContent>
-    </Drawer>
+      )}
+    </AssistantDrawer>
   );
 }
