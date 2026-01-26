@@ -90,8 +90,8 @@ export function Sidebar() {
           <span>{t("nav.assistants")}</span>
         </SidebarMenuItem>
         <SidebarMenuItem
-          to={`/transactions/payments`}
-          activeOptions={{ exact: true }}
+          to={`/transactions`}
+          activeOptions={{ exact: false}}
           key={t("nav.transactions")}
         >
           <Banknote size={24} />

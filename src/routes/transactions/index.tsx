@@ -4,7 +4,6 @@ export const Route = createFileRoute("/transactions/")({
   beforeLoad: async () => {
     throw redirect({
       to: `/transactions/payments`,
-      params: {} as never,
     });
   },
 });

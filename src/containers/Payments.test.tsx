@@ -65,6 +65,65 @@ describe("Payments", () => {
     });
   });
 
+  it("should show payments cards", async () => {
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Payments.default />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("transactions.payments.cards.total"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("transactions.payments.cards.completed"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("transactions.payments.cards.pending"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("transactions.payments.cards.failed"),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("should show payments title and amount of items", async () => {
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Payments.default />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("transactions.payments.title"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(`${data.payments.length} common.items`),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("transactions.payments.table.date"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("transactions.payments.table.amount"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("transactions.payments.table.status"),
+      ).toBeInTheDocument();
+      data.payments.forEach((payment) => {
+        expect(screen.queryAllByText(payment.id)).toBeDefined();
+        expect(screen.queryAllByText(payment.date)).toBeDefined();
+        expect(screen.queryAllByText(payment.amount)).toBeDefined();
+        expect(screen.queryAllByText(payment.status)).toBeDefined();
+      });
+    });
+  });
+
   it("should show payments id, date, amount, status", async () => {
     const queryClient = new QueryClient();
 

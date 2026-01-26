@@ -156,8 +156,15 @@
         "status": "Status",
         "method": "Method"
       },
+      "title": "Payments",
       "noPaymentsFound": "No payments found.",
-      "loadingError": "Error retrieving payments. Please try again later."
+      "loadingError": "Error retrieving payments. Please try again later.",
+      "cards": {
+        "total": "Total",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed"
+      }
     },
     "detail": {
       "paymentId": "Payment ID",
