@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -9,7 +10,9 @@ import {
   useCategories,
   useCreateCategory,
   useDeleteCategory,
+  useDeleteService,
 } from "@/api";
+import { Button } from "@/components/Button";
 import {
   Drawer,
   DrawerContent,
@@ -27,14 +30,24 @@ import type {
   UpdateServiceBody,
 } from "@/types";
 
+import ConfirmationModal from "./ConfirmationModal";
+
 export default function ServiceDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [categoriesQuery, setCategoriesQuery] = useState("");
-  const [createService, updateService, createCategory, deleteCategory] = [
+  const [showModal, setShowModal] = useState(false);
+  const [
+    createService,
+    updateService,
+    deleteService,
+    createCategory,
+    deleteCategory,
+  ] = [
     useCreateService(),
     useUpdateService(),
+    useDeleteService(),
     useCreateCategory(),
     useDeleteCategory(),
   ];
@@ -125,6 +138,15 @@ export default function ServiceDetail() {
     navigate({ to: `/services` });
   };
 
+  const modalClose = (deleteConfirmed: boolean) => {
+    if (deleteConfirmed) {
+      deleteService.mutate(serviceId);
+    }
+
+    setShowModal(false);
+    onClose();
+  };
+
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
@@ -140,16 +162,39 @@ export default function ServiceDetail() {
             />
           )}
           {!isError && (
-            <ServiceForm
-              categories={categories}
-              onCategorySearch={(query) => setCategoriesQuery(query)}
-              categoriesIsLoading={categoriesIsRefetching}
-              values={formValues}
-              onSubmit={submit}
-              isLoading={isLoading}
-              deleteCategory={(categoryId) => deleteCategory.mutate(categoryId)}
-            />
+            <>
+              <ServiceForm
+                categories={categories}
+                onCategorySearch={(query) => setCategoriesQuery(query)}
+                categoriesIsLoading={categoriesIsRefetching}
+                values={formValues}
+                onSubmit={submit}
+                isLoading={isLoading}
+                deleteCategory={(categoryId) =>
+                  deleteCategory.mutate(categoryId)
+                }
+              />
+              {serviceId && (
+                <Button
+                  type="button"
+                  variant="danger"
+                  style={{ width: "100%", marginTop: "16px" }}
+                  onClick={() => setShowModal(true)}
+                >
+                  {t("services.deleteService")}
+                </Button>
+              )}
+            </>
           )}
+          {showModal &&
+            createPortal(
+              <ConfirmationModal
+                title={t("services.modal.deleteTitle")}
+                description={t("services.modal.deleteMessage")}
+                close={modalClose}
+              />,
+              document.body,
+            )}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

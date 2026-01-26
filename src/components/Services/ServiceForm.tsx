@@ -19,7 +19,6 @@ import {
   Field,
   FieldError,
   Form,
-  FormSummary,
   Input,
   Label,
   Select,
@@ -212,16 +211,9 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           )}
         </Field>
 
-        <FormSummary>
-          <Button
-            disabled={props.isLoading}
-            size="sm"
-            tabIndex={0}
-            type="submit"
-          >
-            {t("common.submit")}
-          </Button>
-        </FormSummary>
+        <Button disabled={props.isLoading} size="sm" tabIndex={0} type="submit">
+          {t("common.submit")}
+        </Button>
       </Form>
 
       {showModal &&

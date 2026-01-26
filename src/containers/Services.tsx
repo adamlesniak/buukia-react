@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { useDeleteService, useServices } from "@/api";
+import {  useServices } from "@/api";
 import { Button } from "@/components/Button";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
 import {
@@ -25,8 +25,6 @@ import { MAX_PAGINATION } from "@/constants.ts";
 export default function Services() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const [deleteService] = [useDeleteService()];
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [servicesQuery, _setServicesQuery] = useState("");
@@ -89,9 +87,6 @@ export default function Services() {
                     <TableHeaderItem>
                       {t("services.table.price")}
                     </TableHeaderItem>
-                    <TableHeaderItem>
-                      {t("services.table.actions")}
-                    </TableHeaderItem>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -118,26 +113,6 @@ export default function Services() {
                       <TableRowItem>{service.category.name}</TableRowItem>
                       <TableRowItem>{service.duration}</TableRowItem>
                       <TableRowItem>€{service.price}</TableRowItem>
-                      <TableRowItem>
-                        <Button
-                          type="button"
-                          data-testid="service-row-delete"
-                          onClick={($event) => {
-                            deleteService.mutate(service.id);
-                            $event.preventDefault();
-                            $event.stopPropagation();
-                          }}
-                          onKeyDown={($event) => {
-                            if ($event.key === "Enter") {
-                              deleteService.mutate(service.id);
-                              $event.preventDefault();
-                              $event.stopPropagation();
-                            }
-                          }}
-                        >
-                          <TrashIcon size={21} />
-                        </Button>
-                      </TableRowItem>
                     </TableRow>
                   ))}
                 </TableBody>

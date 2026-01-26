@@ -141,7 +141,14 @@ export default function AssistantSettings() {
         </>
       )}
       {showModal &&
-        createPortal(<ConfirmationModal close={modalClose} />, document.body)}
+        createPortal(
+          <ConfirmationModal
+            title={t("settings.modal.deleteTitle")}
+            description={t("settings.modal.deleteMessage")}
+            close={modalClose}
+          />,
+          document.body,
+        )}
     </AssistantDrawer>
   );
 }

@@ -6,6 +6,7 @@ import {
   useCategories,
   useCreateCategory,
   useCreateService,
+  useDeleteService,
   useService,
   useUpdateCategory,
   useUpdateService,
@@ -19,6 +20,7 @@ import data from "../routes/data.json";
 vi.mock("@/api", async () => ({
   useCreateService: vi.fn(),
   useService: vi.fn(),
+  useDeleteService: vi.fn(),
   useUpdateService: vi.fn(),
   useCategories: vi.fn(),
   useCreateCategory: vi.fn(),
@@ -36,6 +38,7 @@ const mockUseParams = vi.fn();
 const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
   onSuccess();
 });
+const mockMutateDelete = vi.fn();
 const mockRouterState = vi.fn().mockReturnValue("daily");
 
 vi.mock("@tanstack/react-router", () => ({
@@ -69,6 +72,9 @@ const mockUseCreateService = useCreateService as unknown as ReturnType<
 const mockUseUpdateService = useUpdateService as unknown as ReturnType<
   typeof vi.fn
 >;
+const mockUseDeleteService = useDeleteService as unknown as ReturnType<
+  typeof vi.fn
+>;
 const mockUseCreateCategory = useCreateCategory as unknown as ReturnType<
   typeof vi.fn
 >;
@@ -98,6 +104,7 @@ describe("ServiceDetail", () => {
 
     mockNavigate.mockClear();
     mockMutate.mockClear();
+    mockMutateDelete.mockClear();
     mockRouterState.mockClear();
     mockUseService.mockClear();
     mockUseCategories.mockClear();
@@ -124,6 +131,9 @@ describe("ServiceDetail", () => {
       mutate: mockMutate,
     });
     mockUseCreateService.mockReturnValue({
+      mutate: mockMutate,
+    });
+    mockUseDeleteService.mockReturnValue({
       mutate: mockMutate,
     });
     mockUseCreateCategory.mockReturnValue({
@@ -283,6 +293,69 @@ describe("ServiceDetail", () => {
       const error = await screen.queryByText("Category error");
 
       expect(error).toBeInTheDocument();
+    });
+
+    it("should remove service following by confirmation dialog", async () => {
+      mockUseDeleteService.mockReturnValue({
+        mutate: mockMutateDelete,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceDetail.default />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByText("services.deleteService"));
+
+      expect(
+        screen.getByText("services.modal.deleteTitle"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("services.modal.deleteMessage"),
+      ).toBeInTheDocument();
+
+      await user.click(screen.getByText("common.delete"));
+
+      expect(
+        screen.queryByText("services.modal.deleteTitle"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("services.modal.deleteMessage"),
+      ).not.toBeInTheDocument();
+      expect(mockMutateDelete).toHaveBeenCalledWith("serviceId");
+    });
+
+    it("should not remove service following by confirmation dialog", async () => {
+      mockUseDeleteService.mockReturnValue({
+        mutate: mockMutateDelete,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceDetail.default />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByText("services.deleteService"));
+
+     expect(
+        screen.getByText("services.modal.deleteTitle"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("services.modal.deleteMessage"),
+      ).toBeInTheDocument();
+
+
+      await user.click(screen.getByText("common.cancel"));
+
+      expect(
+        screen.queryByText("services.modal.deleteTitle"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("services.modal.deleteMessage"),
+      ).not.toBeInTheDocument();
+      expect(mockMutateDelete).not.toHaveBeenCalledWith("testAssistantId");
     });
   });
 });
