@@ -90,12 +90,12 @@ export function Sidebar() {
           <span>{t("nav.assistants")}</span>
         </SidebarMenuItem>
         <SidebarMenuItem
-          to={`/payments`}
+          to={`/transactions/payments`}
           activeOptions={{ exact: true }}
-          key={t("nav.payments")}
+          key={t("nav.transactions")}
         >
           <Banknote size={24} />
-          <span>{t("nav.payments")}</span>
+          <span>{t("nav.transactions")}</span>
         </SidebarMenuItem>
       </SidebarTop>
 

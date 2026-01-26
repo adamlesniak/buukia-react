@@ -21,6 +21,8 @@ import type {
   MockData,
   BuukiaService,
   BuukiaCategory,
+  BuukiaPayment,
+  BuukiaPayout,
 } from "../src/types";
 
 const serviceNames = [
@@ -148,17 +150,72 @@ export const createAppointment = (): BuukiaAppointment => {
         }),
       ).values(),
     ],
+    payments: [],
   };
 };
 
-const [assistants, clients, categories]: [
+export const createPayment = (): BuukiaPayment => {
+  return {
+    id: faker.string.uuid(),
+    amount: faker.number.int({ min: 20, max: 200 }),
+    currency: 'EUR',
+    date: roundToNearestMinutes(
+      faker.date.between({
+        from: new Date(),
+        to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      }),
+      { nearestTo: 15 },
+    ).toISOString(),
+    refunded: faker.datatype.boolean(),
+    description: faker.lorem.sentence(),
+    method: faker.finance.transactionType(),
+    paid: faker.datatype.boolean(),
+    provider: "stripe",
+    sourceId: faker.string.uuid(),
+    status: faker.helpers.arrayElement(["completed", "pending", "failed"]),
+  };
+};
+
+export const createPayout = (): BuukiaPayout => {
+  return {
+    id: faker.string.uuid(),
+    amount: faker.number.int({ min: 20, max: 200 }),
+    currency: faker.finance.currencyCode(),
+    createdAt: roundToNearestMinutes(
+      faker.date.between({
+        from: new Date(),
+        to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      }),
+      { nearestTo: 15 },
+    ).toISOString(),
+    arrivalDate: roundToNearestMinutes(
+      faker.date.between({
+        from: new Date(),
+        to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      }),
+      { nearestTo: 15 },
+    ).toISOString(),
+    description: faker.lorem.sentence(),
+    type: faker.helpers.arrayElement(["bank_account", "card"]),
+    provider: "stripe",
+    sourceType: "bank_account",
+    sourceId: faker.string.uuid(),
+    status: faker.helpers.arrayElement(["completed", "pending", "failed"]),
+  };
+};
+
+const [assistants, clients, categories, payments, payouts]: [
   BuukiaAssistant[],
   BuukiaClient[],
   BuukiaCategory[],
+  BuukiaPayment[],
+  BuukiaPayout[],
 ] = [
   Array.from({ length: 4 }).map(() => createAssistant()),
   Array.from({ length: 20 }).map(() => createClient()),
   serviceCategories,
+  Array.from({ length: 10 }).map(() => createPayment()),
+  Array.from({ length: 5 }).map(() => createPayout()),
 ];
 
 const dayStartDate = addMinutes(addHours(startOfDay(new Date()), 8), 0);
@@ -207,9 +264,11 @@ const main = async (): Promise<void> => {
   const data: MockData = {
     appointments: [...appointments, ...todaysAppointments],
     assistants,
-    clients,
-    services,
     categories,
+    clients,
+    payments,
+    payouts,
+    services,
   };
 
   const formattedCode = await prettier.format(JSON.stringify(data), {

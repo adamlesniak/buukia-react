@@ -12,7 +12,8 @@
     "settings": "Settings",
     "assistants": "Assistants",
     "sales": "Sales",
-    "payments": "Payments"
+    "payments": "Payments",
+    "transactions": "Transactions"
   },
   "calendar": {
     "teamDayView": "Team Day View",
@@ -142,18 +143,21 @@
       "deleteMessage": "Are you sure you want to delete this assistant?\nThis action cannot be undone."
     }
   },
-  "payments": {
-    "title": "Payments",
-    "noPaymentsFound": "No payments found.",
-    "loadingError": "Error retrieving payments. Please try again later.",
-    "table": {
-      "id": "ID",
-      "client": "Client",
-      "amount": "Amount",
-      "date": "Date",
-      "method": "Method",
-      "status": "Status",
-      "actions": "Actions"
+  "transactions": {
+    "title": "Transactions",
+    "loadingError": "Error retrieving transactions. Please try again later.",
+    "payments": {
+      "table": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method"
+      },
+      "noPaymentsFound": "No payments found.",
+      "loadingError": "Error retrieving payments. Please try again later."
     },
     "detail": {
       "paymentId": "Payment ID",
@@ -187,6 +191,9 @@
     "requiredField": "This field is required",
     "moreItems": "and {{count}} more items",
     "copyTo": "Copy to",
+    "payouts": "Payouts",
+    "transactions": "Transactions",
+    "payments": "Payments",
     "daysOfWeek": {
       "sunday": "Sun",
       "monday": "Mon",

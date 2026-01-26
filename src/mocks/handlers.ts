@@ -6,6 +6,8 @@ import type {
   BuukiaAssistant,
   BuukiaCategory,
   BuukiaClient,
+  BuukiaPayment,
+  BuukiaPayout,
   BuukiaService,
   CreateAppointmentBody,
   CreateAssistantBody,
@@ -24,13 +26,35 @@ import data from "../routes/data.json";
 // /api/payments
 // /api/settings
 
-const [assistants, clients, services, appointments, categories]: [
+const [
+  payments,
+  payouts,
+  assistants,
+  clients,
+  services,
+  appointments,
+  categories,
+]: [
+  Map<string, BuukiaPayment>,
+  Map<string, BuukiaPayout>,
   Map<string, BuukiaAssistant>,
   Map<string, BuukiaClient>,
   Map<string, BuukiaService>,
   Map<string, BuukiaAppointment>,
   Map<string, BuukiaCategory>,
 ] = [
+  new Map(
+    data.payments.map((payment) => [
+      payment.id,
+      payment as unknown as BuukiaPayment,
+    ]),
+  ),
+  new Map(
+    data.payouts.map((payout) => [
+      payout.id,
+      payout as unknown as BuukiaPayout,
+    ]),
+  ),
   new Map(data.assistants.map((assistant) => [assistant.id, assistant])),
   new Map(data.clients.map((client) => [client.id, client])),
   new Map(
@@ -58,6 +82,42 @@ const [assistants, clients, services, appointments, categories]: [
 ];
 
 export const handlers = [
+  http.get("/api/payments", ({ request }) => {
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+    return HttpResponse.json(
+      Array.from(payments.values())
+        .filter((payment) =>
+          payment.description
+            .toLowerCase()
+            .includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
+  }),
+
+  http.get("/api/payouts", ({ request }) => {
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+    return HttpResponse.json(
+      Array.from(payouts.values())
+        .filter((payout) =>
+          payout.description
+            .toLowerCase()
+            .includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
+  }),
+
   http.get("/api/assistants", ({ request }) => {
     const [limitParam, query] = [
       new URL(request.url).searchParams.get("limit"),
@@ -463,6 +523,7 @@ export const handlers = [
         services: body.serviceIds
           .map((serviceId) => services.get(serviceId))
           .filter((service): service is BuukiaService => service !== undefined),
+        payments: [],
       } as BuukiaAppointment;
       appointments.set(body.id, appointment);
 
