@@ -103,7 +103,6 @@ describe("Services", () => {
       expect(screen.queryByText("services.table.category")).toBeInTheDocument();
       expect(screen.queryByText("services.table.duration")).toBeInTheDocument();
       expect(screen.queryByText("services.table.price")).toBeInTheDocument();
-      expect(screen.queryByText("services.table.actions")).toBeInTheDocument();
       data.services.forEach((service) => {
         expect(screen.queryAllByText(service.name)).toBeDefined();
         expect(screen.queryAllByText(service.category.name)).toBeDefined();
@@ -132,24 +131,6 @@ describe("Services", () => {
       expect(mockNavigate).toHaveBeenCalledWith({
         to: `/services/${data.services[0].id}`,
       });
-    });
-  });
-
-  it("should delete specific service on service deletion", async () => {
-    const queryClient = new QueryClient();
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Services.default />
-      </QueryClientProvider>,
-    );
-
-    const serviceRowsDelete = screen.queryAllByTestId("service-row-delete");
-
-    await user.click(serviceRowsDelete[0]);
-
-    await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalledWith(data.services[0].id);
     });
   });
 

@@ -34,7 +34,11 @@ const ConfirmationContent = styled.div`
 `;
 
 type ConfirmationModalProps = {
+  title: string;
+  description: string;
   close: (confirm: boolean) => void;
+  type: "primary" | "danger";
+  confirmText: string;
 };
 
 export default function ConfirmationModal(props: ConfirmationModalProps) {
@@ -54,23 +58,22 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
             <div>
               <OctagonAlert size={64} />
             </div>
-            <h2>{t("settings.modal.deleteTitle")}</h2>
+            <h2>{props.title}</h2>
             <TextContainer data-testid="confirmation-modal-description">
-              {t("settings.modal.deleteMessage")
-                .split("<br/>")
-                .map((line, index) => (
-                  <p key={index}>{line}</p>
-                ))}
+              {props.description.split("<br/>").map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
             </TextContainer>
             <ActionsButtons>
-              <Button
-                type="button"
-                onClick={() => props.close(false)}
-              >
+              <Button type="button" onClick={() => props.close(false)}>
                 {t("common.cancel")}
               </Button>
-              <Button type="button" variant="danger" onClick={() => props.close(true)}>
-                {t("common.delete")}
+              <Button
+                type="button"
+                variant={props.type === "primary" ? "accent" : "danger"}
+                onClick={() => props.close(true)}
+              >
+                {props.confirmText}
               </Button>
             </ActionsButtons>
           </ConfirmationContent>
@@ -78,4 +81,4 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
       </Modal>
     </Overlay>
   );
-};
+}

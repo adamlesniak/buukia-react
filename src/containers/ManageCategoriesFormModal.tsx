@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/Button";
-import { Card, CardDescription } from "@/components/Card";
+import { Card, ServiceCardDescription } from "@/components/Card";
 import { MemoizedDrawerHeaderH3 } from "@/components/Drawer";
 import { Field, FieldError, Form, Input } from "@/components/Form";
 import { Modal, ModalBody, Overlay } from "@/components/Modal";
@@ -98,7 +98,7 @@ export const ManageCategoriesFormModal = memo(
                   props.categories.length > 0 &&
                   props.categories.map((category) => (
                     <Card data-testid="category-list-item" key={category.id}>
-                      <CardDescription title={`${category.name}`} />
+                      <ServiceCardDescription title={`${category.name}`} />
                       <Button
                         size="sm"
                         tabIndex={0}

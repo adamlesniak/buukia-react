@@ -9,15 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AssistantsRouteImport } from './routes/assistants'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as ErrorIndexRouteImport } from './routes/error/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
+import { Route as TransactionsPaymentsRouteImport } from './routes/transactions/payments'
 import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
+import { Route as TransactionsSettingsIndexRouteImport } from './routes/transactions/settings/index'
+import { Route as TransactionsPayoutsIndexRouteImport } from './routes/transactions/payouts/index'
 import { Route as ServicesNewIndexRouteImport } from './routes/services/new/index'
 import { Route as AssistantsNewIndexRouteImport } from './routes/assistants/new/index'
 import { Route as AssistantsAssistantIdIndexRouteImport } from './routes/assistants/$assistantId/index'
+import { Route as TransactionsPaymentsPaymentIdRouteImport } from './routes/transactions/payments/$paymentId'
 import { Route as AssistantsAssistantIdSettingsRouteImport } from './routes/assistants/$assistantId/settings'
 import { Route as AppointmentsDailyDateRouteImport } from './routes/appointments/daily/$date'
 import { Route as AppointmentsWeeklyDateAssistantIdRouteImport } from './routes/appointments/weekly/$date/$assistantId'
@@ -26,6 +32,11 @@ import { Route as AppointmentsWeeklyDateAssistantIdAppointmentIdRouteImport } fr
 import { Route as AppointmentsWeeklyDateAssistantIdNewTimeRouteImport } from './routes/appointments/weekly/$date/$assistantId/new/$time'
 import { Route as AppointmentsDailyDateNewAssistantIdTimeRouteImport } from './routes/appointments/daily/$date/new/$assistantId/$time'
 
+const TransactionsRoute = TransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
@@ -41,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TransactionsRoute,
+} as any)
 const ErrorIndexRoute = ErrorIndexRouteImport.update({
   id: '/error/',
   path: '/error/',
@@ -51,11 +67,28 @@ const AppointmentsIndexRoute = AppointmentsIndexRouteImport.update({
   path: '/appointments/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TransactionsPaymentsRoute = TransactionsPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => TransactionsRoute,
+} as any)
 const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
   id: '/$serviceId',
   path: '/$serviceId',
   getParentRoute: () => ServicesRoute,
 } as any)
+const TransactionsSettingsIndexRoute =
+  TransactionsSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => TransactionsRoute,
+  } as any)
+const TransactionsPayoutsIndexRoute =
+  TransactionsPayoutsIndexRouteImport.update({
+    id: '/payouts/',
+    path: '/payouts/',
+    getParentRoute: () => TransactionsRoute,
+  } as any)
 const ServicesNewIndexRoute = ServicesNewIndexRouteImport.update({
   id: '/new/',
   path: '/new/',
@@ -71,6 +104,12 @@ const AssistantsAssistantIdIndexRoute =
     id: '/$assistantId/',
     path: '/$assistantId/',
     getParentRoute: () => AssistantsRoute,
+  } as any)
+const TransactionsPaymentsPaymentIdRoute =
+  TransactionsPaymentsPaymentIdRouteImport.update({
+    id: '/$paymentId',
+    path: '/$paymentId',
+    getParentRoute: () => TransactionsPaymentsRoute,
   } as any)
 const AssistantsAssistantIdSettingsRoute =
   AssistantsAssistantIdSettingsRouteImport.update({
@@ -118,14 +157,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/transactions': typeof TransactionsRouteWithChildren
   '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
+  '/transactions/': typeof TransactionsIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
+  '/transactions/payments/$paymentId': typeof TransactionsPaymentsPaymentIdRoute
   '/assistants/$assistantId': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
+  '/transactions/payouts': typeof TransactionsPayoutsIndexRoute
+  '/transactions/settings': typeof TransactionsSettingsIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
   '/appointments/weekly/$date/$assistantId/$appointmentId': typeof AppointmentsWeeklyDateAssistantIdAppointmentIdRoute
@@ -137,13 +182,18 @@ export interface FileRoutesByTo {
   '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
   '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
+  '/transactions': typeof TransactionsIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
+  '/transactions/payments/$paymentId': typeof TransactionsPaymentsPaymentIdRoute
   '/assistants/$assistantId': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
+  '/transactions/payouts': typeof TransactionsPayoutsIndexRoute
+  '/transactions/settings': typeof TransactionsSettingsIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
   '/appointments/weekly/$date/$assistantId/$appointmentId': typeof AppointmentsWeeklyDateAssistantIdAppointmentIdRoute
@@ -155,14 +205,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/transactions': typeof TransactionsRouteWithChildren
   '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/appointments/': typeof AppointmentsIndexRoute
   '/error/': typeof ErrorIndexRoute
+  '/transactions/': typeof TransactionsIndexRoute
   '/appointments/daily/$date': typeof AppointmentsDailyDateRouteWithChildren
   '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
+  '/transactions/payments/$paymentId': typeof TransactionsPaymentsPaymentIdRoute
   '/assistants/$assistantId/': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new/': typeof AssistantsNewIndexRoute
   '/services/new/': typeof ServicesNewIndexRoute
+  '/transactions/payouts/': typeof TransactionsPayoutsIndexRoute
+  '/transactions/settings/': typeof TransactionsSettingsIndexRoute
   '/appointments/daily/$date/$appointmentId': typeof AppointmentsDailyDateAppointmentIdRoute
   '/appointments/weekly/$date/$assistantId': typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
   '/appointments/weekly/$date/$assistantId/$appointmentId': typeof AppointmentsWeeklyDateAssistantIdAppointmentIdRoute
@@ -175,14 +231,20 @@ export interface FileRouteTypes {
     | '/'
     | '/assistants'
     | '/services'
+    | '/transactions'
     | '/services/$serviceId'
+    | '/transactions/payments'
     | '/appointments'
     | '/error'
+    | '/transactions/'
     | '/appointments/daily/$date'
     | '/assistants/$assistantId/settings'
+    | '/transactions/payments/$paymentId'
     | '/assistants/$assistantId'
     | '/assistants/new'
     | '/services/new'
+    | '/transactions/payouts'
+    | '/transactions/settings'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
     | '/appointments/weekly/$date/$assistantId/$appointmentId'
@@ -194,13 +256,18 @@ export interface FileRouteTypes {
     | '/assistants'
     | '/services'
     | '/services/$serviceId'
+    | '/transactions/payments'
     | '/appointments'
     | '/error'
+    | '/transactions'
     | '/appointments/daily/$date'
     | '/assistants/$assistantId/settings'
+    | '/transactions/payments/$paymentId'
     | '/assistants/$assistantId'
     | '/assistants/new'
     | '/services/new'
+    | '/transactions/payouts'
+    | '/transactions/settings'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
     | '/appointments/weekly/$date/$assistantId/$appointmentId'
@@ -211,14 +278,20 @@ export interface FileRouteTypes {
     | '/'
     | '/assistants'
     | '/services'
+    | '/transactions'
     | '/services/$serviceId'
+    | '/transactions/payments'
     | '/appointments/'
     | '/error/'
+    | '/transactions/'
     | '/appointments/daily/$date'
     | '/assistants/$assistantId/settings'
+    | '/transactions/payments/$paymentId'
     | '/assistants/$assistantId/'
     | '/assistants/new/'
     | '/services/new/'
+    | '/transactions/payouts/'
+    | '/transactions/settings/'
     | '/appointments/daily/$date/$appointmentId'
     | '/appointments/weekly/$date/$assistantId'
     | '/appointments/weekly/$date/$assistantId/$appointmentId'
@@ -230,6 +303,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssistantsRoute: typeof AssistantsRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
+  TransactionsRoute: typeof TransactionsRouteWithChildren
   AppointmentsIndexRoute: typeof AppointmentsIndexRoute
   ErrorIndexRoute: typeof ErrorIndexRoute
   AppointmentsDailyDateRoute: typeof AppointmentsDailyDateRouteWithChildren
@@ -238,6 +312,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
@@ -259,6 +340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/transactions/': {
+      id: '/transactions/'
+      path: '/'
+      fullPath: '/transactions/'
+      preLoaderRoute: typeof TransactionsIndexRouteImport
+      parentRoute: typeof TransactionsRoute
+    }
     '/error/': {
       id: '/error/'
       path: '/error'
@@ -273,12 +361,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppointmentsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/transactions/payments': {
+      id: '/transactions/payments'
+      path: '/payments'
+      fullPath: '/transactions/payments'
+      preLoaderRoute: typeof TransactionsPaymentsRouteImport
+      parentRoute: typeof TransactionsRoute
+    }
     '/services/$serviceId': {
       id: '/services/$serviceId'
       path: '/$serviceId'
       fullPath: '/services/$serviceId'
       preLoaderRoute: typeof ServicesServiceIdRouteImport
       parentRoute: typeof ServicesRoute
+    }
+    '/transactions/settings/': {
+      id: '/transactions/settings/'
+      path: '/settings'
+      fullPath: '/transactions/settings'
+      preLoaderRoute: typeof TransactionsSettingsIndexRouteImport
+      parentRoute: typeof TransactionsRoute
+    }
+    '/transactions/payouts/': {
+      id: '/transactions/payouts/'
+      path: '/payouts'
+      fullPath: '/transactions/payouts'
+      preLoaderRoute: typeof TransactionsPayoutsIndexRouteImport
+      parentRoute: typeof TransactionsRoute
     }
     '/services/new/': {
       id: '/services/new/'
@@ -300,6 +409,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/assistants/$assistantId'
       preLoaderRoute: typeof AssistantsAssistantIdIndexRouteImport
       parentRoute: typeof AssistantsRoute
+    }
+    '/transactions/payments/$paymentId': {
+      id: '/transactions/payments/$paymentId'
+      path: '/$paymentId'
+      fullPath: '/transactions/payments/$paymentId'
+      preLoaderRoute: typeof TransactionsPaymentsPaymentIdRouteImport
+      parentRoute: typeof TransactionsPaymentsRoute
     }
     '/assistants/$assistantId/settings': {
       id: '/assistants/$assistantId/settings'
@@ -383,6 +499,35 @@ const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
   ServicesRouteChildren,
 )
 
+interface TransactionsPaymentsRouteChildren {
+  TransactionsPaymentsPaymentIdRoute: typeof TransactionsPaymentsPaymentIdRoute
+}
+
+const TransactionsPaymentsRouteChildren: TransactionsPaymentsRouteChildren = {
+  TransactionsPaymentsPaymentIdRoute: TransactionsPaymentsPaymentIdRoute,
+}
+
+const TransactionsPaymentsRouteWithChildren =
+  TransactionsPaymentsRoute._addFileChildren(TransactionsPaymentsRouteChildren)
+
+interface TransactionsRouteChildren {
+  TransactionsPaymentsRoute: typeof TransactionsPaymentsRouteWithChildren
+  TransactionsIndexRoute: typeof TransactionsIndexRoute
+  TransactionsPayoutsIndexRoute: typeof TransactionsPayoutsIndexRoute
+  TransactionsSettingsIndexRoute: typeof TransactionsSettingsIndexRoute
+}
+
+const TransactionsRouteChildren: TransactionsRouteChildren = {
+  TransactionsPaymentsRoute: TransactionsPaymentsRouteWithChildren,
+  TransactionsIndexRoute: TransactionsIndexRoute,
+  TransactionsPayoutsIndexRoute: TransactionsPayoutsIndexRoute,
+  TransactionsSettingsIndexRoute: TransactionsSettingsIndexRoute,
+}
+
+const TransactionsRouteWithChildren = TransactionsRoute._addFileChildren(
+  TransactionsRouteChildren,
+)
+
 interface AppointmentsDailyDateRouteChildren {
   AppointmentsDailyDateAppointmentIdRoute: typeof AppointmentsDailyDateAppointmentIdRoute
   AppointmentsDailyDateNewAssistantIdTimeRoute: typeof AppointmentsDailyDateNewAssistantIdTimeRoute
@@ -422,6 +567,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssistantsRoute: AssistantsRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,
+  TransactionsRoute: TransactionsRouteWithChildren,
   AppointmentsIndexRoute: AppointmentsIndexRoute,
   ErrorIndexRoute: ErrorIndexRoute,
   AppointmentsDailyDateRoute: AppointmentsDailyDateRouteWithChildren,

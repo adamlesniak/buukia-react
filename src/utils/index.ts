@@ -213,3 +213,20 @@ export const getDayName = (dayIndex: number): string =>
     "friday",
     "saturday",
   ][dayIndex];
+
+export const getColorStatus = (status: string) => {
+  switch (status) {
+    case "completed":
+      return "#4caf50"; // Green
+    case "pending":
+      return "#ff9800"; // Orange
+    case "failed":
+      return "#f44336"; // Red
+    case "canceled":
+      return "#9e9e9e"; // Grey
+    case "in_transit":
+      return "#2196f3"; // Blue
+    default:
+      return "#523d3d"; // Default color
+  }
+};

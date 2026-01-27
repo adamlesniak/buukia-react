@@ -102,12 +102,50 @@ export type BuukiaClient = {
   phone: string;
 };
 
+type BuukiaPaymentStatus =
+  | "completed"
+  | "pending"
+  | "failed"
+  | "canceled"
+  | "in_transit";
+
+type BuukiaPaymentProvider = "stripe";
+
+export type BuukiaPayment = {
+  id: string;
+  amount: number;
+  currency: string;
+  date: string;
+  description: string;
+  method: string;
+  paid: boolean;
+  provider: BuukiaPaymentProvider;
+  refunded: boolean;
+  sourceId: string;
+  status: BuukiaPaymentStatus;
+};
+
+export type BuukiaPayout = {
+  id: string;
+  amount: number;
+  currency: string;
+  arrivalDate: string;
+  createdAt: string;
+  description: string;
+  provider: BuukiaPaymentProvider;
+  sourceType: string;
+  sourceId: string;
+  status: BuukiaPaymentStatus;
+  type: "bank_account" | "card";
+};
+
 export type BuukiaAppointment = {
   id: string;
   assistant: BuukiaAssistant;
   time: string;
   client: BuukiaClient;
   services: BuukiaService[];
+  payments: BuukiaPayment[];
 };
 
 export type BuukiaCategory = {
@@ -118,9 +156,11 @@ export type BuukiaCategory = {
 export type MockData = {
   appointments: BuukiaAppointment[];
   assistants: BuukiaAssistant[];
-  clients: BuukiaClient[];
-  services: BuukiaService[];
   categories: BuukiaCategory[];
+  clients: BuukiaClient[];
+  payments: BuukiaPayment[];
+  payouts: BuukiaPayout[];
+  services: BuukiaService[];
 };
 
 // API Response Types
