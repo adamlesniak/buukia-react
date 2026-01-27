@@ -192,6 +192,8 @@ export default function ServiceDetail() {
                 title={t("services.modal.deleteTitle")}
                 description={t("services.modal.deleteMessage")}
                 close={modalClose}
+                confirmText={t("common.delete")}
+                type={"danger"}
               />,
               document.body,
             )}

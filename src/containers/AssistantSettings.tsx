@@ -143,9 +143,11 @@ export default function AssistantSettings() {
       {showModal &&
         createPortal(
           <ConfirmationModal
-            title={t("settings.modal.deleteTitle")}
             description={t("settings.modal.deleteMessage")}
             close={modalClose}
+            title={t("settings.modal.deleteTitle")}
+            confirmText={t("common.delete")}
+            type="danger"
           />,
           document.body,
         )}

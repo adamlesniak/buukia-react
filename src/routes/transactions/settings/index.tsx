@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-import Payments from '@/containers/Payments'
+import Payments from "@/containers/Payments";
 
-export const Route = createFileRoute('/transactions/settings/')({
+export const Route = createFileRoute("/transactions/settings/")({
   component: Payments,
-})
+});

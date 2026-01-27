@@ -37,6 +37,8 @@ type ConfirmationModalProps = {
   title: string;
   description: string;
   close: (confirm: boolean) => void;
+  type: "primary" | "danger";
+  confirmText: string;
 };
 
 export default function ConfirmationModal(props: ConfirmationModalProps) {
@@ -68,10 +70,10 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
               </Button>
               <Button
                 type="button"
-                variant="danger"
+                variant={props.type === "primary" ? "accent" : "danger"}
                 onClick={() => props.close(true)}
               >
-                {t("common.delete")}
+                {props.confirmText}
               </Button>
             </ActionsButtons>
           </ConfirmationContent>

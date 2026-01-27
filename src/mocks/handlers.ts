@@ -82,6 +82,22 @@ const [
 ];
 
 export const handlers = [
+  http.get("/api/payments/stats", () => {
+    return HttpResponse.json({
+      totalPayments: Array.from(payments.values()).length,
+      totalAmount: Array.from(payments.values()).reduce(
+        (sum, payment) => sum + payment.amount,
+        0,
+      ),
+      averagePayment:
+        Array.from(payments.values()).reduce(
+          (sum, payment) => sum + payment.amount,
+          0,
+        ) / Array.from(payments.values()).length,
+      failed: 0,
+    });
+  }),
+
   http.get("/api/payments", ({ request }) => {
     const [limitParam, query] = [
       new URL(request.url).searchParams.get("limit"),
@@ -110,9 +126,7 @@ export const handlers = [
     return HttpResponse.json(
       Array.from(payouts.values())
         .filter((payout) =>
-          payout.description
-            .toLowerCase()
-            .includes(query?.toLowerCase() || ""),
+          payout.description.toLowerCase().includes(query?.toLowerCase() || ""),
         )
         .slice(0, limit),
     );

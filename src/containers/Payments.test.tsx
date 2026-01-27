@@ -59,7 +59,21 @@ describe("Payments", () => {
     mockNavigate.mockClear();
 
     mockUsePayments.mockReturnValue({
-      data: data.payments,
+      data: {
+        items: data.payments,
+        stats: {
+          totalPayments: data.payments.length,
+          totalAmount: data.payments.reduce(
+            (sum, payment) => sum + payment.amount,
+            0,
+          ),
+          averagePayment:
+            data.payments.reduce((sum, payment) => sum + payment.amount, 0) /
+            data.payments.length,
+          failed: data.payments.filter((payment) => payment.status === "failed")
+            .length,
+        },
+      },
       error: null,
       isLoading: false,
     });
@@ -79,10 +93,10 @@ describe("Payments", () => {
         screen.queryByText("transactions.payments.cards.total"),
       ).toBeInTheDocument();
       expect(
-        screen.queryByText("transactions.payments.cards.completed"),
+        screen.queryByText("transactions.payments.cards.averagePayment"),
       ).toBeInTheDocument();
       expect(
-        screen.queryByText("transactions.payments.cards.pending"),
+        screen.queryByText("transactions.payments.cards.totalCount"),
       ).toBeInTheDocument();
       expect(
         screen.queryByText("transactions.payments.cards.failed"),

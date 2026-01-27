@@ -15,6 +15,8 @@ describe("ConfirmationModal", () => {
         title="settings.modal.deleteTitle"
         description="confirmation-modal-description"
         close={mockClose}
+        confirmText="common.delete"
+        type="danger"
       />,
     );
 
@@ -27,6 +29,8 @@ describe("ConfirmationModal", () => {
         title="settings.modal.deleteTitle"
         description="confirmation-modal-description"
         close={mockClose}
+        confirmText="common.delete"
+        type="danger"
       />,
     );
 
@@ -41,6 +45,8 @@ describe("ConfirmationModal", () => {
         title="settings.modal.deleteTitle"
         description="confirmation-modal-description"
         close={mockClose}
+        confirmText="common.delete"
+        type="danger"
       />,
     );
 
@@ -55,6 +61,8 @@ describe("ConfirmationModal", () => {
         title="settings.modal.deleteTitle"
         description="confirmation-modal-description"
         close={mockClose}
+        confirmText="common.delete"
+        type="danger"
       />,
     );
 

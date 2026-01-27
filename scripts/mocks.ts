@@ -158,7 +158,7 @@ export const createPayment = (): BuukiaPayment => {
   return {
     id: faker.string.uuid(),
     amount: faker.number.int({ min: 20, max: 200 }),
-    currency: 'EUR',
+    currency: "EUR",
     date: roundToNearestMinutes(
       faker.date.between({
         from: new Date(),
@@ -171,7 +171,7 @@ export const createPayment = (): BuukiaPayment => {
     method: faker.finance.transactionType(),
     paid: faker.datatype.boolean(),
     provider: "stripe",
-    sourceId: faker.string.uuid(),
+    sourceId: `ch_${faker.string.alphanumeric(24)}`,
     status: faker.helpers.arrayElement(["completed", "pending", "failed"]),
   };
 };

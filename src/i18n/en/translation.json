@@ -147,6 +147,19 @@
     "title": "Transactions",
     "loadingError": "Error retrieving transactions. Please try again later.",
     "payments": {
+      "detail": {
+        "title": "Payment",
+        "id": "ID",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method",
+        "clientName": "Client Name",
+        "sourceId": "Source ID",
+        "provider": "Provider"
+      },
+      "refund": "Refund",
       "table": {
         "id": "ID",
         "currency": "Currency",
@@ -156,6 +169,10 @@
         "status": "Status",
         "method": "Method"
       },
+      "modal": {
+        "refundTitle": "Refund Payment",
+        "refundMessage": "Are you sure you want to refund this payment?"
+      },
       "title": "Payments",
       "noPaymentsFound": "No payments found.",
       "loadingError": "Error retrieving payments. Please try again later.",
@@ -163,7 +180,10 @@
         "total": "Total",
         "completed": "Completed",
         "pending": "Pending",
-        "failed": "Failed"
+        "failed": "Failed",
+        "sum": "Sum of Payments",
+        "totalCount": "Total Count",
+        "averagePayment": "Average Payment"
       }
     },
     "detail": {

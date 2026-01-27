@@ -22,7 +22,6 @@ export default function Transactions() {
     <PageContainer>
       <PageHeader style={{ marginBottom: 8 }}>
         <PageHeaderItem>
-          <p>test</p>
           <div>
             <DetailNavigationContainer>
               <DetailNavigationButton

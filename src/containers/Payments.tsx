@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { Outlet, useNavigate } from "@tanstack/react-router";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ import {
   TableRowItem,
 } from "@/components/Table";
 import { MAX_PAGINATION } from "@/constants.ts";
+import { getColorStatus } from "@/utils";
 
 const TransactionChip = styled(Chip)<{ status: string }>`
   border: 1px solid ${(props) => getColorStatus(props.status)};
@@ -25,23 +26,6 @@ const TransactionChip = styled(Chip)<{ status: string }>`
   color: ${(props) => getColorStatus(props.status)};
   font-weight: bold;
 `;
-
-const getColorStatus = (status: string) => {
-  switch (status) {
-    case "completed":
-      return "#4caf50"; // Green
-    case "pending":
-      return "#ff9800"; // Orange
-    case "failed":
-      return "#f44336"; // Red
-    case "canceled":
-      return "#9e9e9e"; // Grey
-    case "in_transit":
-      return "#2196f3"; // Blue
-    default:
-      return "#523d3d"; // Default color
-  }
-};
 
 const PaymentsHeading = styled.div`
   display: flex;
@@ -70,7 +54,18 @@ export default function Payments() {
   // const [paymentsQuery, _setServicesQuery] = useState("");
 
   const {
-    data: payments = [],
+    data: {
+      items: payments = [],
+      stats: paymentStats = {
+        totalPayments: 0,
+        totalAmount: 0,
+        averagePayment: 0,
+        failed: 0,
+      },
+    } = {
+      items: [],
+      stats: { totalPayments: 0, totalAmount: 0, averagePayment: 0, failed: 0 },
+    },
     error: paymentsError,
     // isLoading: paymentsLoading,
     // refetch: refetchServices,
@@ -96,7 +91,8 @@ export default function Payments() {
             >
               <LargeText>{t("transactions.payments.cards.total")}</LargeText>
               <ExtraLargeText>
-                <LargeText style={{ marginRight: "8px" }}>€</LargeText>20.232
+                <LargeText style={{ marginRight: "8px" }}>€</LargeText>
+                {paymentStats.totalAmount}
               </ExtraLargeText>
             </Card>
             <Card
@@ -105,18 +101,24 @@ export default function Payments() {
               data-testid="category-list-item"
             >
               <LargeText>
-                {t("transactions.payments.cards.completed")}
+                {t("transactions.payments.cards.averagePayment")}
               </LargeText>
-              <ExtraLargeText>10</ExtraLargeText>
+              <ExtraLargeText>
+                <LargeText style={{ marginRight: "8px" }}>€</LargeText>
+                {paymentStats.averagePayment}
+              </ExtraLargeText>
             </Card>
             <Card
               style={{ flex: 1 }}
               $layout="column"
               data-testid="category-list-item"
             >
-              <LargeText>{t("transactions.payments.cards.pending")}</LargeText>
-              <ExtraLargeText>0</ExtraLargeText>
+              <LargeText>
+                {t("transactions.payments.cards.totalCount")}
+              </LargeText>
+              <ExtraLargeText>{paymentStats.totalPayments}</ExtraLargeText>
             </Card>
+
             <Card
               style={{ flex: 1 }}
               $layout="column"
@@ -132,7 +134,7 @@ export default function Payments() {
             <div>
               <h2>{t("transactions.payments.title")}</h2>
               <small>
-                {payments.length} {t("common.items").toLowerCase()}
+                {[payments.length, t("common.items").toLowerCase()].join(" ")}
               </small>
             </div>
           </PageHeaderItem>
@@ -177,7 +179,7 @@ export default function Payments() {
                   tabIndex={0}
                   data-testid="payment-row"
                 >
-                  <TableRowItem>{payment.id}</TableRowItem>
+                  <TableRowItem>{payment.sourceId}</TableRowItem>
                   <TableRowItem>
                     {format(new Date(payment.date), "Pp")}
                   </TableRowItem>
@@ -194,6 +196,7 @@ export default function Payments() {
               ))}
             </TableBody>
           </Table>
+          <Outlet />
         </>
       )}
       {payments.length === 0 && (
