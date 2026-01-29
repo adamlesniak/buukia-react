@@ -146,6 +146,44 @@
   "transactions": {
     "title": "Transactions",
     "loadingError": "Error retrieving transactions. Please try again later.",
+    "payouts": {
+      "detail": {
+        "title": "Payout",
+        "id": "ID",
+        "amount": "Amount",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "instantPayoutFee": "Instant Payout Fee (1%)"
+      },
+      "table": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method"
+      },
+      "form": {
+        "errors": {
+          "amountError": "Amount is required and must be between {{minValue}} and {{maxValue}}."
+        }
+      },
+      "addPayout": "Add Payout",
+      "title": "Payouts",
+      "noPayoutsFound": "No payouts found.",
+      "loadingError": "Error retrieving payouts. Please try again later.",
+      "cards": {
+        "total": "Total",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "sum": "Sum of Payouts",
+        "totalCount": "Total Count",
+        "averagePayment": "Average Payment",
+        "averagePayout": "Average Payout"
+      }
+    },
     "payments": {
       "detail": {
         "title": "Payment",

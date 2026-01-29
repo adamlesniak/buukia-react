@@ -12,7 +12,7 @@ import {
   useUpdateService,
 } from "@/api";
 import type { BuukiaCategory, BuukiaService } from "@/types";
-import { createCategory } from "@/utils";
+import { centsToFixed, createCategory } from "@/utils";
 
 import data from "../routes/data.json";
 
@@ -59,7 +59,7 @@ const mockService: BuukiaService = {
   name: "Service Name",
   description: "Service Description",
   duration: "60",
-  price: 100,
+  price: 10000,
   category: data.categories[0],
 };
 const mockCategories: BuukiaCategory[] = [createCategory(data.categories[0])];
@@ -219,7 +219,7 @@ describe("ServiceDetail", () => {
       expect(categoryInputElement?.querySelector("input")).toHaveValue(
         JSON.stringify([data.categories[0]]),
       );
-      expect(priceInputElement).toHaveValue(mockService.price.toString());
+      expect(priceInputElement).toHaveValue(centsToFixed(mockService.price));
       expect(durationInputElement).toHaveValue(mockService.duration);
       expect(serviceDescriptionInputElement).toHaveValue(
         mockService.description,
@@ -251,7 +251,7 @@ describe("ServiceDetail", () => {
           description: "Service Description",
           duration: "60",
           name: "Service Name",
-          price: 100,
+          price: 10000,
         },
         {
           onSuccess: expect.any(Function),

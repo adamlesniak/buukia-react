@@ -16,7 +16,7 @@ import {
   clientQueryKeys,
 } from "@/api";
 import { AppointmentForm } from "@/components/Appointments/AppointmentForm";
-import { MAX_PAGINATION } from "@/constants.ts";
+import { MAX_PAGINATION } from "@/constants";
 import type {
   AppointmentFormValues,
   BuukiaAppointment,

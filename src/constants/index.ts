@@ -14,3 +14,11 @@ export enum AssistantDetailNavigation {
   SETTINGS = "settings",
   STATISTICS = "statistics",
 }
+
+export const SETTINGS = {
+  currency: "EUR",
+  payouts: {
+    paymentProvider: "stripe",
+    sourceType: "bank_account",
+  },
+};

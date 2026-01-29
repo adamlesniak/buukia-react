@@ -45,6 +45,20 @@ export interface UpdateAssistantBody extends CreateAssistantBody {
   id: string;
 }
 
+export interface CreatePayoutBody {
+  amount: number;
+  description: string;
+}
+
+export interface UpdatePayoutBody extends CreatePayoutBody {
+  id: string;
+}
+
+export type PayoutFormValues = {
+  amount: string;
+  description: string;
+};
+
 export type AssistantFormValues = {
   availability: AvailabilitySlot[];
   categories: BuukiaCategory[];
@@ -69,7 +83,7 @@ export type ServiceFormValues = {
   description: string;
   duration: string;
   name: string;
-  price: number;
+  price: string;
 };
 
 export type BuukiaAssistant = {
@@ -133,7 +147,6 @@ export type BuukiaPayout = {
   createdAt: string;
   description: string;
   provider: BuukiaPaymentProvider;
-  sourceType: string;
   sourceId: string;
   status: BuukiaPaymentStatus;
   type: "bank_account" | "card";

@@ -67,7 +67,7 @@ export const createService = (): BuukiaService => {
     name: serviceNames[
       faker.number.int({ min: 0, max: serviceNames.length - 1 })
     ],
-    price: faker.number.int({ min: 20, max: 200 }),
+    price: faker.number.int({ min: 20 * 100, max: 200 * 100 }),
   };
 };
 
@@ -179,8 +179,8 @@ export const createPayment = (): BuukiaPayment => {
 export const createPayout = (): BuukiaPayout => {
   return {
     id: faker.string.uuid(),
-    amount: faker.number.int({ min: 20, max: 200 }),
-    currency: faker.finance.currencyCode(),
+    amount: faker.number.int({ min: 20 * 100, max: 200 * 100 }),
+    currency: "EUR",
     createdAt: roundToNearestMinutes(
       faker.date.between({
         from: new Date(),
@@ -198,8 +198,7 @@ export const createPayout = (): BuukiaPayout => {
     description: faker.lorem.sentence(),
     type: faker.helpers.arrayElement(["bank_account", "card"]),
     provider: "stripe",
-    sourceType: "bank_account",
-    sourceId: faker.string.uuid(),
+    sourceId: `po_${faker.string.alphanumeric(24)}`,
     status: faker.helpers.arrayElement(["completed", "pending", "failed"]),
   };
 };

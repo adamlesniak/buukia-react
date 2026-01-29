@@ -42,6 +42,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Omit<ServiceFormValues, "id">>({
     values: {
@@ -54,11 +55,12 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
 
   const onSubmit = (data: ServiceFormValues | NewCategoryFormValues) => {
     if ("category" in data) {
+      console.log('data.price', data.price);
       const body: CreateServiceBody = {
         name: data.name,
         category: data.category ? data.category[0] : { id: "", name: "" }, // Adjusted for single select
         duration: data.duration,
-        price: data.price,
+        price: parseFloat(data.price) * 100,
         description: data.description,
       };
 
@@ -138,24 +140,25 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           <Controller
             name="price"
             control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, value } }) => (
               <Input
-                onBlur={onBlur}
-                onChange={($event) => {
-                  const maybeNumber = parseInt($event.target.value);
-
-                  if (isNaN(maybeNumber)) {
-                    return;
-                  }
-
-                  return onChange(maybeNumber);
+                onBlur={($event) => {
+                  setValue(
+                    "price",
+                    parseFloat($event.target.value).toFixed(2).toString(),
+                  );
                 }}
+                onChange={($event) =>
+                  onChange($event.target.value.replace(/[^0-9\.]/g, ""))
+                }
                 value={value}
                 id="service-price-input"
                 type="text"
                 data-testid="service-price-input"
                 placeholder={t("common.loading")}
-              />
+              >
+                €
+              </Input>
             )}
           />
           {errors.price && (

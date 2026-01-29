@@ -21,7 +21,7 @@ import {
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error";
 import { ServiceForm } from "@/components/Services/ServiceForm";
-import { MAX_PAGINATION } from "@/constants.ts";
+import { MAX_PAGINATION } from "@/constants";
 import type {
   BuukiaService,
   CreateCategoryBody,
@@ -29,6 +29,7 @@ import type {
   ServiceFormValues,
   UpdateServiceBody,
 } from "@/types";
+import { centsToFixed } from "@/utils";
 
 import ConfirmationModal from "./ConfirmationModal";
 
@@ -119,7 +120,7 @@ export default function ServiceDetail() {
       category: service?.category ? [service?.category] : [],
       description: service?.description || "",
       duration: service?.duration.toString() || "",
-      price: service?.price || 0,
+      price: centsToFixed(service?.price || 0) ,
       name: service?.name || "",
     }),
     [service?.id],

@@ -230,3 +230,7 @@ export const getColorStatus = (status: string) => {
       return "#523d3d"; // Default color
   }
 };
+
+export const centsToFixed = (cents: number): string => ((cents / 100).toFixed(2)).toString();
+
+export const priceToCents = (price: number): number => price * 100;

@@ -17,7 +17,8 @@ import {
   TableRow,
   TableRowItem,
 } from "@/components/Table";
-import { MAX_PAGINATION } from "@/constants.ts";
+import { ExtraLargeText, LargeText } from "@/components/Typography";
+import { MAX_PAGINATION } from "@/constants";
 import { getColorStatus } from "@/utils";
 
 const TransactionChip = styled(Chip)<{ status: string }>`
@@ -36,15 +37,7 @@ const PaymentsHeading = styled.div`
   margin-top: 12px;
 `;
 
-const LargeText = styled.span`
-  font-size: 18px;
-  font-weight: bold;
-`;
 
-const ExtraLargeText = styled.span`
-  font-size: 32px;
-  font-weight: bold;
-`;
 
 export default function Payments() {
   const { t } = useTranslation();
@@ -125,7 +118,7 @@ export default function Payments() {
               data-testid="category-list-item"
             >
               <LargeText>{t("transactions.payments.cards.failed")}</LargeText>
-              <ExtraLargeText>0</ExtraLargeText>
+              <ExtraLargeText>{paymentStats.failed}</ExtraLargeText>
             </Card>
           </PaymentsHeading>
 

@@ -43,3 +43,7 @@ fieldset {
 #app {
   overflow-y: scroll;
 }
+
+p {
+  margin: 8px 0px;
+}

@@ -20,7 +20,8 @@ import {
   TableRow,
   TableRowItem,
 } from "@/components/Table";
-import { MAX_PAGINATION } from "@/constants.ts";
+import { MAX_PAGINATION } from "@/constants";
+import { centsToFixed } from "@/utils";
 
 export default function Services() {
   const { t } = useTranslation();
@@ -112,7 +113,7 @@ export default function Services() {
                       <TableRowItem>{service.name}</TableRowItem>
                       <TableRowItem>{service.category.name}</TableRowItem>
                       <TableRowItem>{service.duration}</TableRowItem>
-                      <TableRowItem>€{service.price}</TableRowItem>
+                      <TableRowItem>€{centsToFixed(service.price)}</TableRowItem>
                     </TableRow>
                   ))}
                 </TableBody>

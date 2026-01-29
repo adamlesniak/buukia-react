@@ -18,7 +18,7 @@ import {
   CalendarHeader,
 } from "@/components/Calendar";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
-import { ViewType } from "@/constants.ts";
+import { ViewType } from "@/constants";
 
 export default function CalendarWeekly() {
   const { t } = useTranslation();

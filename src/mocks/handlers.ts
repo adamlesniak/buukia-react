@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { HttpResponse, http } from "msw";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,6 +12,7 @@ import type {
   BuukiaService,
   CreateAppointmentBody,
   CreateAssistantBody,
+  CreatePayoutBody,
   CreateServiceBody,
   UpdateAppointmentBody,
   UpdateAssistantBody,
@@ -19,6 +21,7 @@ import type {
 } from "@/types";
 
 import data from "../routes/data.json";
+
 
 // Account Wide
 // /api/appointments
@@ -116,6 +119,22 @@ export const handlers = [
     );
   }),
 
+  http.get("/api/payouts/stats", () => {
+    return HttpResponse.json({
+      totalPayouts: Array.from(payouts.values()).length,
+      totalAmount: Array.from(payouts.values()).reduce(
+        (sum, payout) => sum + payout.amount,
+        0,
+      ),
+      averagePayout:
+        Array.from(payouts.values()).reduce(
+          (sum, payout) => sum + payout.amount,
+          0,
+        ) / Array.from(payouts.values()).length,
+      failed: 0,
+    });
+  }),
+
   http.get("/api/payouts", ({ request }) => {
     const [limitParam, query] = [
       new URL(request.url).searchParams.get("limit"),
@@ -131,6 +150,47 @@ export const handlers = [
         .slice(0, limit),
     );
   }),
+
+  http.get("/api/payouts/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = payouts.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Payout not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post<never, CreatePayoutBody>(
+    "/api/payouts",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const id = uuidv4();
+
+      const payout = {
+        id,
+        amount: body.amount,
+        currency: "EUR",
+        arrivalDate: "",
+        createdAt: new Date().toISOString(),
+        description: body.description,
+        provider: "stripe",
+        sourceId: `po_${faker.string.alphanumeric(24)}`,
+        status: "pending",
+        type: "bank_account",
+      } as BuukiaPayout;
+
+      payouts.set(id, payout);
+
+      return HttpResponse.json(payout);
+    },
+  ),
 
   http.get("/api/assistants", ({ request }) => {
     const [limitParam, query] = [
