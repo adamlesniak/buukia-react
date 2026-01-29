@@ -17,7 +17,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  MemoizedDrawerHeaderH2,
+  MemoizedDrawerHeader,
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error";
 import { ServiceForm } from "@/components/Services/ServiceForm";
@@ -31,6 +31,7 @@ import type {
 } from "@/types";
 import { centsToFixed } from "@/utils";
 
+import { DetailNavigationTitleContent } from "./AssistantDrawer";
 import ConfirmationModal from "./ConfirmationModal";
 
 export default function ServiceDetail() {
@@ -120,7 +121,7 @@ export default function ServiceDetail() {
       category: service?.category ? [service?.category] : [],
       description: service?.description || "",
       duration: service?.duration.toString() || "",
-      price: centsToFixed(service?.price || 0) ,
+      price: centsToFixed(service?.price || 0),
       name: service?.name || "",
     }),
     [service?.id],
@@ -151,11 +152,11 @@ export default function ServiceDetail() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <MemoizedDrawerHeaderH2
-          onClose={onClose}
-          title={t("services.service")}
-          label={t("common.closeDrawer")}
-        />
+        <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
+          <DetailNavigationTitleContent>
+            <h2>{t("services.service")}</h2>
+          </DetailNavigationTitleContent>
+        </MemoizedDrawerHeader>
         <DrawerContentBody justifyContent={"start"}>
           {isError && (
             <ErrorDetail

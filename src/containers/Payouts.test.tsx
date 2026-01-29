@@ -135,11 +135,12 @@ describe("Payouts", () => {
         expect(screen.queryAllByText(payout.createdAt)).toBeDefined();
         expect(screen.queryAllByText(payout.amount)).toBeDefined();
         expect(screen.queryAllByText(payout.status)).toBeDefined();
+        expect(screen.queryAllByText(payout.destination)).toBeDefined();
       });
     });
   });
 
-  it("should show payouts id, date, amount, status", async () => {
+  it("should show payouts id, date, amount, status, destination", async () => {
     const queryClient = new QueryClient();
 
     render(
@@ -150,9 +151,6 @@ describe("Payouts", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("transactions.payouts.table.id"),
-      ).toBeInTheDocument();
-      expect(
         screen.queryByText("transactions.payouts.table.date"),
       ).toBeInTheDocument();
       expect(
@@ -161,11 +159,14 @@ describe("Payouts", () => {
       expect(
         screen.queryByText("transactions.payouts.table.status"),
       ).toBeInTheDocument();
+      expect(
+        screen.queryByText("transactions.payouts.table.destination"),
+      ).toBeInTheDocument();
       data.payouts.forEach((payout) => {
-        expect(screen.queryAllByText(payout.id)).toBeDefined();
         expect(screen.queryAllByText(payout.createdAt)).toBeDefined();
         expect(screen.queryAllByText(payout.amount)).toBeDefined();
         expect(screen.queryAllByText(payout.status)).toBeDefined();
+        expect(screen.queryAllByText(payout.destination)).toBeDefined();
       });
     });
   });

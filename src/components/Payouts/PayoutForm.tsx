@@ -51,7 +51,6 @@ const PayoutTypeContentDescription = styled.div`
 type PayoutFormProps = {
   values: PayoutFormValues;
   maxValue?: number;
-  isNew: boolean;
   isLoading: boolean;
   onSubmit: (data: CreatePayoutBody) => void;
 };
@@ -204,20 +203,17 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
         </Field>
 
         <FormSummaryItem data-testid="payout-fee">
-          <span>{t("transactions.payouts.detail.instantPayoutFee")}</span>
+          <span>
+            {t("transactions.payouts.detail.instantPayoutFee", {
+              feeRate: "1",
+            })}
+          </span>
           <b>€{calculatePayoutFee().toFixed(2)}</b>
         </FormSummaryItem>
 
-        {!props.isNew && (
-          <Button
-            disabled={props.isLoading}
-            size="sm"
-            tabIndex={0}
-            type="submit"
-          >
-            {t("common.submit")}
-          </Button>
-        )}
+        <Button disabled={props.isLoading} size="sm" tabIndex={0} type="submit">
+          {t("common.submit")}
+        </Button>
       </Form>
     </>
   );

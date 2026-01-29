@@ -1,3 +1,5 @@
+import type { PayoutStatus } from "@/utils";
+
 export interface CreateAppointmentBody {
   assistantId: string;
   clientId: string;
@@ -116,13 +118,6 @@ export type BuukiaClient = {
   phone: string;
 };
 
-type BuukiaPaymentStatus =
-  | "completed"
-  | "pending"
-  | "failed"
-  | "canceled"
-  | "in_transit";
-
 type BuukiaPaymentProvider = "stripe";
 
 export type BuukiaPayment = {
@@ -136,19 +131,25 @@ export type BuukiaPayment = {
   provider: BuukiaPaymentProvider;
   refunded: boolean;
   sourceId: string;
-  status: BuukiaPaymentStatus;
+  status: PayoutStatus;
 };
 
 export type BuukiaPayout = {
   id: string;
   amount: number;
-  currency: string;
   arrivalDate: string;
   createdAt: string;
+  currency: string;
   description: string;
+  statement_description: string;
+  destination: string;
   provider: BuukiaPaymentProvider;
   sourceId: string;
-  status: BuukiaPaymentStatus;
+  status: PayoutStatus;
+  fee: {
+    rate: number;
+    amount: number;
+  };
   type: "bank_account" | "card";
 };
 

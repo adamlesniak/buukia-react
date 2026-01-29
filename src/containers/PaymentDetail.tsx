@@ -9,11 +9,12 @@ import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  MemoizedDrawerHeaderH2,
+  MemoizedDrawerHeader,
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error/ErrorDetail";
 
 // import ConfirmationModal from "./ConfirmationModal";
+import { DetailNavigationTitleContent } from "./AssistantDrawer";
 import PaymentPreview from "./PaymentPreview";
 
 // TODO: Add Manage section to provide options to performance, statistics, etc.
@@ -51,11 +52,11 @@ export default function PaymentDetail() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <MemoizedDrawerHeaderH2
-          onClose={onClose}
-          title={t("transactions.payments.detail.title")}
-          label={t("common.closeDrawer")}
-        />
+        <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
+          <DetailNavigationTitleContent>
+            <h2>{t("transactions.payments.detail.title")}</h2>
+          </DetailNavigationTitleContent>
+        </MemoizedDrawerHeader>
         <DrawerContentBody justifyContent={"start"}>
           {isError && (
             <ErrorDetail

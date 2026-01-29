@@ -1,25 +1,39 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
+import getSymbolFromCurrency from "currency-symbol-map";
+import { format } from "date-fns";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 
 import { useCreatePayout, usePayout, usePayoutsStats } from "@/api";
+import { useCancelPayout } from "@/api/payouts/use-cancel-payout";
+import { TransactionChip } from "@/components/Chip";
 import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  MemoizedDrawerHeaderH2,
+  MemoizedDrawerHeader,
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error";
 import { PayoutForm } from "@/components/Payouts";
+import { PayoutSummary } from "@/components/Payouts/PayoutSummary";
 import { SETTINGS } from "@/constants";
 import type { BuukiaPayout, CreatePayoutBody, PayoutFormValues } from "@/types";
-import { centsToFixed } from "@/utils";
+import { centsToFixed, PayoutStatus } from "@/utils";
+
+import { DetailNavigationTitleContent } from "./AssistantDrawer";
+
+const PayoutTitleContainer = styled.div`
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+`;
 
 export default function PayoutDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [createPayout] = [useCreatePayout()];
+  const [createPayout, cancelPayout] = [useCreatePayout(), useCancelPayout()];
 
   const {
     payoutId,
@@ -46,22 +60,24 @@ export default function PayoutDetail() {
     data: payout,
     isLoading: payoutLoading,
     error: payoutError,
-  } = isNew ? {
-          data: {
-            id: "",
-            amount: 0,
-            currency: SETTINGS.currency,
-            arrivalDate: "",
-            createdAt: "",
-            description: "",
-            provider: SETTINGS.payouts.paymentProvider,
-            sourceId: "",
-            status: "pending",
-            type: SETTINGS.payouts.sourceType,
-          } as BuukiaPayout,
-          isLoading: false,
-          error: undefined,
-        } : usePayout(payoutId);
+  } = isNew
+    ? {
+        data: {
+          id: "",
+          amount: 0,
+          currency: SETTINGS.currency,
+          arrivalDate: "",
+          createdAt: "",
+          description: "",
+          provider: SETTINGS.payouts.paymentProvider,
+          sourceId: "",
+          status: "pending",
+          type: SETTINGS.payouts.sourceType,
+        } as BuukiaPayout,
+        isLoading: false,
+        error: undefined,
+      }
+    : usePayout(payoutId);
   const {
     data: payoutStats,
     isLoading: payoutStatsLoading,
@@ -79,6 +95,15 @@ export default function PayoutDetail() {
   const isError = payoutError || payoutStatsError;
   const isLoading = payoutLoading || payoutStatsLoading;
 
+  const onCancelPayout = useCallback(() => {
+    if (!payoutId) return;
+    cancelPayout.mutate(payoutId, {
+      onSuccess: () => {
+        onClose();
+      },
+    });
+  }, [payoutId, cancelPayout]);
+
   const onClose = () => {
     navigate({ to: `/transactions/payouts` });
   };
@@ -86,26 +111,56 @@ export default function PayoutDetail() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <MemoizedDrawerHeaderH2
-          onClose={onClose}
-          title={t("transactions.payouts.detail.title")}
-          label={t("common.closeDrawer")}
-        />
+        <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
+          <DetailNavigationTitleContent>
+            <PayoutTitleContainer>
+              <h2 style={{ marginRight: "12px" }}>
+                {!isNew && payout
+                  ? `${getSymbolFromCurrency(payout?.currency)}${centsToFixed(payout?.amount || 0)}`
+                  : t("transactions.payouts.detail.title")}
+              </h2>
+              {!isNew && payout?.status && (
+                <TransactionChip status={payout.status}>
+                  {payout.status}
+                </TransactionChip>
+              )}
+            </PayoutTitleContainer>
+            {payout?.status === PayoutStatus.Completed &&
+              payout.arrivalDate && (
+                <small>
+                  {t("transactions.payouts.completedAt", {
+                    arrivalDate: format(new Date(payout.arrivalDate), "PPPp"),
+                  })}
+                </small>
+              )}
+            {payout?.status !== PayoutStatus.Completed && payout?.createdAt && (
+              <small>
+                {t("transactions.payouts.createdAt", {
+                  createdAt: format(new Date(payout.createdAt), "PPPp"),
+                })}
+              </small>
+            )}
+          </DetailNavigationTitleContent>
+        </MemoizedDrawerHeader>
         <DrawerContentBody justifyContent={"start"}>
           {isError && (
             <ErrorDetail
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && (
+          {!isError && isNew && (
             <>
               <PayoutForm
                 values={formValues}
                 onSubmit={submit}
                 isLoading={isLoading}
                 maxValue={payoutStats?.totalAmount}
-                isNew={isNew}
               />
+            </>
+          )}
+          {!isError && !isNew && payout && (
+            <>
+              <PayoutSummary cancelPayout={onCancelPayout} payout={payout} />
             </>
           )}
         </DrawerContentBody>

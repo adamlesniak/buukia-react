@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { DetailNavigationTitleContent } from "@/containers/AssistantDrawer";
 import {
   type BuukiaAppointment,
   type BuukiaClient,
@@ -15,7 +16,7 @@ import {
 import { appointmentFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
-import { MemoizedDrawerHeaderH3 } from "../Drawer";
+import { MemoizedDrawerHeader } from "../Drawer";
 import { Field, FieldError, Form, Input, Label } from "../Form";
 import { SearchInput } from "../Form/SearchInput";
 import { Overlay, Modal, ModalBody } from "../Modal";
@@ -229,11 +230,14 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
               data-testid="services-modal"
             >
               <FocusScope autoFocus restoreFocus contain>
-                <MemoizedDrawerHeaderH3
-                  title={t("appointments.detail.services")}
+                <MemoizedDrawerHeader
                   onClose={modalClose}
                   label={t("common.closeModal")}
-                />
+                >
+                  <DetailNavigationTitleContent>
+                    <h3>{t("appointments.detail.services")}</h3>
+                  </DetailNavigationTitleContent>
+                </MemoizedDrawerHeader>
                 <SearchInput data-testid="search" style={{ marginBottom: 8 }}>
                   {props.servicesRefetching ? (
                     <LoaderCircle size={20} />

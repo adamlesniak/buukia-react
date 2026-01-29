@@ -2,13 +2,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { usePayments } from "@/api";
+import { usePayments, usePaymentsStats } from "@/api";
 
 import { server } from "../mocks/server";
 import data from "../routes/data.json";
 
 vi.mock("@/api", async () => ({
   usePayments: vi.fn(),
+  usePaymentsStats: vi.fn(),
 }));
 
 vi.mock("react-i18next", () => ({
@@ -31,6 +32,9 @@ vi.mock("@tanstack/react-router", () => ({
 }));
 
 const mockUsePayments = usePayments as unknown as ReturnType<typeof vi.fn>;
+const mockUsePaymentsStats = usePaymentsStats as unknown as ReturnType<
+  typeof vi.fn
+>;
 
 const Payments = await import("./Payments");
 
@@ -59,20 +63,23 @@ describe("Payments", () => {
     mockNavigate.mockClear();
 
     mockUsePayments.mockReturnValue({
+      data: data.payments,
+      error: null,
+      isLoading: false,
+    });
+
+    mockUsePaymentsStats.mockReturnValue({
       data: {
-        items: data.payments,
-        stats: {
-          totalPayments: data.payments.length,
-          totalAmount: data.payments.reduce(
-            (sum, payment) => sum + payment.amount,
-            0,
-          ),
-          averagePayment:
-            data.payments.reduce((sum, payment) => sum + payment.amount, 0) /
-            data.payments.length,
-          failed: data.payments.filter((payment) => payment.status === "failed")
-            .length,
-        },
+        totalPayments: data.payments.length,
+        totalAmount: data.payments.reduce(
+          (sum, payment) => sum + payment.amount,
+          0,
+        ),
+        averagePayment:
+          data.payments.reduce((sum, payment) => sum + payment.amount, 0) /
+          data.payments.length,
+        failed: data.payments.filter((payment) => payment.status === "failed")
+          .length,
       },
       error: null,
       isLoading: false,

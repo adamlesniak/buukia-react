@@ -10,7 +10,7 @@ export const usePayout = (payoutId: string) => {
     useQuery<BuukiaPayout>({
       queryKey: payoutQueryKeys.detail(payoutId),
       queryFn: async () => {
-        const response = await fetch(`/api/payout/${payoutId}`);
+        const response = await fetch(`/api/payouts/${payoutId}`);
 
         if (!response.ok) {
           throw new Error("Network response was not ok");

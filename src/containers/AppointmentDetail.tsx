@@ -31,9 +31,11 @@ import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  MemoizedDrawerHeaderH2,
+  MemoizedDrawerHeader,
 } from "../components/Drawer";
 import { ErrorDetail } from "../components/Error";
+
+import { DetailNavigationTitleContent } from "./AssistantDrawer";
 
 export default function AppointmentDetail() {
   const { t } = useTranslation();
@@ -85,6 +87,7 @@ export default function AppointmentDetail() {
           client: null as any,
           services: [],
           assistant,
+          payments: [],
         } as BuukiaAppointment,
         isLoading: false,
         error: undefined,
@@ -215,11 +218,11 @@ export default function AppointmentDetail() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <MemoizedDrawerHeaderH2
-          onClose={onClose}
-          title={t("appointments.appointment")}
-          label={t("common.closeDrawer")}
-        />
+        <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
+          <DetailNavigationTitleContent>
+            <h2>{t("appointments.appointment")}</h2>
+          </DetailNavigationTitleContent>
+        </MemoizedDrawerHeader>
         <DrawerContentBody>
           {isError && (
             <ErrorDetail

@@ -214,23 +214,34 @@ export const getDayName = (dayIndex: number): string =>
     "saturday",
   ][dayIndex];
 
-export const getColorStatus = (status: string) => {
+export enum PayoutStatus {
+  Paid = "paid",
+  Completed = "completed",
+  Pending = "pending",
+  Failed = "failed",
+  Canceled = "canceled",
+  InTransit = "in_transit",
+}
+
+export const getColorStatus = (status: PayoutStatus) => {
   switch (status) {
-    case "completed":
+    case PayoutStatus.Paid:
+    case PayoutStatus.Completed:
       return "#4caf50"; // Green
-    case "pending":
+    case PayoutStatus.Pending:
       return "#ff9800"; // Orange
-    case "failed":
+    case PayoutStatus.Failed:
       return "#f44336"; // Red
-    case "canceled":
+    case PayoutStatus.Canceled:
       return "#9e9e9e"; // Grey
-    case "in_transit":
+    case PayoutStatus.InTransit:
       return "#2196f3"; // Blue
     default:
       return "#523d3d"; // Default color
   }
 };
 
-export const centsToFixed = (cents: number): string => ((cents / 100).toFixed(2)).toString();
+export const centsToFixed = (cents: number): string =>
+  (cents / 100).toFixed(2).toString();
 
 export const priceToCents = (price: number): number => price * 100;

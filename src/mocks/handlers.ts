@@ -22,7 +22,6 @@ import type {
 
 import data from "../routes/data.json";
 
-
 // Account Wide
 // /api/appointments
 // /api/assistants
@@ -166,31 +165,56 @@ export const handlers = [
     }
   }),
 
-  http.post<never, CreatePayoutBody>(
-    "/api/payouts",
-    async ({ request }) => {
-      const body = await request.json();
+  http.post("/api/payouts/:id/cancel", (req) => {
+    const { id } = req.params as { id: string };
 
-      const id = uuidv4();
+    const item = payouts.get(id);
 
-      const payout = {
-        id,
-        amount: body.amount,
-        currency: "EUR",
-        arrivalDate: "",
-        createdAt: new Date().toISOString(),
-        description: body.description,
-        provider: "stripe",
-        sourceId: `po_${faker.string.alphanumeric(24)}`,
-        status: "pending",
-        type: "bank_account",
-      } as BuukiaPayout;
+    if (item) {
+      const newItem: BuukiaPayout = {
+        ...item,
+        status: "canceled",
+      };
 
-      payouts.set(id, payout);
+      payouts.set(id, newItem);
 
-      return HttpResponse.json(payout);
-    },
-  ),
+      return HttpResponse.json(newItem);
+    } else {
+      return HttpResponse.json(
+        { message: "Payout not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post<never, CreatePayoutBody>("/api/payouts", async ({ request }) => {
+    const body = await request.json();
+
+    const id = uuidv4();
+
+    const payout = {
+      id,
+      amount: body.amount,
+      currency: "EUR",
+      arrivalDate: "",
+      createdAt: new Date().toISOString(),
+      description: body.description,
+      provider: "stripe",
+      sourceId: `po_${faker.string.alphanumeric(24)}`,
+      status: "pending",
+      type: "bank_account",
+      fee: {
+        rate: 0.01,
+        amount: Math.round(body.amount * 0.01),
+      },
+      statement_description: 'BUUKIA',
+      destination: `ba_${faker.string.alphanumeric(24)}`,
+    } as BuukiaPayout;
+
+    payouts.set(id, payout);
+
+    return HttpResponse.json(payout);
+  }),
 
   http.get("/api/assistants", ({ request }) => {
     const [limitParam, query] = [

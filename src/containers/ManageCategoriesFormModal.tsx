@@ -6,11 +6,13 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/Button";
 import { Card, ServiceCardDescription } from "@/components/Card";
-import { MemoizedDrawerHeaderH3 } from "@/components/Drawer";
+import { MemoizedDrawerHeader } from "@/components/Drawer";
 import { Field, FieldError, Form, Input } from "@/components/Form";
 import { Modal, ModalBody, Overlay } from "@/components/Modal";
 import type { CreateCategoryBody, NewCategoryFormValues } from "@/types";
 import { categoryFormSchema, validateResolver } from "@/validators";
+
+import { DetailNavigationTitleContent } from "./AssistantDrawer";
 
 type ManageCategoriesFormModalProps = {
   categories: { id: string; name: string }[];
@@ -43,11 +45,14 @@ export const ManageCategoriesFormModal = memo(
           data-testid="services-modal"
         >
           <FocusScope autoFocus restoreFocus contain>
-            <MemoizedDrawerHeaderH3
-              title={t("services.manageCategories")}
+            <MemoizedDrawerHeader
               onClose={props.close}
               label={t("common.closeModal")}
-            />
+            >
+              <DetailNavigationTitleContent>
+                {t("services.manageCategories")}
+              </DetailNavigationTitleContent>
+            </MemoizedDrawerHeader>
 
             <Form
               fullHeight={true}

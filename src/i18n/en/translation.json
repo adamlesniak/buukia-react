@@ -146,14 +146,25 @@
   "transactions": {
     "title": "Transactions",
     "loadingError": "Error retrieving transactions. Please try again later.",
+
     "payouts": {
+      "modal": {
+        "cancelTitle": "Cancel Payout",
+        "cancelMessage": "Are you sure you want to cancel this payout?"
+      },
+      "overview": "Overview",
+      "completedAt": "Completed at {{arrivalDate}}",
+      "createdAt": "Created at {{createdAt}}",
+      "actions": {
+        "cancel": "Cancel Payout"
+      },
       "detail": {
         "title": "Payout",
         "id": "ID",
         "amount": "Amount",
         "description": "Description",
         "statementDescription": "Statement Description",
-        "instantPayoutFee": "Instant Payout Fee (1%)"
+        "instantPayoutFee": "Instant Payout Fee ({{feeRate}}%)"
       },
       "table": {
         "id": "ID",
@@ -161,8 +172,29 @@
         "amount": "Amount",
         "date": "Date",
         "description": "Description",
+        "statementDescription": "Statement Description",
         "status": "Status",
-        "method": "Method"
+        "method": "Method",
+        "destination": "Destination"
+      },
+      "summary": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "arrivalDate": "Arrival Date",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "status": "Status",
+        "method": "Method",
+        "sourceId": "Payout ID",
+        "provider": "Provider",
+        "destination": "Destination",
+        "instantPayoutFee": "Instant Payout Fee ({{feeRate}}%)"
+      },
+      "method": {
+        "bank_account": "Bank Account",
+        "card": "Card"
       },
       "form": {
         "errors": {
@@ -267,6 +299,17 @@
       "thursday": "Thu",
       "friday": "Fri",
       "saturday": "Sat"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "completed": "Completed",
+      "succeeded": "succeeded",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "in_transit": "In Transit",
+      "disputed": "Disputed",
+      "canceled": "Canceled"
     }
   }
 }

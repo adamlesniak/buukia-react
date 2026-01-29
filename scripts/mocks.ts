@@ -14,6 +14,8 @@ import {
 } from "date-fns";
 import prettier from "prettier";
 
+import { PayoutStatus } from "@/utils";
+
 import type {
   BuukiaAppointment,
   BuukiaAssistant,
@@ -172,14 +174,21 @@ export const createPayment = (): BuukiaPayment => {
     paid: faker.datatype.boolean(),
     provider: "stripe",
     sourceId: `ch_${faker.string.alphanumeric(24)}`,
-    status: faker.helpers.arrayElement(["completed", "pending", "failed"]),
+    status: faker.helpers.arrayElement([
+      PayoutStatus.Completed,
+      PayoutStatus.Failed,
+      PayoutStatus.Paid,
+      PayoutStatus.Pending,
+    ]),
   };
 };
 
 export const createPayout = (): BuukiaPayout => {
+  const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
+  const payoutFee = Math.round(amount * 0.01);
   return {
     id: faker.string.uuid(),
-    amount: faker.number.int({ min: 20 * 100, max: 200 * 100 }),
+    amount,
     currency: "EUR",
     createdAt: roundToNearestMinutes(
       faker.date.between({
@@ -196,10 +205,16 @@ export const createPayout = (): BuukiaPayout => {
       { nearestTo: 15 },
     ).toISOString(),
     description: faker.lorem.sentence(),
+    statement_description: "BUUKIA",
     type: faker.helpers.arrayElement(["bank_account", "card"]),
     provider: "stripe",
     sourceId: `po_${faker.string.alphanumeric(24)}`,
-    status: faker.helpers.arrayElement(["completed", "pending", "failed"]),
+    destination: `ba_${faker.string.alphanumeric(24)}`,
+    fee: {
+      rate: 0.01,
+      amount: payoutFee,
+    },
+    status: faker.helpers.arrayElement(["paid", "pending", "failed"]),
   };
 };
 

@@ -4,6 +4,7 @@
 
 export const paymentQueryKeys = {
   all: ['payments'],
+  stats: () => [...paymentQueryKeys.all, 'stats'],
   details: () => [...paymentQueryKeys.all, 'detail'],
   detail: (id: string) => [...paymentQueryKeys.details(), id],
   pagination: (page: number) => [...paymentQueryKeys.all, 'pagination', page],

@@ -51,6 +51,7 @@ vi.mock("@tanstack/react-router", () => ({
   Outlet: () => <div data-testid="outlet" />,
   lazyRouteComponent: vi.fn(),
   useRouterState: mockRouterState,
+  Link: vi.fn(),
 }));
 
 // Create test data
@@ -339,13 +340,12 @@ describe("ServiceDetail", () => {
 
       await user.click(screen.getByText("services.deleteService"));
 
-     expect(
+      expect(
         screen.getByText("services.modal.deleteTitle"),
       ).toBeInTheDocument();
       expect(
         screen.getByText("services.modal.deleteMessage"),
       ).toBeInTheDocument();
-
 
       await user.click(screen.getByText("common.cancel"));
 

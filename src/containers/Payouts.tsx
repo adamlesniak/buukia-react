@@ -20,9 +20,9 @@ import {
   TableRowItem,
 } from "@/components/Table";
 import { MAX_PAGINATION } from "@/constants";
-import { centsToFixed, getColorStatus } from "@/utils";
+import { centsToFixed, getColorStatus, PayoutStatus } from "@/utils";
 
-const TransactionChip = styled(Chip)<{ status: string }>`
+const TransactionChip = styled(Chip)<{ status: PayoutStatus }>`
   border: 1px solid ${(props) => getColorStatus(props.status)};
   text-transform: capitalize;
   color: ${(props) => getColorStatus(props.status)};
@@ -63,7 +63,7 @@ export default function Payouts() {
     // isRefetching: payoutsIsRefetching,
   } = usePayouts({ limit: MAX_PAGINATION, query: "" });
   const {
-    data: stats  = {
+    data: stats = {
       totalPayouts: 0,
       totalAmount: 0,
       averagePayout: 0,
@@ -162,16 +162,16 @@ export default function Payouts() {
             <TableHeader>
               <TableRow $type="header">
                 <TableHeaderItem>
-                  {t("transactions.payouts.table.id")}
-                </TableHeaderItem>
-                <TableHeaderItem>
                   {t("transactions.payouts.table.date")}
                 </TableHeaderItem>
                 <TableHeaderItem>
-                  {t("transactions.payouts.table.amount")}
+                  {t("transactions.payouts.table.destination")}
                 </TableHeaderItem>
                 <TableHeaderItem>
                   {t("transactions.payouts.table.status")}
+                </TableHeaderItem>
+                <TableHeaderItem>
+                  {t("transactions.payouts.table.amount")}
                 </TableHeaderItem>
               </TableRow>
             </TableHeader>
@@ -199,18 +199,18 @@ export default function Payouts() {
                   tabIndex={0}
                   data-testid="payout-row"
                 >
-                  <TableRowItem>{payout.sourceId}</TableRowItem>
                   <TableRowItem>
-                    {format(new Date(payout.createdAt), "Pp")}
+                    {format(new Date(payout.createdAt), "dd/LL/yyyy, hh:mm a")}
                   </TableRowItem>
-                  <TableRowItem>
-                    {getSymbolFromCurrency(payout.currency)}
-                    {centsToFixed(payout.amount)}
-                  </TableRowItem>
+                  <TableRowItem>{payout.destination}</TableRowItem>
                   <TableRowItem>
                     <TransactionChip status={payout.status}>
                       {payout.status}
                     </TransactionChip>
+                  </TableRowItem>
+                  <TableRowItem>
+                    {getSymbolFromCurrency(payout.currency)}
+                    {centsToFixed(payout.amount)}
                   </TableRowItem>
                 </TableRow>
               ))}

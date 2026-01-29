@@ -4,9 +4,9 @@ import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { usePayments } from "@/api";
+import { usePayments, usePaymentsStats } from "@/api";
 import { Card } from "@/components/Card";
-import { Chip } from "@/components/Chip";
+import { TransactionChip } from "@/components/Chip";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
 import { PageHeaderItem } from "@/components/Page/PageHeader";
 import {
@@ -19,14 +19,6 @@ import {
 } from "@/components/Table";
 import { ExtraLargeText, LargeText } from "@/components/Typography";
 import { MAX_PAGINATION } from "@/constants";
-import { getColorStatus } from "@/utils";
-
-const TransactionChip = styled(Chip)<{ status: string }>`
-  border: 1px solid ${(props) => getColorStatus(props.status)};
-  text-transform: capitalize;
-  color: ${(props) => getColorStatus(props.status)};
-  font-weight: bold;
-`;
 
 const PaymentsHeading = styled.div`
   display: flex;
@@ -37,8 +29,6 @@ const PaymentsHeading = styled.div`
   margin-top: 12px;
 `;
 
-
-
 export default function Payments() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -47,25 +37,25 @@ export default function Payments() {
   // const [paymentsQuery, _setServicesQuery] = useState("");
 
   const {
-    data: {
-      items: payments = [],
-      stats: paymentStats = {
-        totalPayments: 0,
-        totalAmount: 0,
-        averagePayment: 0,
-        failed: 0,
-      },
-    } = {
-      items: [],
-      stats: { totalPayments: 0, totalAmount: 0, averagePayment: 0, failed: 0 },
-    },
+    data: payments = [],
     error: paymentsError,
     // isLoading: paymentsLoading,
     // refetch: refetchServices,
     // isRefetching: paymentsIsRefetching,
   } = usePayments({ limit: MAX_PAGINATION, query: "" });
-
-  const isError = !!paymentsError;
+  const {
+    data: paymentsStats = {
+      totalPayments: 0,
+      totalAmount: 0,
+      averagePayment: 0,
+      failed: 0,
+    },
+    error: paymentsStatsError,
+    // isLoading: paymentsLoading,
+    // refetch: refetchServices,
+    // isRefetching: paymentsIsRefetching,
+  } = usePaymentsStats();
+  const isError = paymentsError || paymentsStatsError;
 
   return (
     <>
@@ -85,7 +75,7 @@ export default function Payments() {
               <LargeText>{t("transactions.payments.cards.total")}</LargeText>
               <ExtraLargeText>
                 <LargeText style={{ marginRight: "8px" }}>€</LargeText>
-                {paymentStats.totalAmount}
+                {paymentsStats.totalAmount}
               </ExtraLargeText>
             </Card>
             <Card
@@ -98,7 +88,7 @@ export default function Payments() {
               </LargeText>
               <ExtraLargeText>
                 <LargeText style={{ marginRight: "8px" }}>€</LargeText>
-                {paymentStats.averagePayment}
+                {paymentsStats.averagePayment}
               </ExtraLargeText>
             </Card>
             <Card
@@ -109,7 +99,7 @@ export default function Payments() {
               <LargeText>
                 {t("transactions.payments.cards.totalCount")}
               </LargeText>
-              <ExtraLargeText>{paymentStats.totalPayments}</ExtraLargeText>
+              <ExtraLargeText>{paymentsStats.totalPayments}</ExtraLargeText>
             </Card>
 
             <Card
@@ -118,7 +108,7 @@ export default function Payments() {
               data-testid="category-list-item"
             >
               <LargeText>{t("transactions.payments.cards.failed")}</LargeText>
-              <ExtraLargeText>{paymentStats.failed}</ExtraLargeText>
+              <ExtraLargeText>{paymentsStats.failed}</ExtraLargeText>
             </Card>
           </PaymentsHeading>
 
