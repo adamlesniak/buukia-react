@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAppointment, createAssistant } from "@/utils";
+import { centsToFixed, createAppointment, createAssistant } from "@/utils";
 
 import { server } from "../../mocks/server";
 import data from "../../routes/data.json";
@@ -290,7 +290,8 @@ describe("AppointmentForm", () => {
         ).toHaveTextContent(`${data.services[0].duration} common.min`);
         expect(
           screen.queryByTestId("form-price")?.querySelector("b"),
-        ).toHaveTextContent(`€${data.services[0].price}`);
+        ).toHaveTextContent(`€${centsToFixed(data.services[0].price)}`);
+
       });
     });
 

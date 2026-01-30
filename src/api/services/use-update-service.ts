@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { MAX_PAGINATION } from "@/constants.ts";
+import { MAX_PAGINATION } from "@/constants";
 import type { BuukiaService, UpdateServiceBody } from "@/types";
 
 import { serviceQueryKeys } from "./services-query-keys";

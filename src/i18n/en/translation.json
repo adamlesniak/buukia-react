@@ -10,7 +10,10 @@
     "clients": "Clients",
     "staff": "Staff",
     "settings": "Settings",
-    "assistants": "Assistants"
+    "assistants": "Assistants",
+    "sales": "Sales",
+    "payments": "Payments",
+    "transactions": "Transactions"
   },
   "calendar": {
     "teamDayView": "Team Day View",
@@ -88,6 +91,7 @@
       "price": "Price",
       "minutes": "minutes"
     },
+    "deleteService": "Delete Service",
     "form": {
       "errors": {
         "nameError": "Name is required",
@@ -96,6 +100,10 @@
         "descriptionError": "Description is required",
         "categoryError": "Category is required"
       }
+    },
+    "modal": {
+      "deleteTitle": "Delete Service",
+      "deleteMessage": "Are you sure you want to delete this service?\nThis action cannot be undone."
     }
   },
   "appointments": {
@@ -132,12 +140,166 @@
     },
     "modal": {
       "deleteTitle": "Delete Assistant",
-      "deleteMessage": "Are you sure you want to delete this assistant?\nThis action cannot be undone.",
-      "confirmDelete": "Delete",
-      "cancel": "Cancel"
+      "deleteMessage": "Are you sure you want to delete this assistant?\nThis action cannot be undone."
+    }
+  },
+  "transactions": {
+    "title": "Transactions",
+    "loadingError": "Error retrieving transactions. Please try again later.",
+    "payouts": {
+      "modal": {
+        "cancelTitle": "Cancel Payout",
+        "cancelMessage": "Are you sure you want to cancel this payout?"
+      },
+      "overview": "Overview",
+      "completedAt": "Completed at",
+      "createdAt": "Created at",
+      "actions": {
+        "cancel": "Cancel Payout"
+      },
+      "detail": {
+        "title": "Payout",
+        "id": "ID",
+        "amount": "Amount",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "instantPayoutFee": "Instant Payout Fee ({{feeRate}}%)"
+      },
+      "table": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "status": "Status",
+        "method": "Method",
+        "destination": "Destination"
+      },
+      "summary": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "arrivalDate": "Arrival Date",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "status": "Status",
+        "method": "Method",
+        "sourceId": "Payout ID",
+        "provider": "Provider",
+        "destination": "Destination",
+        "instantPayoutFee": "Instant Payout Fee ({{feeRate}}%)"
+      },
+      "method": {
+        "bank_account": "Bank Account",
+        "card": "Card"
+      },
+      "form": {
+        "errors": {
+          "amountError": "Amount is required and must be between {{minValue}} and {{maxValue}}."
+        }
+      },
+      "addPayout": "Add Payout",
+      "title": "Payouts",
+      "noPayoutsFound": "No payouts found.",
+      "loadingError": "Error retrieving payouts. Please try again later.",
+      "cards": {
+        "total": "Total",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "sum": "Sum of Payouts",
+        "totalCount": "Total Count",
+        "averagePayment": "Average Payment",
+        "averagePayout": "Average Payout"
+      }
+    },
+    "payments": {
+      "actions": {
+        "refund": "Refund Payment",
+        "dispute": "Dispute Payment"
+      },
+      "summary": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method",
+        "sourceId": "Payment ID",
+        "provider": "Provider",
+        "billingDetails": "Billing Details",
+        "billing": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "taxId": "Tax ID"
+        },
+        "paymentMethod": {
+          "amountAuthorized": "Amount Authorized",
+          "brand": "Brand",
+          "last4": "Last 4 Digits",
+          "expiry": "Expiry",
+          "expMonth": "Expiry Month",
+          "expYear": "Expiry Year",
+          "country": "Country",
+          "fingerprint": "Fingerprint",
+          "card": "Card"
+        }
+      },
+      "detail": {
+        "title": "Payment",
+        "id": "ID",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method",
+        "clientName": "Client Name",
+        "sourceId": "Source ID",
+        "provider": "Provider"
+      },
+      "refund": "Refund",
+      "table": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method"
+      },
+      "modal": {
+        "refundTitle": "Refund Payment",
+        "refundMessage": "Are you sure you want to refund this payment?"
+      },
+      "title": "Payments",
+      "noPaymentsFound": "No payments found.",
+      "loadingError": "Error retrieving payments. Please try again later.",
+      "cards": {
+        "total": "Total",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "sum": "Sum of Payments",
+        "totalCount": "Total Count",
+        "averagePayment": "Average Payment"
+      }
+    },
+    "detail": {
+      "paymentId": "Payment ID",
+      "clientName": "Client Name",
+      "amountPaid": "Amount Paid",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "paymentStatus": "Payment Status"
     }
   },
   "common": {
+    "actions": "Actions",
     "confirm": "Confirmation",
     "delete": "Delete",
     "detail": "Detail",
@@ -160,6 +322,9 @@
     "requiredField": "This field is required",
     "moreItems": "and {{count}} more items",
     "copyTo": "Copy to",
+    "payouts": "Payouts",
+    "transactions": "Transactions",
+    "payments": "Payments",
     "daysOfWeek": {
       "sunday": "Sun",
       "monday": "Mon",
@@ -168,6 +333,17 @@
       "thursday": "Thu",
       "friday": "Fri",
       "saturday": "Sat"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "completed": "Completed",
+      "succeeded": "succeeded",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "in_transit": "In Transit",
+      "disputed": "Disputed",
+      "canceled": "Canceled"
     }
   }
 }

@@ -1,3 +1,5 @@
+import type { PaymentStatus, PayoutStatus } from "@/utils";
+
 export interface CreateAppointmentBody {
   assistantId: string;
   clientId: string;
@@ -45,6 +47,20 @@ export interface UpdateAssistantBody extends CreateAssistantBody {
   id: string;
 }
 
+export interface CreatePayoutBody {
+  amount: number;
+  description: string;
+}
+
+export interface UpdatePayoutBody extends CreatePayoutBody {
+  id: string;
+}
+
+export type PayoutFormValues = {
+  amount: string;
+  description: string;
+};
+
 export type AssistantFormValues = {
   availability: AvailabilitySlot[];
   categories: BuukiaCategory[];
@@ -69,7 +85,7 @@ export type ServiceFormValues = {
   description: string;
   duration: string;
   name: string;
-  price: number;
+  price: string;
 };
 
 export type BuukiaAssistant = {
@@ -102,12 +118,81 @@ export type BuukiaClient = {
   phone: string;
 };
 
+type BuukiaPaymentProvider = "stripe";
+
+export type BuukiaPayment = {
+  id: string;
+  createdAt: string;
+  amount: number;
+  currency: string;
+  description: string;
+  paymentMethod: PaymentMethod;
+  provider: BuukiaPaymentProvider;
+  refunded: boolean;
+  sourceId: string;
+  status: PaymentStatus;
+  billing: PaymentMethodBilling;
+};
+
+type PaymentMethodBilling = {
+  address: {
+    city: string;
+    country: string;
+    line1: string;
+    line2: string;
+    postalCode: string;
+    state: string;
+  };
+  email: string;
+  name: string;
+  phone: string;
+  taxId: string;
+};
+
+type PaymentMethod = {
+  amountAuthorized: number;
+  brand: string;
+  checks: {
+    addressLine1Check: string | null;
+    addressPostalCodeCheck: string | null;
+    cvcCheck: string | null;
+  };
+  country: string;
+  expMonth: number;
+  expYear: number;
+  fingerprint: string;
+  funding: string;
+  last4: string;
+};
+
+export type BuukiaPayout = {
+  id: string;
+  amount: number;
+  arrivalDate: string;
+  createdAt: string;
+  currency: string;
+  description: string;
+  statement_description: string;
+  destination: string;
+  provider: BuukiaPaymentProvider;
+  sourceId: string;
+  status: PayoutStatus;
+  fee: BuukiaFee;
+  type: "bank_account" | "card";
+};
+
+type BuukiaFee = {
+  rate: number;
+  amount: number;
+};
+
 export type BuukiaAppointment = {
   id: string;
   assistant: BuukiaAssistant;
   time: string;
   client: BuukiaClient;
   services: BuukiaService[];
+  payments: BuukiaPayment[];
 };
 
 export type BuukiaCategory = {
@@ -118,9 +203,11 @@ export type BuukiaCategory = {
 export type MockData = {
   appointments: BuukiaAppointment[];
   assistants: BuukiaAssistant[];
-  clients: BuukiaClient[];
-  services: BuukiaService[];
   categories: BuukiaCategory[];
+  clients: BuukiaClient[];
+  payments: BuukiaPayment[];
+  payouts: BuukiaPayout[];
+  services: BuukiaService[];
 };
 
 // API Response Types

@@ -22,7 +22,7 @@ import {
   TableRow,
   TableRowItem,
 } from "@/components/Table";
-import { MAX_PAGINATION } from "@/constants.ts";
+import { MAX_PAGINATION } from "@/constants";
 
 export default function Assistants() {
   const { t } = useTranslation();

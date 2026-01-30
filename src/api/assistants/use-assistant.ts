@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { STALE_TIME } from "@/constants.ts";
+import { STALE_TIME } from "@/constants";
 import type { BuukiaAssistant } from "@/types";
 
 import { assistantQueryKeys } from "./assistants-query-keys";

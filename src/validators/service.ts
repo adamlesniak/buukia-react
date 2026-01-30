@@ -9,7 +9,10 @@ export const serviceFormSchema = z.object({
   duration: z
     .string()
     .regex(/^(?:[1-9]\d*|0)(?:\.\d{1,2})?$/g, { message: "not valid number" }),
-  price: z.number().min(1),
+  price: z.codec(z.coerce.number().min(1), z.string(), {
+    decode: (data) => data.toString(),
+    encode: (data) => Number(data),
+  }),
 });
 
 export const serviceSchema = serviceFormSchema.extend({

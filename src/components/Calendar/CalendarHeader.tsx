@@ -4,7 +4,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { ViewType } from "@/constants.ts";
+import { ViewType } from "@/constants";
 
 const Button = styled.button`
   border: 0px;

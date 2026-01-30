@@ -1,7 +1,7 @@
 import { differenceInHours } from "date-fns";
 import { useMemo } from "react";
 
-import { ViewType } from "@/constants.ts";
+import { ViewType } from "@/constants";
 import type { BuukiaAppointment } from "@/types";
 
 import { CalendarBodyDaily } from "./CalendarBodyDaily";
