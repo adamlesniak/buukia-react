@@ -71,7 +71,7 @@ export const PayoutSummary = memo((props: PayoutSummaryProps) => {
 
   return (
     <>
-      <PayoutSummaryContainer>
+      <PayoutSummaryContainer data-testid="summary-items">
         <PayoutSummaryList>
           <PayoutSummaryListItem>
             <b>{t("transactions.payouts.summary.destination")}</b>{" "}
@@ -84,8 +84,10 @@ export const PayoutSummary = memo((props: PayoutSummaryProps) => {
           <PayoutSummaryListItem>
             <b>{t("transactions.payouts.summary.amount")}</b>{" "}
             <span>
-              {getSymbolFromCurrency(props.payout.currency)}
-              {centsToFixed(props.payout.amount)}
+              {[
+                getSymbolFromCurrency(props.payout.currency),
+                centsToFixed(props.payout.amount),
+              ].join("")}
             </span>
           </PayoutSummaryListItem>
           <PayoutSummaryListItem>
@@ -114,7 +116,7 @@ export const PayoutSummary = memo((props: PayoutSummaryProps) => {
           <PayoutSummaryListItem>
             <b>{t("transactions.payouts.summary.status")}</b>{" "}
             <span>
-              <TransactionChip status={props.payout.status}>
+              <TransactionChip data-testid="summary-item-status" status={props.payout.status}>
                 {t(`common.status.${props.payout.status}`)}
               </TransactionChip>
             </span>
@@ -129,15 +131,17 @@ export const PayoutSummary = memo((props: PayoutSummaryProps) => {
               })}
             </b>{" "}
             <span>
-              {getSymbolFromCurrency(props.payout.currency)}
-              {centsToFixed(props.payout.fee.amount)}
+              {[
+                getSymbolFromCurrency(props.payout.currency),
+                centsToFixed(props.payout.fee.amount),
+              ].join("")}
             </span>
           </PayoutSummaryListItem>
         </PayoutSummaryList>
       </PayoutSummaryContainer>
       {props.payout.status === PayoutStatus.Pending && (
         <PayoutActions>
-          <h2>{t("settings.actions.title")}</h2>
+          <h2>{t("common.actions")}</h2>
           <Button
             type="button"
             onClick={() => setShowModal(true)}

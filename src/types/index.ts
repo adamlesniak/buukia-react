@@ -146,12 +146,14 @@ export type BuukiaPayout = {
   provider: BuukiaPaymentProvider;
   sourceId: string;
   status: PayoutStatus;
-  fee: {
-    rate: number;
-    amount: number;
-  };
+  fee: BuukiaFee;
   type: "bank_account" | "card";
 };
+
+type BuukiaFee = {
+  rate: number;
+  amount: number;
+}
 
 export type BuukiaAppointment = {
   id: string;

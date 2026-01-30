@@ -146,15 +146,14 @@
   "transactions": {
     "title": "Transactions",
     "loadingError": "Error retrieving transactions. Please try again later.",
-
     "payouts": {
       "modal": {
         "cancelTitle": "Cancel Payout",
         "cancelMessage": "Are you sure you want to cancel this payout?"
       },
       "overview": "Overview",
-      "completedAt": "Completed at {{arrivalDate}}",
-      "createdAt": "Created at {{createdAt}}",
+      "completedAt": "Completed at",
+      "createdAt": "Created at",
       "actions": {
         "cancel": "Cancel Payout"
       },
@@ -266,6 +265,7 @@
     }
   },
   "common": {
+    "actions": "Actions",
     "confirm": "Confirmation",
     "delete": "Delete",
     "detail": "Detail",

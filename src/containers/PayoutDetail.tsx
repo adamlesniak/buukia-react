@@ -120,24 +120,29 @@ export default function PayoutDetail() {
                   : t("transactions.payouts.detail.title")}
               </h2>
               {!isNew && payout?.status && (
-                <TransactionChip status={payout.status}>
-                  {payout.status}
+                <TransactionChip
+                  data-testid="summary-item-title-status"
+                  status={payout.status}
+                >
+                  {t(`common.status.${payout.status}`)}
                 </TransactionChip>
               )}
             </PayoutTitleContainer>
             {payout?.status === PayoutStatus.Completed &&
               payout.arrivalDate && (
                 <small>
-                  {t("transactions.payouts.completedAt", {
-                    arrivalDate: format(new Date(payout.arrivalDate), "PPPp"),
-                  })}
+                  {[
+                    t("transactions.payouts.completedAt"),
+                    format(new Date(payout.arrivalDate), "PPPp"),
+                  ].join(" ")}
                 </small>
               )}
             {payout?.status !== PayoutStatus.Completed && payout?.createdAt && (
               <small>
-                {t("transactions.payouts.createdAt", {
-                  createdAt: format(new Date(payout.createdAt), "PPPp"),
-                })}
+                {[
+                  t("transactions.payouts.createdAt"),
+                  format(new Date(payout.createdAt), "PPPp"),
+                ].join(" ")}
               </small>
             )}
           </DetailNavigationTitleContent>
