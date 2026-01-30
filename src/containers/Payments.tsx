@@ -19,6 +19,7 @@ import {
 } from "@/components/Table";
 import { ExtraLargeText, LargeText } from "@/components/Typography";
 import { MAX_PAGINATION } from "@/constants";
+import { centsToFixed } from "@/utils";
 
 const PaymentsHeading = styled.div`
   display: flex;
@@ -75,7 +76,7 @@ export default function Payments() {
               <LargeText>{t("transactions.payments.cards.total")}</LargeText>
               <ExtraLargeText>
                 <LargeText style={{ marginRight: "8px" }}>€</LargeText>
-                {paymentsStats.totalAmount}
+                {centsToFixed(paymentsStats.totalAmount)}
               </ExtraLargeText>
             </Card>
             <Card
@@ -88,7 +89,7 @@ export default function Payments() {
               </LargeText>
               <ExtraLargeText>
                 <LargeText style={{ marginRight: "8px" }}>€</LargeText>
-                {paymentsStats.averagePayment}
+                {centsToFixed(paymentsStats.averagePayment)}
               </ExtraLargeText>
             </Card>
             <Card
@@ -164,11 +165,11 @@ export default function Payments() {
                 >
                   <TableRowItem>{payment.sourceId}</TableRowItem>
                   <TableRowItem>
-                    {format(new Date(payment.date), "Pp")}
+                    {format(new Date(payment.createdAt), "Pp")}
                   </TableRowItem>
                   <TableRowItem>
                     {getSymbolFromCurrency(payment.currency)}
-                    {payment.amount}
+                    {centsToFixed(payment.amount)}
                   </TableRowItem>
                   <TableRowItem>
                     <TransactionChip status={payment.status}>

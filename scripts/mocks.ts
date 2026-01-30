@@ -14,7 +14,7 @@ import {
 } from "date-fns";
 import prettier from "prettier";
 
-import { PayoutStatus } from "@/utils";
+import { PaymentStatus, PayoutStatus } from "@/utils";
 
 import type {
   BuukiaAppointment,
@@ -157,11 +157,12 @@ export const createAppointment = (): BuukiaAppointment => {
 };
 
 export const createPayment = (): BuukiaPayment => {
+  const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
   return {
     id: faker.string.uuid(),
-    amount: faker.number.int({ min: 20, max: 200 }),
+    amount,
     currency: "EUR",
-    date: roundToNearestMinutes(
+    createdAt: roundToNearestMinutes(
       faker.date.between({
         from: new Date(),
         to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -170,15 +171,51 @@ export const createPayment = (): BuukiaPayment => {
     ).toISOString(),
     refunded: faker.datatype.boolean(),
     description: faker.lorem.sentence(),
-    method: faker.finance.transactionType(),
-    paid: faker.datatype.boolean(),
+    paymentMethod: {
+      amountAuthorized: amount,
+      brand: faker.helpers.arrayElement([
+        "visa",
+        "mastercard",
+        "amex",
+        "discover",
+      ]),
+      expMonth: faker.number.int({ min: 1, max: 12 }),
+      expYear: faker.number.int({ min: new Date().getFullYear(), max: 2030 }),
+      last4: faker.finance.creditCardNumber().slice(-4),
+      country: faker.location.countryCode(),
+      fingerprint: faker.string.alphanumeric(16),
+      funding: faker.helpers.arrayElement(["credit", "debit", "prepaid"]),
+      checks: {
+        addressLine1Check: faker.helpers.arrayElement(["pass", "fail", null]),
+        addressPostalCodeCheck: faker.helpers.arrayElement([
+          "pass",
+          "fail",
+          null,
+        ]),
+        cvcCheck: faker.helpers.arrayElement(["pass", "fail", null]),
+      },
+    },
+    billing: {
+      address: {
+        city: faker.location.city(),
+        country: faker.location.countryCode(),
+        line1: faker.location.streetAddress(),
+        line2: faker.location.secondaryAddress(),
+        postalCode: faker.location.zipCode(),
+        state: faker.location.state(),
+      },
+      email: faker.internet.email(),
+      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
+      phone: faker.phone.number(),
+      taxId: faker.string.alphanumeric(10),
+    },
     provider: "stripe",
     sourceId: `ch_${faker.string.alphanumeric(24)}`,
     status: faker.helpers.arrayElement([
-      PayoutStatus.Completed,
-      PayoutStatus.Failed,
-      PayoutStatus.Paid,
-      PayoutStatus.Pending,
+      PaymentStatus.Disputed,
+      PaymentStatus.Failed,
+      PaymentStatus.Pending,
+      PaymentStatus.Succeeded,
     ]),
   };
 };
@@ -214,7 +251,12 @@ export const createPayout = (): BuukiaPayout => {
       rate: 0.01,
       amount: payoutFee,
     },
-    status: faker.helpers.arrayElement(["paid", "pending", "failed"]),
+    status: faker.helpers.arrayElement([
+      PayoutStatus.Paid,
+      PayoutStatus.Pending,
+      PayoutStatus.Failed,
+      PayoutStatus.Canceled,
+    ]),
   };
 };
 

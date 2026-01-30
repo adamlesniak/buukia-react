@@ -216,6 +216,40 @@
       }
     },
     "payments": {
+      "actions": {
+        "refund": "Refund Payment",
+        "dispute": "Dispute Payment"
+      },
+      "summary": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method",
+        "sourceId": "Payment ID",
+        "provider": "Provider",
+        "billingDetails": "Billing Details",
+        "billing": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "taxId": "Tax ID"
+        },
+        "paymentMethod": {
+          "amountAuthorized": "Amount Authorized",
+          "brand": "Brand",
+          "last4": "Last 4 Digits",
+          "expiry": "Expiry",
+          "expMonth": "Expiry Month",
+          "expYear": "Expiry Year",
+          "country": "Country",
+          "fingerprint": "Fingerprint",
+          "card": "Card"
+        }
+      },
       "detail": {
         "title": "Payment",
         "id": "ID",

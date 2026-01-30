@@ -31,7 +31,7 @@ const mockUseParams = vi.fn();
 const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
   onSuccess();
 });
-const mockMutateDelete = vi.fn();
+const mockMutateCancel = vi.fn();
 const mockRouterState = vi.fn().mockReturnValue("daily");
 
 vi.mock("@tanstack/react-router", () => ({
@@ -100,7 +100,7 @@ describe("PayoutDetail", () => {
 
     mockNavigate.mockClear();
     mockMutate.mockClear();
-    mockMutateDelete.mockClear();
+    mockMutateCancel.mockClear();
     mockRouterState.mockClear();
 
     // Mock route params
@@ -348,6 +348,95 @@ describe("PayoutDetail", () => {
         expect(
           screen.queryByText("transactions.payouts.actions.cancel"),
         ).toBeInTheDocument();
+      });
+
+      it("should remove service following by confirmation dialog", async () => {
+        mockUsePayout.mockReturnValue({
+          data: {
+            ...mockPayout,
+            status: PayoutStatus.Pending,
+          },
+          error: null,
+          isLoading: false,
+        });
+        mockUseCancelPayout.mockReturnValue({
+          mutate: mockMutateCancel,
+        });
+        mockUseParams.mockReturnValue({
+          payoutId: "testPayoutId",
+        });
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <PayoutDetail.default />
+          </QueryClientProvider>,
+        );
+
+        await user.click(
+          screen.getByText("transactions.payouts.actions.cancel"),
+        );
+
+        expect(
+          screen.getByText("transactions.payouts.modal.cancelTitle"),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText("transactions.payouts.modal.cancelMessage"),
+        ).toBeInTheDocument();
+
+        await user.click(
+          screen.queryAllByText("transactions.payouts.actions.cancel")[1],
+        );
+
+        expect(
+          screen.queryByText("transactions.payouts.modal.cancelTitle"),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByText("transactions.payouts.modal.cancelMessage"),
+        ).not.toBeInTheDocument();
+        expect(mockMutateCancel).toHaveBeenCalledWith("testPayoutId", {
+          onSuccess: expect.any(Function),
+        });
+      });
+
+      it("should not remove service following by confirmation dialog", async () => {
+        mockUsePayout.mockReturnValue({
+          data: {
+            ...mockPayout,
+            status: PayoutStatus.Pending,
+          },
+          error: null,
+          isLoading: false,
+        });
+        mockUseCancelPayout.mockReturnValue({
+          mutate: mockMutateCancel,
+        });
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <PayoutDetail.default />
+          </QueryClientProvider>,
+        );
+
+        await user.click(
+          screen.getByText("transactions.payouts.actions.cancel"),
+        );
+
+        expect(
+          screen.getByText("transactions.payouts.modal.cancelTitle"),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText("transactions.payouts.modal.cancelMessage"),
+        ).toBeInTheDocument();
+
+        await user.click(screen.getByText("common.cancel", { exact: true }));
+
+        expect(
+          screen.queryByText("transactions.payouts.modal.cancelTitle"),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByText("transactions.payouts.modal.cancelMessage"),
+        ).not.toBeInTheDocument();
+        expect(mockMutateCancel).not.toHaveBeenCalled();
       });
     });
   });

@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 // import { useState } from "react";
 // import { createPortal } from "react-dom";
+import getSymbolFromCurrency from "currency-symbol-map";
 import { useTranslation } from "react-i18next";
 
 import { usePayment } from "@/api";
@@ -12,10 +13,12 @@ import {
   MemoizedDrawerHeader,
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error/ErrorDetail";
-
+import { PaymentSummary } from "@/components/Payment";
 // import ConfirmationModal from "./ConfirmationModal";
+import { centsToFixed } from "@/utils";
+
 import { DetailNavigationTitleContent } from "./AssistantDrawer";
-import PaymentPreview from "./PaymentPreview";
+
 
 // TODO: Add Manage section to provide options to performance, statistics, etc.
 export default function PaymentDetail() {
@@ -46,6 +49,12 @@ export default function PaymentDetail() {
   //   onClose();
   // };
 
+  // TODO: Show 404 error.
+  if (!payment) {
+    navigate({ to: `/transactions/payments` });
+    return;
+  }
+
   const isError = paymentError;
   // const isLoading = paymentLoading;
 
@@ -54,7 +63,10 @@ export default function PaymentDetail() {
       <DrawerContent>
         <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
           <DetailNavigationTitleContent>
-            <h2>{t("transactions.payments.detail.title")}</h2>
+            <h2>{[
+                getSymbolFromCurrency(payment.currency),
+                centsToFixed(payment.amount),
+              ].join("")}</h2>
           </DetailNavigationTitleContent>
         </MemoizedDrawerHeader>
         <DrawerContentBody justifyContent={"start"}>
@@ -63,7 +75,7 @@ export default function PaymentDetail() {
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && <PaymentPreview payment={payment} />}
+          {!isError && <PaymentSummary payment={payment} />}
           {/* {paymentId && (
             <Button
               type="button"

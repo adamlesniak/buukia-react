@@ -1,11 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { format } from "date-fns/format";
 
 import { usePayments, usePaymentsStats } from "@/api";
 
 import { server } from "../mocks/server";
 import data from "../routes/data.json";
+
 
 vi.mock("@/api", async () => ({
   usePayments: vi.fn(),
@@ -35,6 +37,15 @@ const mockUsePayments = usePayments as unknown as ReturnType<typeof vi.fn>;
 const mockUsePaymentsStats = usePaymentsStats as unknown as ReturnType<
   typeof vi.fn
 >;
+
+const mockPaymentStats = {
+  totalPayments: data.payments.length,
+  totalAmount: data.payments.reduce((sum, payment) => sum + payment.amount, 0),
+  averagePayment:
+    data.payments.reduce((sum, payment) => sum + payment.amount, 0) /
+    data.payments.length,
+  failed: data.payments.filter((payment) => payment.status === "failed").length,
+};
 
 const Payments = await import("./Payments");
 
@@ -69,18 +80,7 @@ describe("Payments", () => {
     });
 
     mockUsePaymentsStats.mockReturnValue({
-      data: {
-        totalPayments: data.payments.length,
-        totalAmount: data.payments.reduce(
-          (sum, payment) => sum + payment.amount,
-          0,
-        ),
-        averagePayment:
-          data.payments.reduce((sum, payment) => sum + payment.amount, 0) /
-          data.payments.length,
-        failed: data.payments.filter((payment) => payment.status === "failed")
-          .length,
-      },
+      data: mockPaymentStats,
       error: null,
       isLoading: false,
     });
@@ -138,7 +138,7 @@ describe("Payments", () => {
       ).toBeInTheDocument();
       data.payments.forEach((payment) => {
         expect(screen.queryAllByText(payment.id)).toBeDefined();
-        expect(screen.queryAllByText(payment.date)).toBeDefined();
+        expect(screen.queryAllByText(format(new Date(payment.createdAt), "Pp"))).toBeDefined();
         expect(screen.queryAllByText(payment.amount)).toBeDefined();
         expect(screen.queryAllByText(payment.status)).toBeDefined();
       });
@@ -169,7 +169,7 @@ describe("Payments", () => {
       ).toBeInTheDocument();
       data.payments.forEach((payment) => {
         expect(screen.queryAllByText(payment.id)).toBeDefined();
-        expect(screen.queryAllByText(payment.date)).toBeDefined();
+        expect(screen.queryAllByText(format(new Date(payment.createdAt), "Pp"))).toBeDefined();
         expect(screen.queryAllByText(payment.amount)).toBeDefined();
         expect(screen.queryAllByText(payment.status)).toBeDefined();
       });

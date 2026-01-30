@@ -223,8 +223,16 @@ export enum PayoutStatus {
   InTransit = "in_transit",
 }
 
-export const getColorStatus = (status: PayoutStatus) => {
+export enum PaymentStatus {
+  Succeeded = "succeeded",
+  Pending = "pending",
+  Failed = "failed",
+  Disputed = "disputed",
+}
+
+export const getColorStatus = (status: PayoutStatus | PaymentStatus) => {
   switch (status) {
+    case PaymentStatus.Succeeded:
     case PayoutStatus.Paid:
     case PayoutStatus.Completed:
       return "#4caf50"; // Green

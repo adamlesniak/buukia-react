@@ -1,4 +1,4 @@
-import type { PayoutStatus } from "@/utils";
+import type { PaymentStatus, PayoutStatus } from "@/utils";
 
 export interface CreateAppointmentBody {
   assistantId: string;
@@ -122,16 +122,47 @@ type BuukiaPaymentProvider = "stripe";
 
 export type BuukiaPayment = {
   id: string;
+  createdAt: string;
   amount: number;
   currency: string;
-  date: string;
   description: string;
-  method: string;
-  paid: boolean;
+  paymentMethod: PaymentMethod;
   provider: BuukiaPaymentProvider;
   refunded: boolean;
   sourceId: string;
-  status: PayoutStatus;
+  status: PaymentStatus;
+  billing: PaymentMethodBilling;
+};
+
+type PaymentMethodBilling = {
+  address: {
+    city: string;
+    country: string;
+    line1: string;
+    line2: string;
+    postalCode: string;
+    state: string;
+  };
+  email: string;
+  name: string;
+  phone: string;
+  taxId: string;
+};
+
+type PaymentMethod = {
+  amountAuthorized: number;
+  brand: string;
+  checks: {
+    addressLine1Check: string | null;
+    addressPostalCodeCheck: string | null;
+    cvcCheck: string | null;
+  };
+  country: string;
+  expMonth: number;
+  expYear: number;
+  fingerprint: string;
+  funding: string;
+  last4: string;
 };
 
 export type BuukiaPayout = {
@@ -153,7 +184,7 @@ export type BuukiaPayout = {
 type BuukiaFee = {
   rate: number;
   amount: number;
-}
+};
 
 export type BuukiaAppointment = {
   id: string;

@@ -38,6 +38,9 @@ importers:
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
+      country-code-lookup:
+        specifier: ^0.1.3
+        version: 0.1.3
       currency-symbol-map:
         specifier: ^5.1.0
         version: 5.1.0
@@ -2036,6 +2039,9 @@ packages:
 
   core-js-compat@3.46.0:
     resolution: {integrity: sha512-p9hObIIEENxSV8xIu+V68JjSeARg6UVMG5mR+JEUguG3sI6MsiS1njz2jHmyJDvA+8jX/sytkBHup6kxhM9law==}
+
+  country-code-lookup@0.1.3:
+    resolution: {integrity: sha512-gLu+AQKHUnkSQNTxShKgi/4tYd0vEEait3JMrLNZgYlmIZ9DJLkHUjzXE9qcs7dy3xY/kUx2/nOxZ0Z3D9JE+A==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -6211,6 +6217,8 @@ snapshots:
   core-js-compat@3.46.0:
     dependencies:
       browserslist: 4.27.0
+
+  country-code-lookup@0.1.3: {}
 
   cross-spawn@7.0.6:
     dependencies:

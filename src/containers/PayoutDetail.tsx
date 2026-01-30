@@ -5,8 +5,12 @@ import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { useCreatePayout, usePayout, usePayoutsStats } from "@/api";
-import { useCancelPayout } from "@/api/payouts/use-cancel-payout";
+import {
+  useCreatePayout,
+  usePayout,
+  usePayoutsStats,
+  useCancelPayout,
+} from "@/api";
 import { TransactionChip } from "@/components/Chip";
 import {
   Drawer,
@@ -95,14 +99,22 @@ export default function PayoutDetail() {
   const isError = payoutError || payoutStatsError;
   const isLoading = payoutLoading || payoutStatsLoading;
 
-  const onCancelPayout = useCallback(() => {
-    if (!payoutId) return;
-    cancelPayout.mutate(payoutId, {
-      onSuccess: () => {
-        onClose();
-      },
-    });
-  }, [payoutId, cancelPayout]);
+  const onCancelPayout = useCallback(
+    (confirm: boolean) => {
+      if (!payoutId) {
+        return;
+      }
+
+      if (confirm) {
+        cancelPayout.mutate(payoutId, {
+          onSuccess: () => {
+            onClose();
+          },
+        });
+      }
+    },
+    [payoutId, cancelPayout],
+  );
 
   const onClose = () => {
     navigate({ to: `/transactions/payouts` });
