@@ -216,6 +216,14 @@
       }
     },
     "payments": {
+      "common": {
+        "disputed": "Disputed",
+        "captured": "Captured",
+        "authorized": "Authorized",
+        "disputedFor": "Disputed for",
+        "disputeLost": "Dispute lost",
+        "disputeWon": "Dispute won"
+      },
       "actions": {
         "refund": "Refund Payment",
         "dispute": "Dispute Payment"
@@ -247,7 +255,13 @@
           "expYear": "Expiry Year",
           "country": "Country",
           "fingerprint": "Fingerprint",
-          "card": "Card"
+          "card": "Card",
+          "type": "Type",
+          "checks": {
+            "cvcCheck": "CVC Check",
+            "addressLine1Check": "Address Line 1 Check",
+            "addressPostalCodeCheck": "Address Postal Code Check"
+          }
         }
       },
       "detail": {
@@ -299,6 +313,8 @@
     }
   },
   "common": {
+    "timeline": "Timeline",
+    "by": "by",
     "actions": "Actions",
     "confirm": "Confirmation",
     "delete": "Delete",

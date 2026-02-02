@@ -16,15 +16,19 @@ import prettier from "prettier";
 
 import { PaymentStatus, PayoutStatus } from "@/utils";
 
-import type {
-  BuukiaAppointment,
-  BuukiaAssistant,
-  BuukiaClient,
-  MockData,
-  BuukiaService,
-  BuukiaCategory,
-  BuukiaPayment,
-  BuukiaPayout,
+import {
+  type BuukiaAppointment,
+  type BuukiaAssistant,
+  type BuukiaClient,
+  type MockData,
+  type BuukiaService,
+  type BuukiaCategory,
+  type BuukiaPayment,
+  type BuukiaPayout,
+  CVCCheckStatus,
+  PaymentNetworkStatus,
+  PaymentRiskLevel,
+  PaymentOutcomeType,
 } from "../src/types";
 
 const serviceNames = [
@@ -156,8 +160,15 @@ export const createAppointment = (): BuukiaAppointment => {
   };
 };
 
+
 export const createPayment = (): BuukiaPayment => {
   const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
+  const status = faker.helpers.arrayElement([
+    PaymentStatus.Disputed,
+    PaymentStatus.Failed,
+    PaymentStatus.Pending,
+    PaymentStatus.Succeeded,
+  ]);
   return {
     id: faker.string.uuid(),
     amount,
@@ -170,6 +181,28 @@ export const createPayment = (): BuukiaPayment => {
       { nearestTo: 15 },
     ).toISOString(),
     refunded: faker.datatype.boolean(),
+    disputed: faker.datatype.boolean(),
+    paid: faker.datatype.boolean(),
+    captured: true,
+    outcome: {
+      networkStatus:
+        status === PaymentStatus.Succeeded
+          ? PaymentNetworkStatus.ApprovedByNetwork
+          : PaymentNetworkStatus.DeclinedByNetwork,
+      reason: null,
+      riskLevel: faker.helpers.arrayElement([
+        PaymentRiskLevel.Elevated,
+        PaymentRiskLevel.Highest,
+        PaymentRiskLevel.Normal,
+      ]),
+      sellerMessage: faker.lorem.sentence(),
+      type: faker.helpers.arrayElement([
+        PaymentOutcomeType.Authorized,
+        PaymentOutcomeType.ManualReview,
+        PaymentOutcomeType.IssuerDeclined,
+        PaymentOutcomeType.Blocked,
+      ]),
+    },
     description: faker.lorem.sentence(),
     paymentMethod: {
       amountAuthorized: amount,
@@ -186,13 +219,24 @@ export const createPayment = (): BuukiaPayment => {
       fingerprint: faker.string.alphanumeric(16),
       funding: faker.helpers.arrayElement(["credit", "debit", "prepaid"]),
       checks: {
-        addressLine1Check: faker.helpers.arrayElement(["pass", "fail", null]),
-        addressPostalCodeCheck: faker.helpers.arrayElement([
-          "pass",
-          "fail",
-          null,
+        addressLine1Check: faker.helpers.arrayElement([
+          CVCCheckStatus.Pass,
+          CVCCheckStatus.Fail,
+          CVCCheckStatus.Unavailable,
+          CVCCheckStatus.Unchecked,
         ]),
-        cvcCheck: faker.helpers.arrayElement(["pass", "fail", null]),
+        addressPostalCodeCheck: faker.helpers.arrayElement([
+          CVCCheckStatus.Pass,
+          CVCCheckStatus.Fail,
+          CVCCheckStatus.Unavailable,
+          CVCCheckStatus.Unchecked,
+        ]),
+        cvcCheck: faker.helpers.arrayElement([
+          CVCCheckStatus.Pass,
+          CVCCheckStatus.Fail,
+          CVCCheckStatus.Unavailable,
+          CVCCheckStatus.Unchecked,
+        ]),
       },
     },
     billing: {
@@ -211,12 +255,7 @@ export const createPayment = (): BuukiaPayment => {
     },
     provider: "stripe",
     sourceId: `ch_${faker.string.alphanumeric(24)}`,
-    status: faker.helpers.arrayElement([
-      PaymentStatus.Disputed,
-      PaymentStatus.Failed,
-      PaymentStatus.Pending,
-      PaymentStatus.Succeeded,
-    ]),
+    status,
   };
 };
 

@@ -11,7 +11,8 @@
     "lint": "eslint",
     "bundle": "ANALYZE_DEBUG=true pnpm run build",
     "prepare": "lefthook install",
-    "generate-mocks": "npx tsx scripts/mocks.ts"
+    "generate-mocks": "npx tsx scripts/mocks.ts",
+    "generate-mocks-stripe": "npx tsx scripts/mocksStripe.ts"
   },
   "dependencies": {
     "@ariakit/react": "^0.4.19",

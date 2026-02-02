@@ -7,6 +7,7 @@ import type {
   BuukiaAssistant,
   BuukiaCategory,
   BuukiaClient,
+  BuukiaPayment,
   BuukiaService,
 } from "@/types";
 
@@ -253,3 +254,30 @@ export const centsToFixed = (cents: number): string =>
   (cents / 100).toFixed(2).toString();
 
 export const priceToCents = (price: number): number => price * 100;
+
+export const getTimelineFromPayment = (payment: BuukiaPayment) => {
+  const items = [];
+
+  if (payment.disputed) {
+    items.push({
+      name: "transactions.payments.common.disputed",
+      date: payment.createdAt,
+    });
+  }
+
+  if (payment.paid) {
+    items.push({
+      name: "transactions.payments.common.authorized",
+      date: payment.createdAt,
+    });
+  }
+
+  if (payment.captured) {
+    items.push({
+      name: "transactions.payments.common.captured",
+      date: payment.createdAt,
+    });
+  }
+
+  return items;
+};

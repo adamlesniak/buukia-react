@@ -19,6 +19,7 @@ import type {
   UpdateCategoryBody,
   UpdateServiceBody,
 } from "@/types";
+import { PayoutStatus } from "@/utils";
 
 import data from "../routes/data.json";
 
@@ -173,7 +174,7 @@ export const handlers = [
     if (item) {
       const newItem: BuukiaPayout = {
         ...item,
-        status: "canceled",
+        status: PayoutStatus.Canceled,
       };
 
       payouts.set(id, newItem);

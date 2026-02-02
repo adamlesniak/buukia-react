@@ -19,7 +19,6 @@ import { centsToFixed } from "@/utils";
 
 import { DetailNavigationTitleContent } from "./AssistantDrawer";
 
-
 // TODO: Add Manage section to provide options to performance, statistics, etc.
 export default function PaymentDetail() {
   const { t } = useTranslation();
@@ -63,10 +62,13 @@ export default function PaymentDetail() {
       <DrawerContent>
         <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
           <DetailNavigationTitleContent>
-            <h2>{[
+            <h2>
+              {[
                 getSymbolFromCurrency(payment.currency),
                 centsToFixed(payment.amount),
-              ].join("")}</h2>
+              ].join("")}
+            </h2>
+            <small>{t("common.by")} {payment.id && payment.billing.email}</small>
           </DetailNavigationTitleContent>
         </MemoizedDrawerHeader>
         <DrawerContentBody justifyContent={"start"}>
