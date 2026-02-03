@@ -4,7 +4,8 @@ import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { usePayments, usePaymentsStats } from "@/api";
+import { usePaymentsStats } from "@/api";
+import { useCharges } from "@/api/stripe/charges";
 import { Card } from "@/components/Card";
 import { TransactionChip } from "@/components/Chip";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
@@ -19,7 +20,7 @@ import {
 } from "@/components/Table";
 import { ExtraLargeText, LargeText } from "@/components/Typography";
 import { MAX_PAGINATION } from "@/constants";
-import { centsToFixed } from "@/utils";
+import { centsToFixed, PaymentStatus } from "@/utils";
 
 const PaymentsHeading = styled.div`
   display: flex;
@@ -38,12 +39,15 @@ export default function Payments() {
   // const [paymentsQuery, _setServicesQuery] = useState("");
 
   const {
-    data: payments = [],
-    error: paymentsError,
+    data,
+    error: chargesError,
     // isLoading: paymentsLoading,
     // refetch: refetchServices,
     // isRefetching: paymentsIsRefetching,
-  } = usePayments({ limit: MAX_PAGINATION, query: "" });
+  } = useCharges({ limit: MAX_PAGINATION, query: "" });
+
+  const charges = data?.data || [];
+
   const {
     data: paymentsStats = {
       totalPayments: 0,
@@ -56,7 +60,7 @@ export default function Payments() {
     // refetch: refetchServices,
     // isRefetching: paymentsIsRefetching,
   } = usePaymentsStats();
-  const isError = paymentsError || paymentsStatsError;
+  const isError = chargesError || paymentsStatsError;
 
   return (
     <>
@@ -118,7 +122,7 @@ export default function Payments() {
             <div>
               <h2>{t("transactions.payments.title")}</h2>
               <small>
-                {[payments.length, t("common.items").toLowerCase()].join(" ")}
+                {[charges.length, t("common.items").toLowerCase()].join(" ")}
               </small>
             </div>
           </PageHeaderItem>
@@ -140,11 +144,11 @@ export default function Payments() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {payments.map((payment) => (
+              {charges.map((charge) => (
                 <TableRow
                   onClick={() => {
                     navigate({
-                      to: `/transactions/payments/${payment.id}`,
+                      to: `/transactions/payments/${charge.id}`,
                     });
                   }}
                   onKeyDown={(
@@ -152,28 +156,34 @@ export default function Payments() {
                   ) => {
                     if ($event.key === "Enter") {
                       navigate({
-                        to: `/transactions/payments/${payment.id}`,
+                        to: `/transactions/payments/${charge.id}`,
                       });
                       $event.preventDefault();
                       $event.stopPropagation();
                     }
                   }}
                   $type="body"
-                  key={payment.id}
+                  key={charge.id}
                   tabIndex={0}
                   data-testid="payment-row"
                 >
-                  <TableRowItem>{payment.sourceId}</TableRowItem>
+                  <TableRowItem>{charge.id}</TableRowItem>
                   <TableRowItem>
-                    {format(new Date(payment.createdAt), "Pp")}
+                    {format(new Date(charge.created), "Pp")}
                   </TableRowItem>
                   <TableRowItem>
-                    {getSymbolFromCurrency(payment.currency)}
-                    {centsToFixed(payment.amount)}
+                    {getSymbolFromCurrency(charge.currency)}
+                    {centsToFixed(charge.amount)}
                   </TableRowItem>
                   <TableRowItem>
-                    <TransactionChip status={payment.status}>
-                      {payment.status}
+                    <TransactionChip
+                      status={
+                        charge.disputed ? PaymentStatus.Disputed : charge.status
+                      }
+                    >
+                      {charge.disputed
+                        ? t("transactions.payments.common.disputed")
+                        : charge.status}
                     </TransactionChip>
                   </TableRowItem>
                 </TableRow>
@@ -183,7 +193,7 @@ export default function Payments() {
           <Outlet />
         </>
       )}
-      {payments.length === 0 && (
+      {charges.length === 0 && (
         <p>{t("transactions.payments.noPaymentsFound")}</p>
       )}
     </>

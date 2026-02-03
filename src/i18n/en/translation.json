@@ -217,12 +217,65 @@
     },
     "payments": {
       "common": {
+        "status": "Status",
+        "reason": "Reason",
+        "fee": "Fee",
         "disputed": "Disputed",
+        "disputedAs": {
+          "warning_needs_response": "Disputed Warning - Needs Response",
+          "warning_under_review": "Disputed Warning - Under Review",
+          "warning_closed": "Dispute Warning - Closed",
+          "needs_response": "Dispute Needs Response",
+          "under_review": "Dispute Under Review",
+          "won": "Dispute won",
+          "lost": "Dispute lost"
+        },
         "captured": "Captured",
         "authorized": "Authorized",
         "disputedFor": "Disputed for",
         "disputeLost": "Dispute lost",
-        "disputeWon": "Dispute won"
+        "disputeWon": "Dispute won",
+        "started": "Started"
+      },
+      "disputes": {
+        "13.6": "A cardholder claims they were due a refund or credit, but it wasn’t issued or processed correctly. This typically happens when a business agrees to a refund but doesn’t complete it, or when a return or cancellation is processed, but the credit doesn’t appear on the cardholder’s statement within a reasonable timeframe.",
+        "13.7": "A cardholder claims they cancelled a purchase (either for goods or services) but were still charged. This can happen when a subscription isn’t correctly canceled, a refund isn’t processed after a cancellation, or a customer misunderstands cancellation terms.",
+        "12.6.1": "The cardholder claims that a single transaction was processed more than once using the same payment credential on the same transaction date, and for the same transaction amount.",
+        "12.6.2": "A cardholder claims they were charged for a transaction they had already paid for using a different payment method. For example: cash, check, another credit or debit card, store credit, or a third-party payment service like PayPal.",
+        "10.3": "The cardholder claims they didn’t authorize a transaction that took place in a card-present environment (an in-person transaction where the card was physically used). This typically means the customer is alleging fraud, often due to stolen or counterfeit cards, unauthorized use, or skimming attacks.",
+        "10.4": "The cardholder claims they didn’t authorize a transaction that took place in a card-not-present (CNP) environment, such as online, over the phone, or through a mobile app. These disputes typically occur due to stolen card information, account takeovers, or unauthorized recurring charges.",
+        "12.2": "You processed a debit when you were supposed to process a credit (vice versa), or a credit was processed when you were supposed to process a reversal to correct a transaction that was processed in error.",
+        "12.5": "A cardholder contends that the transaction amount on their statement is incorrect. This can occur when the charge appears higher (or lower) than what was agreed upon or expected, due to pricing errors, tax miscalculations, currency conversion issues, or other processing mistakes.",
+        "13.1": "The cardholder claims that merchandise or services that they ordered weren’t received by the expected date (or merchandise was unavailable for pick-up).",
+        "13.3": "A cardholder claims that the goods or services they received were materially different from what was advertised, were damaged or defective, or otherwise didn’t meet their reasonable expectations based on the merchant’s description.",
+        "13.4": "A cardholder claims that the merchandise or services delivered were misrepresented. Meaning, the product or service didn’t match the description, features, or quality that was promised by the merchant. This covers cases where the advertised attributes differ significantly from the actual offering.",
+        "13.5": "A cardholder claims that the merchandise or services delivered were misrepresented. Meaning, the product or service didn’t match the description, features, or quality that was promised by the merchant. This covers cases where the advertised attributes differ significantly from the actual offering.",
+        "13.2": "A cardholder claims they were charged for a recurring transaction after canceling their subscription or payment agreement. This often happens when the cancellation request wasn’t processed correctly, the customer misunderstood the cancellation policy, or the charge was part of a billing cycle they overlooked."
+      },
+      "reason": {
+        "duplicate": "Duplicate",
+        "fraudulent": "Fraudulent",
+        "subscription_canceled": "Subscription Canceled",
+        "product_unacceptable": "Product Unacceptable",
+        "product_not_received": "Product Not Received",
+        "unrecognized": "Unrecognized",
+        "credit_not_processed": "Credit Not Processed",
+        "incorrect_account_details": "Incorrect Account Details",
+        "insufficient_funds": "Insufficient Funds",
+        "bank_cannot_process": "Bank Cannot Process",
+        "debit_not_authorized": "Debit Not Authorized",
+        "chargeback": "Chargeback",
+        "general": "General",
+        "customer_initiated": "Customer Initiated"
+      },
+      "status": {
+        "warning_needs_response": "Warning - Needs Response",
+        "warning_under_review": "Warning - Under Review",
+        "warning_closed": "Warning - Closed",
+        "needs_response": "Needs Response",
+        "under_review": "Under Review",
+        "won": "Won",
+        "lost": "Lost"
       },
       "actions": {
         "refund": "Refund Payment",

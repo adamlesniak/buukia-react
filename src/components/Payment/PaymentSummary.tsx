@@ -8,14 +8,20 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import ConfirmationModal from "@/containers/ConfirmationModal";
-import { CVCCheckStatus, type BuukiaPayment } from "@/types";
-import { centsToFixed, getTimelineFromPayment, PaymentStatus } from "@/utils";
+import { CVCCheckStatus } from "@/types";
+import { centsToFixed, getTimelineFromCharge, PaymentStatus } from "@/utils";
+import { type StripeCharge } from "scripts/mocksStripe";
 
 import { Button } from "../Button";
 import { TransactionChip } from "../Chip";
 
+import { PaymentDisputeSummary } from "./PaymentDisputeSummary";
+
 const PaymentActions = styled.div`
   width: 100%;
+  justify-content: end;
+  flex-direction: column;
+  display: flex;
 
   h2 {
     margin-top: 0px;
@@ -26,11 +32,12 @@ const PaymentSummaryContainer = styled.div`
   text-align: left;
   width: 100%;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f4f4f4;
   margin-bottom: 12px;
   max-height: 520px;
   overflow-y: auto;
   flex: 3;
+  padding-top: 16px;
+  border-bottom: 1px solid #f4f4f4;
 
   h2 {
     margin-top: 0px;
@@ -93,60 +100,21 @@ const TimelineIcon = styled.div`
   top: 0px;
 `;
 
-const PaymentDisputeItem = styled.div`
-  padding: 12px;
-  border: 2px solid #e8e8e8;
-  background-color: #f4f4f4;
-  border-radius: 12px;
-  margin-bottom: 16px;
-
-
-  h4 {
-    margin: 0px;
-    flex-direction: row;
-    display: flex;
-  }
-`;
-
-const PaymentDisputeItemHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-`;
-
-const PaymentDisputeItemBody = styled.div`
-  margin-top: 8px;
-  margin-bottom: 8px;
-`;
-
-const PaymentDisputeItemProperty = styled.div`
-  margin-top: 8px;
-  width: 30%;
-`;
-
-const PaymentDisputeProperties = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
 interface TimelineItem {
   name: string;
-  date: string;
+  date: number;
 }
 
 type PaymentSummaryProps = {
-  payment: BuukiaPayment;
+  charge: StripeCharge;
 };
 
-// TODO: Timeline and disputes detail, add actions, refund form.
+// TODO: Add actions, refund form.
 export const PaymentSummary = memo((props: PaymentSummaryProps) => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
 
-  const timelineItems = getTimelineFromPayment(props.payment);
+  const timelineItems = getTimelineFromCharge(props.charge);
 
   const modalClose = () => {
     setShowModal(false);
@@ -155,98 +123,61 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
   return (
     <>
       <PaymentSummaryContainer data-testid="summary-items">
-        <PaymentDisputeItem>
-          <PaymentDisputeItemHeader>
-            <h4>
-              {t("transactions.payments.common.disputedFor")}{" "}
-              {[
-                getSymbolFromCurrency(props.payment.currency),
-                centsToFixed(props.payment.amount),
-              ].join("")}
-            </h4>
-            <TransactionChip
-              data-testid="summary-item-status"
-              status={PaymentStatus.Failed}
-            >
-              {t(`transactions.payments.common.disputeLost`)}
-            </TransactionChip>
-          </PaymentDisputeItemHeader>
-          <PaymentDisputeItemBody>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget
-              sapien libero. Pellentesque pulvinar finibus velit, gravida
-              finibus lectus convallis a. In vitae tempor felis. Mauris nec
-              venenatis sem. Suspendisse ultrices nunc quis libero gravida
-              imperdiet. Mauris pulvinar sapien sit amet sapien pulvinar, quis
-              egestas ante consequat.{" "}
-            </p>
-          </PaymentDisputeItemBody>
-          <PaymentDisputeProperties>
-            <PaymentDisputeItemProperty>
-              <b>Status</b>
-              <p>General</p>
-            </PaymentDisputeItemProperty>
-            <PaymentDisputeItemProperty>
-              <b>Reason</b>
-              <p>Fradulent</p>
-            </PaymentDisputeItemProperty>
-            <PaymentDisputeItemProperty>
-              <b>Fee</b>
-              <p>$25.00</p>
-            </PaymentDisputeItemProperty>
-          </PaymentDisputeProperties>
-        </PaymentDisputeItem>
+        {props.charge?.dispute && (
+          <PaymentDisputeSummary dispute={props.charge.dispute} />
+        )}
+
         <PaymentSummaryList>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.sourceId")}</b>{" "}
             <PaymentSummaryListItemValue>
-              {props.payment.sourceId}
+              {props.charge.id}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.amount")}</b>{" "}
             <PaymentSummaryListItemValue>
               {[
-                getSymbolFromCurrency(props.payment.currency),
-                centsToFixed(props.payment.amount),
+                getSymbolFromCurrency(props.charge.currency),
+                centsToFixed(props.charge.amount),
               ].join("")}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.description")}</b>{" "}
             <PaymentSummaryListItemValue>
-              {props.payment.description}
+              {props.charge.description}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
-          {/* <PaymentSummaryListItem>
-            <b>{t("transactions.payments.summary.statementDescription")}</b>{" "}
-            <PaymentSummaryListItemValue>{props.payment.statement_description}</PaymentSummaryListItemValue>
-          </PaymentSummaryListItem>
-          <PaymentSummaryListItem>
-            <b>{t("transactions.payments.summary.method")}</b>{" "}
-            <PaymentSummaryListItemValue>{t(`transactions.payments.method.${props.payment.type}`)}</PaymentSummaryListItemValue>
-          </PaymentSummaryListItem> */}
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.status")}</b>{" "}
             <PaymentSummaryListItemValue>
               <TransactionChip
                 data-testid="summary-item-status"
-                status={props.payment.status}
+                status={
+                  props.charge.dispute
+                    ? PaymentStatus.Disputed
+                    : props.charge.status
+                }
               >
-                {t(`common.status.${props.payment.status}`)}
+                {props.charge.disputed
+                  ? t("transactions.payments.common.disputed")
+                  : props.charge.status}
               </TransactionChip>
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
         </PaymentSummaryList>
+
         <hr style={{ width: "100%", marginBottom: "16px" }} />
+
         <PaymentSummaryList>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.paymentMethod.card")}</b>{" "}
             <PaymentSummaryListItemValue>
-              **** **** **** {props.payment.paymentMethod.last4}{" "}
+              **** **** **** {props.charge.payment_method_details.card.last4}{" "}
               <span>
                 <img
-                  src={`/assets/cards/${props.payment.paymentMethod.brand}.svg`}
+                  src={`/assets/cards/${props.charge.payment_method_details.card.brand}.svg`}
                   width={24}
                   alt="Credit Card"
                 />
@@ -256,8 +187,8 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.paymentMethod.type")}</b>{" "}
             <PaymentSummaryListItemValue>
-              {props.payment.paymentMethod.brand}{" "}
-              {props.payment.paymentMethod.funding}
+              {props.charge.payment_method_details.card.brand}{" "}
+              {props.charge.payment_method_details.card.funding}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
@@ -268,22 +199,25 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
             </b>{" "}
             <PaymentSummaryListItemValue>
               {[
-                getSymbolFromCurrency(props.payment.currency),
-                centsToFixed(props.payment.paymentMethod.amountAuthorized),
+                getSymbolFromCurrency(props.charge.currency),
+                centsToFixed(props.charge.amount_captured),
               ].join("")}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.paymentMethod.expiry")}</b>{" "}
             <PaymentSummaryListItemValue>
-              {props.payment.paymentMethod.expMonth}/
-              {props.payment.paymentMethod.expYear}
+              {props.charge.payment_method_details.card.exp_month}/
+              {props.charge.payment_method_details.card.exp_year}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.paymentMethod.country")}</b>{" "}
             <PaymentSummaryListItemValue>
-              {lookup.byFips(props.payment.paymentMethod.country)?.country}
+              {
+                lookup.byFips(props.charge.payment_method_details.card.country)
+                  ?.country
+              }
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
@@ -291,25 +225,23 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
               {t("transactions.payments.summary.paymentMethod.fingerprint")}
             </b>{" "}
             <PaymentSummaryListItemValue>
-              {props.payment.paymentMethod.fingerprint}
+              {props.charge.payment_method_details.card.fingerprint}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
-        </PaymentSummaryList>
-        <PaymentSummaryList>
           <PaymentSummaryListItem>
             <b>
               {t("transactions.payments.summary.paymentMethod.checks.cvcCheck")}
             </b>{" "}
             <PaymentSummaryListItemValue>
-              {props.payment.paymentMethod.checks.cvcCheck}{" "}
+              {props.charge.payment_method_details.card.checks.cvc_check}{" "}
               <span>
-                {props.payment.paymentMethod.checks.cvcCheck ===
+                {props.charge.payment_method_details.card.checks.cvc_check ===
                 CVCCheckStatus.Pass ? (
                   <CircleCheck size={21} color={"#4caf50"} />
                 ) : (
                   ""
                 )}
-                {props.payment.paymentMethod.checks.cvcCheck ===
+                {props.charge.payment_method_details.card.checks.cvc_check ===
                 CVCCheckStatus.Fail ? (
                   <CircleX size={21} color={"#f44336"} />
                 ) : (
@@ -323,7 +255,7 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
 
       {timelineItems.length > 0 && (
         <PaymentTimelineContainer>
-          <PaymentActions>
+          <div>
             <h2>{t("common.timeline")}</h2>
             {timelineItems.map((item: TimelineItem, index: number) => (
               <TimelineItem
@@ -341,23 +273,25 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
                 <small>{format(new Date(item.date), "dd LLL, hh:mm a")}</small>
               </TimelineItem>
             ))}
-          </PaymentActions>
+          </div>
         </PaymentTimelineContainer>
       )}
 
       {
         <PaymentActions>
-          <h2>{t("common.actions")}</h2>
-          <Button
-            type="button"
-            onClick={() => setShowModal(true)}
-            style={{ width: "100%" }}
-            variant="accent"
-          >
-            {t("transactions.payments.actions.refund")}
-          </Button>
+          <div>
+            <Button
+              type="button"
+              onClick={() => setShowModal(true)}
+              style={{ width: "100%" }}
+              variant="accent"
+            >
+              {t("transactions.payments.actions.refund")}
+            </Button>
+          </div>
         </PaymentActions>
       }
+
       {showModal &&
         createPortal(
           <ConfirmationModal

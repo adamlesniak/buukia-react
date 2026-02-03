@@ -7,9 +7,9 @@ import type {
   BuukiaAssistant,
   BuukiaCategory,
   BuukiaClient,
-  BuukiaPayment,
   BuukiaService,
 } from "@/types";
+import type { StripeCharge } from "scripts/mocksStripe";
 
 export const isoDateMatchDate = (date1: string, date2: string) => {
   const [date1Parsed, date2Parsed] = [parseISO(date1), parseISO(date2)];
@@ -255,27 +255,27 @@ export const centsToFixed = (cents: number): string =>
 
 export const priceToCents = (price: number): number => price * 100;
 
-export const getTimelineFromPayment = (payment: BuukiaPayment) => {
+export const getTimelineFromCharge = (charge: StripeCharge) => {
   const items = [];
 
-  if (payment.disputed) {
+  if (charge.disputed) {
     items.push({
-      name: "transactions.payments.common.disputed",
-      date: payment.createdAt,
+      name: `transactions.payments.common.disputedAs.${charge.dispute?.status}`,
+      date: charge.dispute?.created || 0,
     });
   }
 
-  if (payment.paid) {
-    items.push({
-      name: "transactions.payments.common.authorized",
-      date: payment.createdAt,
-    });
-  }
-
-  if (payment.captured) {
+  if (charge) {
     items.push({
       name: "transactions.payments.common.captured",
-      date: payment.createdAt,
+      date: charge.created,
+    });
+  }
+
+  if (charge.paid) {
+    items.push({
+      name: "transactions.payments.common.authorized",
+      date: charge.created,
     });
   }
 

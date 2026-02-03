@@ -2,7 +2,10 @@ import * as fs from "node:fs";
 import path from "node:path";
 
 import { faker } from "@faker-js/faker";
+import { roundToNearestMinutes } from "date-fns";
 import prettier from "prettier";
+
+import { CVCCheckStatus } from "@/types";
 
 export interface StripeCharge {
   id: string;
@@ -16,24 +19,25 @@ export interface StripeCharge {
   balance_transaction: string;
   billing_details: {
     address: {
-      city: null;
-      country: null;
-      line1: null;
-      line2: null;
-      postal_code: null;
-      state: null;
+      city: string;
+      country: string;
+      line1: string;
+      line2: string;
+      postal_code: string;
+      state: string;
     };
-    email: null;
-    name: null;
-    phone: null;
+    email: string;
+    name: string;
+    phone: string;
   };
   calculated_statement_descriptor: string;
   captured: boolean;
   created: number;
   currency: string;
   customer: null;
-  description: null;
+  description: string;
   disputed: boolean;
+  dispute?: StripeDispute;
   failure_balance_transaction: null;
   failure_code: null;
   failure_message: null;
@@ -56,9 +60,9 @@ export interface StripeCharge {
     card: {
       brand: string;
       checks: {
-        address_line1_check: null;
-        address_postal_code_check: null;
-        cvc_check: null;
+        address_line1_check: CVCCheckStatus;
+        address_postal_code_check: CVCCheckStatus;
+        cvc_check: CVCCheckStatus;
       };
       country: string;
       exp_month: number;
@@ -88,11 +92,60 @@ export interface StripeCharge {
   transfer_group: null;
 }
 
+export interface StripeBalanceTransaction {
+  id: string;
+  object: "balance_transaction";
+  amount: number;
+  available_on: number;
+  balance_type: string;
+  created: number;
+  currency: string;
+  description: string;
+  exchange_rate: null;
+  fee: number;
+  fee_details: Array<{
+    amount: number;
+    application: null;
+    currency: string;
+    description: string;
+    type: string;
+  }>;
+  net: number;
+  reporting_category: string;
+  source: string;
+  status: string;
+  type: string;
+}
+
+enum StripeDisputeReason {
+  General = "general",
+  Chargeback = "chargeback",
+  Refund = "refund",
+  Duplicate = "duplicate",
+  Fraudulent = "fraudulent",
+  SubscriptionCanceled = "subscription_canceled",
+  ProductUnacceptable = "product_unacceptable",
+  ProductNotReceived = "product_not_received",
+  Unrecognized = "unrecognized",
+  CreditNotProcessed = "credit_not_processed",
+  CustomerInitiated = "customer_initiated",
+}
+
+export enum StripeDisputeStatus {
+  WarningNeedsResponse = "warning_needs_response",
+  WarningUnderReview = "warning_under_review",
+  WarningClosed = "warning_closed",
+  NeedsResponse = "needs_response",
+  UnderReview = "under_review",
+  Won = "won",
+  Lost = "lost",
+}
+
 export interface StripeDispute {
   id: string;
   object: "dispute";
   amount: number;
-  balance_transactions: [];
+  balance_transactions: StripeBalanceTransaction[];
   charge: string;
   created: number;
   currency: string;
@@ -131,12 +184,13 @@ export interface StripeDispute {
     past_due: boolean;
     submission_count: number;
   };
+  network_reason_code: string;
   is_charge_refundable: boolean;
   livemode: boolean;
   metadata: object;
   payment_intent: null;
-  reason: string;
-  status: string;
+  reason: StripeDisputeReason;
+  status: StripeDisputeStatus;
 }
 
 export interface StripePayout {
@@ -165,9 +219,62 @@ export interface StripePayout {
   type: string;
 }
 
+export const createStripeBalanceTransaction = (): StripeBalanceTransaction => {
+  const amount = faker.number.int({ min: -200 * 100, max: 200 * 100 });
+  const fee = faker.number.int({ min: 0, max: 3000 });
+  const now = Math.floor(Date.now() / 1000);
+
+  return {
+    id: `txn_${faker.string.alphanumeric(24)}`,
+    object: "balance_transaction",
+    amount,
+    available_on: now + faker.number.int({ min: 0, max: 30 * 24 * 60 * 60 }),
+    balance_type: faker.helpers.arrayElement([
+      "payments",
+      "refunds",
+      "adjustments",
+    ]),
+    created: now,
+    currency: "eur",
+    description: faker.lorem.sentence(),
+    exchange_rate: null,
+    fee,
+    fee_details: [
+      {
+        amount: fee,
+        application: null,
+        currency: "eur",
+        description: faker.helpers.arrayElement([
+          "Stripe fee",
+          "Dispute fee",
+          "Refund fee",
+        ]),
+        type: "stripe_fee",
+      },
+    ],
+    net: amount - fee,
+    reporting_category: faker.helpers.arrayElement([
+      "payments",
+      "disputes",
+      "refunds",
+      "adjustments",
+    ]),
+    source: `${faker.helpers.arrayElement(["ch", "du", "po"])}_${faker.string.alphanumeric(24)}`,
+    status: faker.helpers.arrayElement(["available", "pending", "failed"]),
+    type: faker.helpers.arrayElement(["charge", "refund", "adjustment"]),
+  };
+};
+
 export const createStripeCharge = (): StripeCharge => {
   const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
   const isSucceeded = faker.datatype.boolean({ probability: 0.8 });
+  const now = roundToNearestMinutes(
+    faker.date.between({
+      from: new Date(),
+      to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    }),
+    { nearestTo: 15 },
+  ).getTime();
 
   return {
     id: `ch_${faker.string.alphanumeric(24)}`,
@@ -181,23 +288,23 @@ export const createStripeCharge = (): StripeCharge => {
     balance_transaction: `txn_${faker.string.alphanumeric(24)}`,
     billing_details: {
       address: {
-        city: null,
-        country: null,
-        line1: null,
-        line2: null,
-        postal_code: null,
-        state: null,
+        city: faker.location.city(),
+        country: faker.location.countryCode(),
+        line1: faker.location.streetAddress(),
+        line2: faker.location.secondaryAddress(),
+        postal_code: faker.location.zipCode(),
+        state: faker.location.state(),
       },
-      email: null,
-      name: null,
-      phone: null,
+      email: faker.internet.email(),
+      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
+      phone: faker.phone.number(),
     },
     calculated_statement_descriptor: "Stripe",
     captured: isSucceeded,
-    created: Math.floor(Date.now() / 1000),
-    currency: faker.helpers.arrayElement(["usd", "eur", "gbp"]),
+    created: now,
+    currency: "eur",
     customer: null,
-    description: null,
+    description: faker.lorem.sentence(),
     disputed: faker.datatype.boolean({ probability: 0.1 }),
     failure_balance_transaction: null,
     failure_code: null,
@@ -233,9 +340,24 @@ export const createStripeCharge = (): StripeCharge => {
           "discover",
         ]),
         checks: {
-          address_line1_check: null,
-          address_postal_code_check: null,
-          cvc_check: null,
+          address_line1_check: faker.helpers.arrayElement([
+            CVCCheckStatus.Pass,
+            CVCCheckStatus.Fail,
+            CVCCheckStatus.Unavailable,
+            CVCCheckStatus.Unchecked,
+          ]),
+          address_postal_code_check: faker.helpers.arrayElement([
+            CVCCheckStatus.Pass,
+            CVCCheckStatus.Fail,
+            CVCCheckStatus.Unavailable,
+            CVCCheckStatus.Unchecked,
+          ]),
+          cvc_check: faker.helpers.arrayElement([
+            CVCCheckStatus.Pass,
+            CVCCheckStatus.Fail,
+            CVCCheckStatus.Unavailable,
+            CVCCheckStatus.Unchecked,
+          ]),
         },
         country: faker.location.countryCode(),
         exp_month: faker.number.int({ min: 1, max: 12 }),
@@ -277,26 +399,26 @@ export const createStripeCharge = (): StripeCharge => {
 export const createStripeDispute = (): StripeDispute => {
   const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
   const status = faker.helpers.arrayElement([
-    "warning_needs_response",
-    "warning_under_review",
-    "warning_closed",
-    "needs_response",
-    "under_review",
-    "won",
-    "lost",
+    StripeDisputeStatus.WarningNeedsResponse,
+    StripeDisputeStatus.WarningUnderReview,
+    StripeDisputeStatus.WarningClosed,
+    StripeDisputeStatus.NeedsResponse,
+    StripeDisputeStatus.UnderReview,
+    StripeDisputeStatus.Won,
+    StripeDisputeStatus.Lost,
   ]);
   const reason = faker.helpers.arrayElement([
-    "general",
-    "chargeback",
-    "refund",
-    "duplicate",
-    "fraudulent",
-    "subscription_canceled",
-    "product_unacceptable",
-    "product_not_received",
-    "unrecognized",
-    "credit_not_processed",
-    "customer_initiated",
+    StripeDisputeReason.General,
+    StripeDisputeReason.Chargeback,
+    StripeDisputeReason.Refund,
+    StripeDisputeReason.Duplicate,
+    StripeDisputeReason.Fraudulent,
+    StripeDisputeReason.SubscriptionCanceled,
+    StripeDisputeReason.ProductUnacceptable,
+    StripeDisputeReason.ProductNotReceived,
+    StripeDisputeReason.Unrecognized,
+    StripeDisputeReason.CreditNotProcessed,
+    StripeDisputeReason.CustomerInitiated,
   ]);
   const dueBy = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
 
@@ -304,10 +426,10 @@ export const createStripeDispute = (): StripeDispute => {
     id: `du_${faker.string.alphanumeric(24)}`,
     object: "dispute",
     amount,
-    balance_transactions: [],
+    balance_transactions: [createStripeBalanceTransaction()],
     charge: `ch_${faker.string.alphanumeric(24)}`,
     created: Math.floor(Date.now() / 1000),
-    currency: faker.helpers.arrayElement(["usd", "eur", "gbp"]),
+    currency: "eur",
     evidence: {
       access_activity_log: null,
       billing_address: null,
@@ -349,6 +471,21 @@ export const createStripeDispute = (): StripeDispute => {
     payment_intent: null,
     reason,
     status,
+    network_reason_code: faker.helpers.arrayElement([
+      "13.6",
+      "13.7",
+      "12.6.1",
+      "12.6.2",
+      "10.3",
+      "10.4",
+      "12.2",
+      "12.5",
+      "13.1",
+      "13.2",
+      "13.3",
+      "13.4",
+      "13.5",
+    ]),
   };
 };
 
@@ -364,7 +501,13 @@ export const createStripePayout = (): StripePayout => {
   const method = faker.helpers.arrayElement(["standard", "instant"]);
   const type = faker.helpers.arrayElement(["bank_account", "card"]);
   const sourceType = faker.helpers.arrayElement(["card", "bank_account"]);
-  const now = Math.floor(Date.now() / 1000);
+  const now = roundToNearestMinutes(
+    faker.date.between({
+      from: new Date(),
+      to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    }),
+    { nearestTo: 15 },
+  ).getTime();
   const arrivalDate = now + faker.number.int({ min: 1, max: 5 }) * 24 * 60 * 60;
 
   return {
@@ -375,7 +518,7 @@ export const createStripePayout = (): StripePayout => {
     automatic: faker.datatype.boolean({ probability: 0.7 }),
     balance_transaction: `txn_${faker.string.alphanumeric(24)}`,
     created: now,
-    currency: faker.helpers.arrayElement(["usd", "eur", "gbp"]),
+    currency: "eur",
     description: faker.datatype.boolean({ probability: 0.3 })
       ? faker.lorem.sentence()
       : null,
@@ -409,16 +552,28 @@ export type StripeMockData = {
 };
 
 const main = async (): Promise<void> => {
+  const disputes = Array.from({ length: 10 }).map(() => ({
+    ...createStripeDispute(),
+  }));
+
   const data: StripeMockData = {
-    charges: Array.from({ length: 10 }).map(() => ({
-      ...createStripeCharge(),
-    })),
+    charges: Array.from({ length: 10 }).map(() => {
+      const charge = createStripeCharge();
+      return {
+        ...charge,
+        dispute: charge.disputed
+          ? {
+              ...createStripeDispute(),
+              amount: charge.amount,
+              charge: charge.id,
+            }
+          : undefined,
+      };
+    }),
     payouts: Array.from({ length: 10 }).map(() => ({
       ...createStripePayout(),
     })),
-    disputes: Array.from({ length: 10 }).map(() => ({
-      ...createStripeDispute(),
-    })),
+    disputes,
   };
 
   const formattedCode = await prettier.format(JSON.stringify(data), {

@@ -1,11 +1,8 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
-// import { useState } from "react";
-// import { createPortal } from "react-dom";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { useTranslation } from "react-i18next";
 
-import { usePayment } from "@/api";
-// import { Button } from "@/components/Button";
+import { useCharge } from "@/api";
 import {
   Drawer,
   DrawerContent,
@@ -14,7 +11,6 @@ import {
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error/ErrorDetail";
 import { PaymentSummary } from "@/components/Payment";
-// import ConfirmationModal from "./ConfirmationModal";
 import { centsToFixed } from "@/utils";
 
 import { DetailNavigationTitleContent } from "./AssistantDrawer";
@@ -24,9 +20,9 @@ export default function PaymentDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const {
-    paymentId,
+    chargeId,
   }: {
-    paymentId: string;
+    chargeId: string;
   } = useParams({
     strict: false,
   });
@@ -38,10 +34,10 @@ export default function PaymentDetail() {
   };
 
   const {
-    data: payment,
+    data: charge,
     // isLoading: paymentLoading,
     error: paymentError,
-  } = usePayment(paymentId);
+  } = useCharge(chargeId);
 
   // const modalClose = (deleteConfirmed: boolean) => {
   //   setShowModal(false);
@@ -49,7 +45,7 @@ export default function PaymentDetail() {
   // };
 
   // TODO: Show 404 error.
-  if (!payment) {
+  if (!charge) {
     navigate({ to: `/transactions/payments` });
     return;
   }
@@ -64,41 +60,22 @@ export default function PaymentDetail() {
           <DetailNavigationTitleContent>
             <h2>
               {[
-                getSymbolFromCurrency(payment.currency),
-                centsToFixed(payment.amount),
+                getSymbolFromCurrency(charge.currency),
+                centsToFixed(charge.amount),
               ].join("")}
             </h2>
-            <small>{t("common.by")} {payment.id && payment.billing.email}</small>
+            <small>
+              {t("common.by")} {charge.id && charge.billing_details.email}
+            </small>
           </DetailNavigationTitleContent>
         </MemoizedDrawerHeader>
-        <DrawerContentBody justifyContent={"start"}>
+        <DrawerContentBody justifyContent={"space-between"} inline={true}>
           {isError && (
             <ErrorDetail
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && <PaymentSummary payment={payment} />}
-          {/* {paymentId && (
-            <Button
-              type="button"
-              variant="accent"
-              style={{ width: "100%", marginTop: "16px" }}
-              onClick={() => setShowModal(true)}
-            >
-              {t("transactions.payments.refund")}
-            </Button>
-          )} */}
-          {/* {showModal &&
-            createPortal(
-              <ConfirmationModal
-                title={t("transactions.payments.modal.refundTitle")}
-                description={t("transactions.payments.modal.refundMessage")}
-                close={modalClose}
-                type={"primary"}
-                confirmText={t("transactions.payments.refund")}
-              />,
-              document.body,
-            )} */}
+          {!isError && <PaymentSummary charge={charge} />}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>
