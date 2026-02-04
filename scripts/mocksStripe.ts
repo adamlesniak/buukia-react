@@ -141,6 +141,12 @@ export enum StripeDisputeStatus {
   Lost = "lost",
 }
 
+export enum StripeRefundReason {
+  Duplicate = "duplicate",
+  Fraudulent = "fraudulent",
+  RequestedByCustomer = "requested_by_customer",
+}
+
 export interface StripeDispute {
   id: string;
   object: "dispute";

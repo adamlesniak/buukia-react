@@ -27,7 +27,7 @@ export type DrawerContentBodyProps = {
     | "end"
     | "space-between"
     | "space-around";
-  inline: boolean;
+  inline?: boolean;
 };
 
 export function DrawerContentBody(props: DrawerContentBodyProps) {

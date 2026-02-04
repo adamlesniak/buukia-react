@@ -77,7 +77,7 @@ export const PaymentDisputeSummary = memo(
               ].join("")}
             </h4>
             <TransactionChip
-              data-testid="summary-item-status"
+              data-testid="dispute-summary-item-status"
               status={
                 props.dispute?.status === StripeDisputeStatus.Won
                   ? PaymentStatus.Succeeded

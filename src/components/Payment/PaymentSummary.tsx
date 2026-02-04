@@ -7,7 +7,7 @@ import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import ConfirmationModal from "@/containers/ConfirmationModal";
+import RefundModal from "@/containers/RefundModal";
 import { CVCCheckStatus } from "@/types";
 import { centsToFixed, getTimelineFromCharge, PaymentStatus } from "@/utils";
 import { type StripeCharge } from "scripts/mocksStripe";
@@ -96,8 +96,8 @@ const TimelineItem = styled.div<{ isLast: boolean }>`
 
 const TimelineIcon = styled.div`
   position: absolute;
-  left: -9px;
-  top: 0px;
+  left: -8px;
+  top: -8px;
 `;
 
 interface TimelineItem {
@@ -107,6 +107,7 @@ interface TimelineItem {
 
 type PaymentSummaryProps = {
   charge: StripeCharge;
+  onSubmit: (data: any) => void;
 };
 
 // TODO: Add actions, refund form.
@@ -136,7 +137,7 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.amount")}</b>{" "}
-            <PaymentSummaryListItemValue>
+            <PaymentSummaryListItemValue data-testid="summary-item-amount">
               {[
                 getSymbolFromCurrency(props.charge.currency),
                 centsToFixed(props.charge.amount),
@@ -151,7 +152,7 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.status")}</b>{" "}
-            <PaymentSummaryListItemValue>
+            <PaymentSummaryListItemValue data-testid="summary-item-status">
               <TransactionChip
                 data-testid="summary-item-status"
                 status={
@@ -160,9 +161,9 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
                     : props.charge.status
                 }
               >
-                {props.charge.disputed
+                {props.charge.dispute
                   ? t("transactions.payments.common.disputed")
-                  : props.charge.status}
+                  : t(`common.status.${props.charge.status}`)}
               </TransactionChip>
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
@@ -187,8 +188,10 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.paymentMethod.type")}</b>{" "}
             <PaymentSummaryListItemValue>
-              {props.charge.payment_method_details.card.brand}{" "}
-              {props.charge.payment_method_details.card.funding}
+              {[
+                props.charge.payment_method_details.card.brand,
+                props.charge.payment_method_details.card.funding,
+              ].join(" ")}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
@@ -196,8 +199,8 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
               {t(
                 "transactions.payments.summary.paymentMethod.amountAuthorized",
               )}
-            </b>{" "}
-            <PaymentSummaryListItemValue>
+            </b>
+            <PaymentSummaryListItemValue data-testid="authorized-amount">
               {[
                 getSymbolFromCurrency(props.charge.currency),
                 centsToFixed(props.charge.amount_captured),
@@ -207,8 +210,10 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
           <PaymentSummaryListItem>
             <b>{t("transactions.payments.summary.paymentMethod.expiry")}</b>{" "}
             <PaymentSummaryListItemValue>
-              {props.charge.payment_method_details.card.exp_month}/
-              {props.charge.payment_method_details.card.exp_year}
+              {[
+                props.charge.payment_method_details.card.exp_month,
+                props.charge.payment_method_details.card.exp_year,
+              ].join("/")}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
@@ -261,6 +266,7 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
               <TimelineItem
                 isLast={index === timelineItems.length - 1}
                 key={index}
+                data-testid={`timeline-item-${index}`}
               >
                 <TimelineIcon>
                   <Circle
@@ -269,8 +275,12 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
                     color={"#f4f4f4"}
                   />
                 </TimelineIcon>
-                <span>{t(item.name)}</span>
-                <small>{format(new Date(item.date), "dd LLL, hh:mm a")}</small>
+                <span data-testid={`timeline-item-name-${index}`}>
+                  {t(item.name)}
+                </span>
+                <small data-testid={`timeline-item-date-${index}`}>
+                  {format(new Date(item.date), "dd LLL, hh:mm a")}
+                </small>
               </TimelineItem>
             ))}
           </div>
@@ -294,12 +304,13 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
 
       {showModal &&
         createPortal(
-          <ConfirmationModal
-            title={t("transactions.payments.modal.cancelTitle")}
-            description={t("transactions.payments.modal.cancelMessage")}
+          <RefundModal
+            title={t("transactions.payments.modal.refundTitle")}
             close={modalClose}
             type={"primary"}
+            charge={props.charge}
             confirmText={t("transactions.payments.actions.refund")}
+            onSubmit={props.onSubmit}
           />,
           document.body,
         )}

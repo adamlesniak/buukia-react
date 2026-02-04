@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 import getSymbolFromCurrency from "currency-symbol-map";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useCharge } from "@/api";
@@ -14,6 +15,7 @@ import { PaymentSummary } from "@/components/Payment";
 import { centsToFixed } from "@/utils";
 
 import { DetailNavigationTitleContent } from "./AssistantDrawer";
+
 
 // TODO: Add Manage section to provide options to performance, statistics, etc.
 export default function PaymentDetail() {
@@ -39,10 +41,13 @@ export default function PaymentDetail() {
     error: paymentError,
   } = useCharge(chargeId);
 
-  // const modalClose = (deleteConfirmed: boolean) => {
-  //   setShowModal(false);
-  //   onClose();
-  // };
+  const submit = useCallback(
+    async (data) => {
+      console.log(data);
+      return;
+    },
+    [chargeId],
+  );
 
   // TODO: Show 404 error.
   if (!charge) {
@@ -65,7 +70,9 @@ export default function PaymentDetail() {
               ].join("")}
             </h2>
             <small>
-              {t("common.by")} {charge.id && charge.billing_details.email}
+              {[t("common.by"), charge.id && charge.billing_details.email].join(
+                " ",
+              )}
             </small>
           </DetailNavigationTitleContent>
         </MemoizedDrawerHeader>
@@ -75,7 +82,7 @@ export default function PaymentDetail() {
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && <PaymentSummary charge={charge} />}
+          {!isError && <PaymentSummary onSubmit={submit} charge={charge} />}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

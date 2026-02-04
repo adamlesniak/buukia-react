@@ -216,6 +216,7 @@
       }
     },
     "payments": {
+      "description": "A simple description about refund.",
       "common": {
         "status": "Status",
         "reason": "Reason",
@@ -341,7 +342,22 @@
       },
       "modal": {
         "refundTitle": "Refund Payment",
-        "refundMessage": "Are you sure you want to refund this payment?"
+        "refundMessage": "Are you sure you want to refund this payment?",
+        "refundDescription": "Refunds typically take 5-10 business days to appear on a customer's statement, and while there are no fees to process a refund, original transaction fees are not returned.",
+        "amount": "Amount",
+        "reason": "Reason",
+        "reasonOptions": {
+          "duplicate": "Duplicate",
+          "fraudulent": "Fraudulent",
+          "requested_by_customer": "Requested by Customer"
+        },
+        "form": {
+          "errors": {
+            "amountError": "Amount is required",
+            "reasonError": "Reason is required",
+            "descriptionError": "Description is required"
+          }
+        }
       },
       "title": "Payments",
       "noPaymentsFound": "No payments found.",
