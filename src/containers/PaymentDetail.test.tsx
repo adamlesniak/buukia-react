@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { format } from "date-fns/format";
 
-import { useCharge } from "@/api";
+import { useCharge, useCreateRefund } from "@/api";
 import { centsToFixed, getTimelineFromCharge } from "@/utils";
 import { createStripeDispute, type StripeCharge } from "scripts/mocksStripe";
 
@@ -14,6 +14,7 @@ import data from "../routes/data-stripe.json";
 // Mock the API hooks
 vi.mock("@/api", async () => ({
   useCharge: vi.fn(),
+  useCreateRefund: vi.fn(),
 }));
 
 vi.mock("react-i18next", () => ({
@@ -23,6 +24,13 @@ vi.mock("react-i18next", () => ({
 // Mock TanStack Router
 const mockNavigate = vi.fn();
 const mockUseParams = vi.fn();
+const mockMutate = vi
+  .fn()
+  .mockImplementation((_data: unknown, options: unknown) => {
+    if (options && typeof options === "object" && "onSuccess" in options) {
+      (options as { onSuccess: () => void }).onSuccess();
+    }
+  });
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => mockNavigate,
@@ -38,11 +46,15 @@ vi.mock("@tanstack/react-router", () => ({
 
 const mockCharge = {
   ...data.charges[0],
+  amount: 8888,
   dispute: createStripeDispute(),
 } as StripeCharge;
 
 // Create test data
 const mockUseCharge = useCharge as unknown as ReturnType<typeof vi.fn>;
+const mockUseCreateRefund = useCreateRefund as unknown as ReturnType<
+  typeof vi.fn
+>;
 
 // Import the component after mocking
 const PaymentDetail = await import("./PaymentDetail");
@@ -65,6 +77,7 @@ describe("PaymentDetail", () => {
     vi.setSystemTime(date);
 
     mockNavigate.mockClear();
+    mockMutate.mockClear();
 
     // Mock route params
     mockUseParams.mockReturnValue({
@@ -78,6 +91,10 @@ describe("PaymentDetail", () => {
       isLoading: false,
       refetch: vi.fn(),
       isRefetching: false,
+    });
+
+    mockUseCreateRefund.mockReturnValue({
+      mutate: mockMutate,
     });
   });
 
@@ -163,9 +180,7 @@ describe("PaymentDetail", () => {
         screen.queryByText("transactions.payments.summary.status"),
       ).toBeInTheDocument();
       expect(
-        screen.queryByText(
-          `common.status.${mockCharge.status}`,
-        ),
+        screen.queryByText(`common.status.${mockCharge.status}`),
       ).toBeInTheDocument();
       expect(
         screen.queryByText("transactions.payments.summary.paymentMethod.card"),
@@ -341,23 +356,6 @@ describe("PaymentDetail", () => {
           ),
         ).toBeInTheDocument();
       });
-
-      // it("should show dispute item header", () => {
-      //   render(
-      //     <QueryClientProvider client={queryClient}>
-      //       <PaymentDetail.default />
-      //     </QueryClientProvider>,
-      //   );
-
-      //   expect(
-      //     screen.queryByText(
-      //       `transactions.payments.common.disputedFor ${[
-      //         getSymbolFromCurrency(mockCharge.dispute?.currency || ""),
-      //         centsToFixed(mockCharge.dispute?.amount || 0),
-      //       ].join("")}`,
-      //     ),
-      //   ).toBeInTheDocument();
-      // });
     });
 
     describe("timeline", () => {
@@ -405,232 +403,71 @@ describe("PaymentDetail", () => {
           screen.queryByText("transactions.payments.actions.refund"),
         ).toBeInTheDocument();
       });
+
+      it('should show modal with title "Refund payment" when clicking refund button', async () => {
+        render(
+          <QueryClientProvider client={queryClient}>
+            <PaymentDetail.default />
+          </QueryClientProvider>,
+        );
+
+        const refundButton = screen.queryByText(
+          "transactions.payments.actions.refund",
+        );
+
+        await user.click(refundButton!);
+
+        expect(
+          screen.queryByText("transactions.payments.modal.refundTitle"),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByText("transactions.payments.modal.refundDescription"),
+        ).toBeInTheDocument();
+      });
+
+      it("should show modal anmd submit form using sample data", async () => {
+        render(
+          <QueryClientProvider client={queryClient}>
+            <PaymentDetail.default />
+          </QueryClientProvider>,
+        );
+
+        const refundButton = screen.queryByText(
+          "transactions.payments.actions.refund",
+        );
+
+        await user.click(refundButton!);
+
+        const amountInput = screen.getByTestId(
+          "refund-amount-input",
+        ) as HTMLInputElement;
+        const reasonInput = screen.getByTestId(
+          "refund-reason-input",
+        ) as HTMLSelectElement;
+        const descriptionInput = screen.getByTestId(
+          "refund-description-input",
+        ) as HTMLTextAreaElement;
+
+        await user.selectOptions(reasonInput, "duplicate");
+        await user.type(descriptionInput, "Test refund description");
+
+        await user.click(screen.getByTestId("confirm-refund-button")!);
+
+        expect(amountInput).toHaveValue("88.88");
+        expect(reasonInput).toHaveValue("duplicate");
+        expect(descriptionInput).toHaveValue("Test refund description");
+        expect(mockMutate).toHaveBeenCalledWith(
+          {
+            charge: mockCharge.id,
+            amount: mockCharge.amount,
+            reason: "duplicate",
+            payment_intent: null,
+            metadata: {
+              description: "Test refund description",
+            },
+          },
+        );
+      });
     });
-    // it("should show summary title with create date when payout is not completed", () => {
-    //   mockUsePayment.mockReturnValue({
-    //     data: {
-    //       ...mockPayment,
-    //       status: PaymentStatus.Pending,
-    //     },
-    //     error: null,
-    //     isLoading: false,
-    //   });
-    //   mockUseParams.mockReturnValue({
-    //     payoutId: "testPaymentId",
-    //   });
-
-    //   render(
-    //     <QueryClientProvider client={queryClient}>
-    //       <PaymentDetail.default />
-    //     </QueryClientProvider>,
-    //   );
-
-    //   expect(
-    //     screen.queryByText(
-    //       [
-    //         getSymbolFromCurrency(mockPayment.currency),
-    //         centsToFixed(mockPayment.amount),
-    //       ].join(""),
-    //       { ignore: "span" },
-    //     ),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByTestId(`summary-item-title-status`),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText(
-    //       `transactions.payouts.createdAt ${format(new Date(mockPayment.arrivalDate), "PPPp")}`,
-    //     ),
-    //   ).toBeInTheDocument();
-    // });
-
-    // it("should show summary items", async () => {
-    //   render(
-    //     <QueryClientProvider client={queryClient}>
-    //       <PaymentDetail.default />
-    //     </QueryClientProvider>,
-    //   );
-
-    //   // Labels
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.destination"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.sourceId"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.amount"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.arrivalDate"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.description"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText(
-    //       "transactions.payouts.summary.statementDescription",
-    //     ),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.method"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.status"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.summary.instantPaymentFee"),
-    //   ).toBeInTheDocument();
-
-    //   // Values
-    //   expect(screen.queryByText(mockPayment.destination)).toBeInTheDocument();
-    //   expect(screen.queryByText(mockPayment.sourceId)).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText(
-    //       [
-    //         getSymbolFromCurrency(mockPayment.currency),
-    //         centsToFixed(mockPayment.amount),
-    //       ].join(""),
-    //       {
-    //         ignore: "h2",
-    //       },
-    //     ),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText(
-    //       format(new Date(mockPayment.arrivalDate), "dd/LL/yyyy, hh:mm a"),
-    //     ),
-    //   ).toBeInTheDocument();
-    //   expect(screen.queryByText(mockPayment.description)).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText(mockPayment.statement_description),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText(`transactions.payouts.method.${mockPayment.type}`),
-    //   ).toBeInTheDocument();
-    //   expect(screen.queryByTestId(`summary-item-status`)).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText(
-    //       [
-    //         getSymbolFromCurrency(mockPayment.currency),
-    //         centsToFixed(mockPayment.fee?.amount || 0),
-    //       ].join(""),
-    //       {
-    //         ignore: "h2",
-    //       },
-    //     ),
-    //   ).toBeInTheDocument();
-    // });
-
-    // it("should show actions for payouts in PENDING status", async () => {
-    //   mockUsePayment.mockReturnValue({
-    //     data: {
-    //       ...mockPayment,
-    //       status: PaymentStatus.Pending,
-    //     },
-    //     error: null,
-    //     isLoading: false,
-    //   });
-
-    //   render(
-    //     <QueryClientProvider client={queryClient}>
-    //       <PaymentDetail.default />
-    //     </QueryClientProvider>,
-    //   );
-
-    //   expect(screen.queryByText("common.actions")).toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.actions.cancel"),
-    //   ).toBeInTheDocument();
-    // });
-
-    // it("should remove service following by confirmation dialog", async () => {
-    //   mockUsePayment.mockReturnValue({
-    //     data: {
-    //       ...mockPayment,
-    //       status: PaymentStatus.Pending,
-    //     },
-    //     error: null,
-    //     isLoading: false,
-    //   });
-    //   mockUseCancelPayment.mockReturnValue({
-    //     mutate: mockMutateCancel,
-    //   });
-    //   mockUseParams.mockReturnValue({
-    //     payoutId: "testPaymentId",
-    //   });
-
-    //   render(
-    //     <QueryClientProvider client={queryClient}>
-    //       <PaymentDetail.default />
-    //     </QueryClientProvider>,
-    //   );
-
-    //   await user.click(
-    //     screen.getByText("transactions.payouts.actions.cancel"),
-    //   );
-
-    //   expect(
-    //     screen.getByText("transactions.payouts.modal.cancelTitle"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.getByText("transactions.payouts.modal.cancelMessage"),
-    //   ).toBeInTheDocument();
-
-    //   await user.click(
-    //     screen.queryAllByText("transactions.payouts.actions.cancel")[1],
-    //   );
-
-    //   expect(
-    //     screen.queryByText("transactions.payouts.modal.cancelTitle"),
-    //   ).not.toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.modal.cancelMessage"),
-    //   ).not.toBeInTheDocument();
-    //   expect(mockMutateCancel).toHaveBeenCalledWith("testPaymentId", {
-    //     onSuccess: expect.any(Function),
-    //   });
-    // });
-
-    // it("should not remove service following by confirmation dialog", async () => {
-    //   mockUsePayment.mockReturnValue({
-    //     data: {
-    //       ...mockPayment,
-    //       status: PaymentStatus.Pending,
-    //     },
-    //     error: null,
-    //     isLoading: false,
-    //   });
-    //   mockUseCancelPayment.mockReturnValue({
-    //     mutate: mockMutateCancel,
-    //   });
-
-    //   render(
-    //     <QueryClientProvider client={queryClient}>
-    //       <PaymentDetail.default />
-    //     </QueryClientProvider>,
-    //   );
-
-    //   await user.click(
-    //     screen.getByText("transactions.payouts.actions.cancel"),
-    //   );
-
-    //   expect(
-    //     screen.getByText("transactions.payouts.modal.cancelTitle"),
-    //   ).toBeInTheDocument();
-    //   expect(
-    //     screen.getByText("transactions.payouts.modal.cancelMessage"),
-    //   ).toBeInTheDocument();
-
-    //   await user.click(screen.getByText("common.cancel", { exact: true }));
-
-    //   expect(
-    //     screen.queryByText("transactions.payouts.modal.cancelTitle"),
-    //   ).not.toBeInTheDocument();
-    //   expect(
-    //     screen.queryByText("transactions.payouts.modal.cancelMessage"),
-    //   ).not.toBeInTheDocument();
-    //   expect(mockMutateCancel).not.toHaveBeenCalled();
-    // });
   });
 });

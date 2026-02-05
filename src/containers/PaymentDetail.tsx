@@ -3,7 +3,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useCharge } from "@/api";
+import { useCharge, useCreateRefund } from "@/api";
 import {
   Drawer,
   DrawerContent,
@@ -12,10 +12,10 @@ import {
 } from "@/components/Drawer";
 import { ErrorDetail } from "@/components/Error/ErrorDetail";
 import { PaymentSummary } from "@/components/Payment";
+import type { CreateRefundBody } from "@/types";
 import { centsToFixed } from "@/utils";
 
 import { DetailNavigationTitleContent } from "./AssistantDrawer";
-
 
 // TODO: Add Manage section to provide options to performance, statistics, etc.
 export default function PaymentDetail() {
@@ -28,6 +28,8 @@ export default function PaymentDetail() {
   } = useParams({
     strict: false,
   });
+
+  const [createRefund] = [useCreateRefund()];
 
   // const [showModal, setShowModal] = useState(false);
 
@@ -42,10 +44,8 @@ export default function PaymentDetail() {
   } = useCharge(chargeId);
 
   const submit = useCallback(
-    async (data) => {
-      console.log(data);
-      return;
-    },
+    async (data: CreateRefundBody) =>
+      createRefund.mutate(data as CreateRefundBody),
     [chargeId],
   );
 
@@ -82,7 +82,7 @@ export default function PaymentDetail() {
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && <PaymentSummary onSubmit={submit} charge={charge} />}
+          {!isError && <PaymentSummary error={createRefund.error} onSubmit={submit} charge={charge} />}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

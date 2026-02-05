@@ -43,9 +43,9 @@ const LargeText = styled.span`
   font-weight: bold;
 `;
 
-const ExtraLargeText = styled.span`
+const ExtraLargeText = styled.span<{ weight?: string }>`
   font-size: 32px;
-  font-weight: bold;
+  font-weight: ${(props) => props.weight || "bold"};
 `;
 
 export default function Payouts() {
@@ -95,7 +95,9 @@ export default function Payouts() {
             >
               <LargeText>{t("transactions.payouts.cards.total")}</LargeText>
               <ExtraLargeText>
-                <LargeText style={{ marginRight: "8px" }}>€</LargeText>
+                <LargeText style={{ marginRight: "8px" }}>
+                  {getSymbolFromCurrency("EUR")}
+                </LargeText>
                 {centsToFixed(stats.totalAmount)}
               </ExtraLargeText>
             </Card>

@@ -3,14 +3,15 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { format } from "date-fns/format";
 
-import { usePayments, usePaymentsStats } from "@/api";
+import { useCharges, usePaymentsStats } from "@/api";
 
 import { server } from "../mocks/server";
+import dataStripe from "../routes/data-stripe.json";
 import data from "../routes/data.json";
 
-
 vi.mock("@/api", async () => ({
-  usePayments: vi.fn(),
+  useCreateRefund: vi.fn(),
+  useCharges: vi.fn(),
   usePaymentsStats: vi.fn(),
 }));
 
@@ -33,7 +34,7 @@ vi.mock("@tanstack/react-router", () => ({
   Link: vi.fn(),
 }));
 
-const mockUsePayments = usePayments as unknown as ReturnType<typeof vi.fn>;
+const mockUseCharges = useCharges as unknown as ReturnType<typeof vi.fn>;
 const mockUsePaymentsStats = usePaymentsStats as unknown as ReturnType<
   typeof vi.fn
 >;
@@ -73,8 +74,13 @@ describe("Payments", () => {
 
     mockNavigate.mockClear();
 
-    mockUsePayments.mockReturnValue({
-      data: data.payments,
+    mockUseCharges.mockReturnValue({
+      data: {
+        object: "list",
+        url: "/v1/charges",
+        has_more: false,
+        data: dataStripe.charges,
+      },
       error: null,
       isLoading: false,
     });
@@ -138,7 +144,9 @@ describe("Payments", () => {
       ).toBeInTheDocument();
       data.payments.forEach((payment) => {
         expect(screen.queryAllByText(payment.id)).toBeDefined();
-        expect(screen.queryAllByText(format(new Date(payment.createdAt), "Pp"))).toBeDefined();
+        expect(
+          screen.queryAllByText(format(new Date(payment.createdAt), "Pp")),
+        ).toBeDefined();
         expect(screen.queryAllByText(payment.amount)).toBeDefined();
         expect(screen.queryAllByText(payment.status)).toBeDefined();
       });
@@ -169,7 +177,9 @@ describe("Payments", () => {
       ).toBeInTheDocument();
       data.payments.forEach((payment) => {
         expect(screen.queryAllByText(payment.id)).toBeDefined();
-        expect(screen.queryAllByText(format(new Date(payment.createdAt), "Pp"))).toBeDefined();
+        expect(
+          screen.queryAllByText(format(new Date(payment.createdAt), "Pp")),
+        ).toBeDefined();
         expect(screen.queryAllByText(payment.amount)).toBeDefined();
         expect(screen.queryAllByText(payment.status)).toBeDefined();
       });
@@ -191,7 +201,7 @@ describe("Payments", () => {
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith({
-        to: `/transactions/payments/${data.payments[0].id}`,
+        to: `/transactions/payments/${dataStripe.charges[0].id}`,
       });
     });
   });
@@ -199,8 +209,13 @@ describe("Payments", () => {
   it("should show error in case of payments error", async () => {
     const queryClient = new QueryClient();
 
-    mockUsePayments.mockReturnValue({
-      data: data.payments,
+    mockUseCharges.mockReturnValue({
+      data: {
+        object: "list",
+        url: "/v1/charges",
+        has_more: false,
+        data: dataStripe.charges,
+      },
       error: new Error("Payments error"),
       isLoading: false,
     });

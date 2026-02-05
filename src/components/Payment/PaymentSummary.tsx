@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import RefundModal from "@/containers/RefundModal";
-import { CVCCheckStatus } from "@/types";
+import { CVCCheckStatus, type CreateRefundBody } from "@/types";
 import { centsToFixed, getTimelineFromCharge, PaymentStatus } from "@/utils";
 import { type StripeCharge } from "scripts/mocksStripe";
 
@@ -107,7 +107,8 @@ interface TimelineItem {
 
 type PaymentSummaryProps = {
   charge: StripeCharge;
-  onSubmit: (data: any) => void;
+  error: Error | null;
+  onSubmit: (data: CreateRefundBody) => void;
 };
 
 // TODO: Add actions, refund form.
@@ -116,6 +117,11 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
   const [showModal, setShowModal] = useState(false);
 
   const timelineItems = getTimelineFromCharge(props.charge);
+
+  const onSubmit = (data: CreateRefundBody) => {
+    props.onSubmit(data);
+    setShowModal(false);
+  };
 
   const modalClose = () => {
     setShowModal(false);
@@ -201,6 +207,19 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
               )}
             </b>
             <PaymentSummaryListItemValue data-testid="authorized-amount">
+              {[
+                getSymbolFromCurrency(props.charge.currency),
+                centsToFixed(props.charge.amount_captured),
+              ].join("")}
+            </PaymentSummaryListItemValue>
+          </PaymentSummaryListItem>
+          <PaymentSummaryListItem>
+            <b>
+              {t(
+                "transactions.payments.summary.paymentMethod.fee",
+              )}
+            </b>
+            <PaymentSummaryListItemValue data-testid="fee-amount">
               {[
                 getSymbolFromCurrency(props.charge.currency),
                 centsToFixed(props.charge.amount_captured),
@@ -310,7 +329,8 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
             type={"primary"}
             charge={props.charge}
             confirmText={t("transactions.payments.actions.refund")}
-            onSubmit={props.onSubmit}
+            onSubmit={onSubmit}
+            error={props.error}
           />,
           document.body,
         )}

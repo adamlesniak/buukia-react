@@ -302,6 +302,7 @@
         },
         "paymentMethod": {
           "amountAuthorized": "Amount Authorized",
+          "fee": "Fee",
           "brand": "Brand",
           "last4": "Last 4 Digits",
           "expiry": "Expiry",

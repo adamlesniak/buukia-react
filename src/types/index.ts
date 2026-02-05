@@ -1,4 +1,5 @@
 import type { PaymentStatus, PayoutStatus } from "@/utils";
+import type { StripeRefundReason } from "scripts/mocksStripe";
 
 export interface CreateAppointmentBody {
   assistantId: string;
@@ -34,6 +35,15 @@ export interface UpdateCategoryBody extends CreateCategoryBody {
   id: string;
 }
 
+export interface CreateRefundBody {
+  amount: number;
+  charge: string;
+  reason: StripeRefundReason;
+  payment_intent: string | null;
+  metadata: {
+    description: string;
+  }
+}
 export interface CreateAssistantBody {
   firstName: string;
   lastName: string;

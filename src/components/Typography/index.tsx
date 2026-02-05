@@ -9,6 +9,7 @@ export const LargeText = styled.span`
   font-size: 18px;
 `;
 
-export const ExtraLargeText = styled.span`
+export const ExtraLargeText = styled.span<{ weight?: string }>`
   font-size: 32px;
+  font-weight: ${(props) => props.weight || "bold"};
 `;

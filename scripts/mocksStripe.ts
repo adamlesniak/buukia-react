@@ -7,6 +7,32 @@ import prettier from "prettier";
 
 import { CVCCheckStatus } from "@/types";
 
+export interface StripeRefund {
+  id: string;
+  object: "refund";
+  amount: number;
+  balance_transaction: string;
+  charge: string;
+  created: number;
+  currency: string;
+  destination_details: {
+    card: {
+      reference: string;
+      reference_status: string;
+      reference_type: string;
+      type: string;
+    };
+    type: string;
+  };
+  metadata: object;
+  payment_intent: string | null;
+  reason: StripeRefundReason;
+  receipt_number: string;
+  source_transfer_reversal: string;
+  status: string;
+  transfer_reversal: string;
+}
+
 export interface StripeCharge {
   id: string;
   object: "charge";
@@ -495,6 +521,53 @@ export const createStripeDispute = (): StripeDispute => {
   };
 };
 
+export const createStripeRefund = (): StripeRefund => {
+  const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
+  const status = faker.helpers.arrayElement(["succeeded", "failed", "pending"]);
+  const now = roundToNearestMinutes(
+    faker.date.between({
+      from: new Date(),
+      to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    }),
+    { nearestTo: 15 },
+  ).getTime();
+
+  return {
+    id: `re_${faker.string.alphanumeric(24)}`,
+    object: "refund",
+    amount,
+    balance_transaction: `txn_${faker.string.alphanumeric(24)}`,
+    charge: `ch_${faker.string.alphanumeric(24)}`,
+    created: now,
+    currency: "eur",
+    destination_details: {
+      card: {
+        reference: faker.string.numeric(12),
+        reference_status: faker.helpers.arrayElement([
+          "available",
+          "unavailable",
+        ]),
+        reference_type: "acquirer_reference_number",
+        type: "refund",
+      },
+      type: "card",
+    },
+    metadata: {},
+    payment_intent: faker.datatype.boolean({ probability: 0.8 })
+      ? `pi_${faker.string.alphanumeric(24)}`
+      : null,
+    reason: faker.helpers.arrayElement([
+      StripeRefundReason.Duplicate,
+      StripeRefundReason.Fraudulent,
+      StripeRefundReason.RequestedByCustomer,
+    ]),
+    receipt_number: faker.string.alphanumeric(16),
+    source_transfer_reversal: `trr_${faker.string.alphanumeric(24)}`,
+    status,
+    transfer_reversal: `tr_${faker.string.alphanumeric(24)}`,
+  };
+};
+
 export const createStripePayout = (): StripePayout => {
   const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
   const status = faker.helpers.arrayElement([
@@ -555,6 +628,7 @@ export type StripeMockData = {
   charges: StripeCharge[];
   payouts: StripePayout[];
   disputes: StripeDispute[];
+  refunds: StripeRefund[];
 };
 
 const main = async (): Promise<void> => {
@@ -580,6 +654,9 @@ const main = async (): Promise<void> => {
       ...createStripePayout(),
     })),
     disputes,
+    refunds: Array.from({ length: 10 }).map(() => ({
+      ...createStripeRefund(),
+    })),
   };
 
   const formattedCode = await prettier.format(JSON.stringify(data), {

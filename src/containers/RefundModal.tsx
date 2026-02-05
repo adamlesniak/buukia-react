@@ -15,7 +15,8 @@ import {
   TextArea,
 } from "@/components/Form";
 import { Modal, Overlay } from "@/components/Modal";
-import { centsToFixed } from "@/utils";
+import type { CreateRefundBody } from "@/types";
+import { centsToFixed, priceToCents } from "@/utils";
 import { refundFormSchema, validateResolver } from "@/validators";
 import { StripeRefundReason, type StripeCharge } from "scripts/mocksStripe";
 
@@ -52,7 +53,8 @@ type RefundModalProps = {
   type: "primary" | "danger";
   confirmText: string;
   charge: StripeCharge;
-  onSubmit: (data: RefundModalFormValues) => void;
+  error: Error | null;
+  onSubmit: (data: CreateRefundBody) => void;
 };
 
 type RefundModalFormValues = {
@@ -80,10 +82,14 @@ export default function RefundModal(props: RefundModalProps) {
   });
 
   const onSubmit = (data: RefundModalFormValues) => {
-    const body = {
-      amount: data.amount,
-      description: data.description,
-      reason: data.reason,
+    const body: CreateRefundBody = {
+      amount: priceToCents(parseFloat(data.amount)),
+      charge: props.charge.id,
+      reason: data.reason as StripeRefundReason,
+      payment_intent: null,
+      metadata: {
+        description: data.description,
+      },
     };
 
     props.onSubmit(body);
@@ -188,6 +194,11 @@ export default function RefundModal(props: RefundModalProps) {
                   </FieldError>
                 )}
               </Field>
+              {props.error && (
+                <FieldError style={{ marginBottom: "16px" }} role="alert">
+                  {props.error.message || t("common.unknownError")}
+                </FieldError>
+              )}
               <ActionsButtons>
                 <Button
                   type="button"
@@ -202,6 +213,7 @@ export default function RefundModal(props: RefundModalProps) {
                 </Button>
                 <Button
                   type="submit"
+                  data-testid="confirm-refund-button"
                   variant={props.type === "primary" ? "accent" : "danger"}
                 >
                   {props.confirmText}

@@ -6,3 +6,4 @@ export * from "./payments";
 export * from "./payouts";
 export * from "./services";
 export * from "./stripe/charges";
+export * from "./stripe/refunds";

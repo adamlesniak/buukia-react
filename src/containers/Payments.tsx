@@ -4,8 +4,7 @@ import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { usePaymentsStats } from "@/api";
-import { useCharges } from "@/api/stripe/charges";
+import { usePaymentsStats, useCharges } from "@/api";
 import { Card } from "@/components/Card";
 import { TransactionChip } from "@/components/Chip";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
@@ -19,7 +18,7 @@ import {
   TableRowItem,
 } from "@/components/Table";
 import { ExtraLargeText, LargeText } from "@/components/Typography";
-import { MAX_PAGINATION } from "@/constants";
+import { MAX_PAGINATION, SETTINGS } from "@/constants";
 import { centsToFixed, PaymentStatus } from "@/utils";
 
 const PaymentsHeading = styled.div`
@@ -79,7 +78,9 @@ export default function Payments() {
             >
               <LargeText>{t("transactions.payments.cards.total")}</LargeText>
               <ExtraLargeText>
-                <LargeText style={{ marginRight: "8px" }}>€</LargeText>
+                <LargeText style={{ marginRight: "8px" }}>
+                  {getSymbolFromCurrency(SETTINGS.currency)}
+                </LargeText>
                 {centsToFixed(paymentsStats.totalAmount)}
               </ExtraLargeText>
             </Card>
@@ -92,7 +93,7 @@ export default function Payments() {
                 {t("transactions.payments.cards.averagePayment")}
               </LargeText>
               <ExtraLargeText>
-                <LargeText style={{ marginRight: "8px" }}>€</LargeText>
+                <LargeText style={{ marginRight: "8px" }}>{getSymbolFromCurrency(SETTINGS.currency)}</LargeText>
                 {centsToFixed(paymentsStats.averagePayment)}
               </ExtraLargeText>
             </Card>
