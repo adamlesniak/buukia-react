@@ -7,6 +7,29 @@ import prettier from "prettier";
 
 import { CVCCheckStatus } from "@/types";
 
+export interface StripePagination<T> {
+  object: "list";
+  url: string;
+  has_more: boolean;
+  data: T[];
+}
+
+export interface StripeBankAccount {
+  id: string;
+  object: "bank_account";
+  account_holder_name: string;
+  account_holder_type: string;
+  bank_name: string;
+  country: string;
+  currency: string;
+  customer: string;
+  fingerprint: string;
+  last4: string;
+  metadata: object;
+  routing_number: string;
+  status: string;
+}
+
 export interface StripeRefund {
   id: string;
   object: "refund";
@@ -173,6 +196,11 @@ export enum StripeRefundReason {
   RequestedByCustomer = "requested_by_customer",
 }
 
+export enum StripeAccountHolderType {
+  Company = "company",
+  Individual = "individual",
+}
+
 export interface StripeDispute {
   id: string;
   object: "dispute";
@@ -250,6 +278,24 @@ export interface StripePayout {
   status: string;
   type: string;
 }
+
+export const createStripeBankAccount = (): StripeBankAccount => {
+  return {
+    id: `ba_${faker.string.alphanumeric(24)}`,
+    object: "bank_account",
+    account_holder_name: `${faker.person.firstName()} ${faker.person.lastName()}`,
+    account_holder_type: faker.helpers.arrayElement(["individual", "company"]),
+    bank_name: faker.company.name(),
+    country: faker.location.countryCode(),
+    currency: faker.helpers.arrayElement(["usd", "eur", "gbp"]),
+    customer: `cus_${faker.string.alphanumeric(14)}`,
+    fingerprint: faker.string.alphanumeric(16),
+    last4: faker.finance.accountNumber(4),
+    metadata: {},
+    routing_number: faker.finance.routingNumber(),
+    status: faker.helpers.arrayElement(["new", "verified", "failed"]),
+  };
+};
 
 export const createStripeBalanceTransaction = (): StripeBalanceTransaction => {
   const amount = faker.number.int({ min: -200 * 100, max: 200 * 100 });
@@ -625,6 +671,7 @@ export const createStripePayout = (): StripePayout => {
 };
 
 export type StripeMockData = {
+  bankAccounts: StripeBankAccount[];
   charges: StripeCharge[];
   payouts: StripePayout[];
   disputes: StripeDispute[];
@@ -637,6 +684,9 @@ const main = async (): Promise<void> => {
   }));
 
   const data: StripeMockData = {
+    bankAccounts: Array.from({ length: 1 }).map(() => ({
+      ...createStripeBankAccount(),
+    })),
     charges: Array.from({ length: 10 }).map(() => {
       const charge = createStripeCharge();
       return {

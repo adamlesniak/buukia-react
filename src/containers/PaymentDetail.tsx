@@ -62,7 +62,7 @@ export default function PaymentDetail() {
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
         <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
-          <DetailNavigationTitleContent>
+          <DetailNavigationTitleContent data-testid="payment-detail-title">
             <h2>
               {[
                 getSymbolFromCurrency(charge.currency),
@@ -82,7 +82,13 @@ export default function PaymentDetail() {
               message={isError?.message || t("common.unknownError")}
             />
           )}
-          {!isError && <PaymentSummary error={createRefund.error} onSubmit={submit} charge={charge} />}
+          {!isError && (
+            <PaymentSummary
+              error={createRefund?.error}
+              onSubmit={submit}
+              charge={charge}
+            />
+          )}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

@@ -95,6 +95,7 @@ describe("PaymentDetail", () => {
 
     mockUseCreateRefund.mockReturnValue({
       mutate: mockMutate,
+      error: null,
     });
   });
 
@@ -116,7 +117,7 @@ describe("PaymentDetail", () => {
         ),
       ).toBeInTheDocument();
       expect(
-        screen.queryByText(
+        screen.getByText(
           ["common.by", mockCharge.billing_details.email].join(" "),
         ),
       ).toBeInTheDocument();
@@ -154,6 +155,8 @@ describe("PaymentDetail", () => {
       mockUseCharge.mockReturnValue({
         data: {
           ...mockCharge,
+          amount: 8760,
+          amount_captured: 8760,
           dispute: false,
         },
       });
@@ -206,7 +209,17 @@ describe("PaymentDetail", () => {
           "transactions.payments.summary.paymentMethod.amountAuthorized",
         ),
       ).toBeInTheDocument();
-      expect(screen.queryByTestId("authorized-amount")).toBeInTheDocument();
+      expect(screen.queryByTestId("authorized-amount")?.innerText).toEqual(
+        "€87.60",
+      );
+      expect(
+        screen.queryByText("transactions.payments.summary.paymentMethod.fee"),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId("fee-amount")?.innerText).toEqual("-€3.32");
+      expect(
+        screen.queryByText("transactions.payments.summary.paymentMethod.nett"),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId("nett-amount")?.innerText).toEqual("€84.28");
       expect(
         screen.queryByText(
           "transactions.payments.summary.paymentMethod.expiry",
@@ -248,6 +261,55 @@ describe("PaymentDetail", () => {
       expect(
         screen.queryByText(
           mockCharge.payment_method_details.card.checks.cvc_check,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it("should show broken down fee", async () => {
+      mockUseParams.mockReturnValue({
+        payoutId: "testPaymentId",
+      });
+      mockUseCharge.mockReturnValue({
+        data: {
+          ...mockCharge,
+          amount: 8760,
+          amount_captured: 8760,
+          dispute: false,
+        },
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <PaymentDetail.default />
+        </QueryClientProvider>,
+      );
+
+      const feeBreakdownButton = screen.queryByTestId("toggle-fee-breakdown");
+
+      expect(
+        screen.queryByText("transactions.payments.summary.paymentMethod.fee"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          "transactions.payments.summary.paymentMethod.paymentFee",
+        ),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          "transactions.payments.summary.paymentMethod.platformFee",
+        ),
+      ).not.toBeInTheDocument();
+
+      await user.click(feeBreakdownButton!);
+
+      expect(
+        screen.queryByText(
+          "transactions.payments.summary.paymentMethod.paymentFee",
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          "transactions.payments.summary.paymentMethod.platformFee",
         ),
       ).toBeInTheDocument();
     });
@@ -456,17 +518,15 @@ describe("PaymentDetail", () => {
         expect(amountInput).toHaveValue("88.88");
         expect(reasonInput).toHaveValue("duplicate");
         expect(descriptionInput).toHaveValue("Test refund description");
-        expect(mockMutate).toHaveBeenCalledWith(
-          {
-            charge: mockCharge.id,
-            amount: mockCharge.amount,
-            reason: "duplicate",
-            payment_intent: null,
-            metadata: {
-              description: "Test refund description",
-            },
+        expect(mockMutate).toHaveBeenCalledWith({
+          charge: mockCharge.id,
+          amount: mockCharge.amount,
+          reason: "duplicate",
+          payment_intent: null,
+          metadata: {
+            description: "Test refund description",
           },
-        );
+        });
       });
     });
   });

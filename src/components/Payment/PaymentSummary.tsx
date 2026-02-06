@@ -1,15 +1,22 @@
 import lookup from "country-code-lookup";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { format } from "date-fns";
-import { Circle, CircleCheck, CircleX } from "lucide-react";
-import { memo, useState } from "react";
+import { ChevronDown, Circle, CircleCheck, CircleX } from "lucide-react";
+import { memo, useCallback, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
+import { SETTINGS } from "@/constants";
 import RefundModal from "@/containers/RefundModal";
 import { CVCCheckStatus, type CreateRefundBody } from "@/types";
-import { centsToFixed, getTimelineFromCharge, PaymentStatus } from "@/utils";
+import {
+  centsToFixed,
+  getStripeFeeAmount,
+  getTimelineFromCharge,
+  PaymentStatus,
+  priceToCents,
+} from "@/utils";
 import { type StripeCharge } from "scripts/mocksStripe";
 
 import { Button } from "../Button";
@@ -57,13 +64,28 @@ const PaymentSummaryList = styled.ul`
   margin: 0px;
 `;
 
-const PaymentSummaryListItem = styled.li`
+const PaymentSummaryListItem = styled.li<{ variant?: "standard" | "nested" }>`
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
   padding: 8px 0px;
+
+  ${({ variant }) => variant === "nested" && `
+    font-size: 14px;
+    margin-left: 8px;
+
+    b {
+      padding-left: 4px;
+    }
+
+  `}
+
+  b {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const PaymentSummaryListItemValue = styled.div`
@@ -115,8 +137,16 @@ type PaymentSummaryProps = {
 export const PaymentSummary = memo((props: PaymentSummaryProps) => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [showFee, setShowFee] = useState(false);
 
   const timelineItems = getTimelineFromCharge(props.charge);
+
+  const fee = useCallback(() => {
+    const stripeFee = getStripeFeeAmount(props.charge.amount_captured);
+    const platformFee = priceToCents(SETTINGS.platformFee);
+
+    return parseFloat(centsToFixed(stripeFee + platformFee)).toFixed(2);
+  }, [props.charge.amount_captured]);
 
   const onSubmit = (data: CreateRefundBody) => {
     props.onSubmit(data);
@@ -215,14 +245,60 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
           </PaymentSummaryListItem>
           <PaymentSummaryListItem>
             <b>
-              {t(
-                "transactions.payments.summary.paymentMethod.fee",
-              )}
+              {t("transactions.payments.summary.paymentMethod.fee")}
+              <Button
+                type="button"
+                variant="transparent"
+                size="sm"
+                style={{ marginLeft: "8px" }}
+                onClick={() => setShowFee((prev) => !prev)}
+                data-testid={"toggle-fee-breakdown"}
+              >
+                <ChevronDown />
+              </Button>
             </b>
             <PaymentSummaryListItemValue data-testid="fee-amount">
+              {["-", getSymbolFromCurrency(props.charge.currency), fee()].join(
+                "",
+              )}
+            </PaymentSummaryListItemValue>
+          </PaymentSummaryListItem>
+          {showFee && (
+            <>
+              <PaymentSummaryListItem variant="nested">
+                <b>
+                  {t("transactions.payments.summary.paymentMethod.paymentFee")}
+                </b>
+                <PaymentSummaryListItemValue>
+                  {[
+                    "-",
+                    getSymbolFromCurrency(props.charge.currency),
+                    centsToFixed(
+                      getStripeFeeAmount(props.charge.amount_captured),
+                    ),
+                  ].join("")}
+                </PaymentSummaryListItemValue>
+              </PaymentSummaryListItem>
+              <PaymentSummaryListItem variant="nested">
+                <b>
+                  {t("transactions.payments.summary.paymentMethod.platformFee")}
+                </b>
+                <PaymentSummaryListItemValue>
+                  {[
+                    "-",
+                    getSymbolFromCurrency(props.charge.currency),
+                    SETTINGS.platformFee.toFixed(2),
+                  ].join("")}
+                </PaymentSummaryListItemValue>
+              </PaymentSummaryListItem>
+            </>
+          )}
+          <PaymentSummaryListItem>
+            <b>{t("transactions.payments.summary.paymentMethod.nett")}</b>
+            <PaymentSummaryListItemValue data-testid="nett-amount">
               {[
                 getSymbolFromCurrency(props.charge.currency),
-                centsToFixed(props.charge.amount_captured),
+                (parseFloat(centsToFixed(props.charge.amount_captured)) - parseFloat(fee())).toFixed(2),
               ].join("")}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>

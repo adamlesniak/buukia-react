@@ -30,6 +30,8 @@ export const DetailNavigationButton = styled(Link)`
   display: flex;
   align-items: center;
   font-size: 16px;
+  color: initial;
+  text-decoration: none;
 
   span {
     margin-left: 12px;

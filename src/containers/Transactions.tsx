@@ -38,13 +38,13 @@ export default function Transactions() {
               >
                 <SettingsIcon size={18} /> <span>{t("common.payouts")}</span>
               </DetailNavigationButton>
-              <DetailNavigationButton
+              {/* <DetailNavigationButton
                 activeOptions={{ exact: true }}
                 key={t("common.settings")}
                 to={`/transactions/settings`}
               >
                 <FormInputIcon size={18} /> <span>{t("common.settings")}</span>
-              </DetailNavigationButton>
+              </DetailNavigationButton> */}
             </DetailNavigationContainer>
           </div>
         </PageHeaderItem>

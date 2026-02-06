@@ -281,3 +281,12 @@ export const getTimelineFromCharge = (charge: StripeCharge) => {
 
   return items;
 };
+
+export const getStripeFeeAmount = (amount: number): number => {
+  const stripeFeePercentage = 0.015; // 2.9%
+  const stripeFixedFee = 0.25; // $0.30
+
+  const fee = Math.round(amount * stripeFeePercentage + stripeFixedFee);
+
+  return fee;
+};

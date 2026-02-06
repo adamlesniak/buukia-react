@@ -147,6 +147,36 @@
     "title": "Transactions",
     "loadingError": "Error retrieving transactions. Please try again later.",
     "payouts": {
+      "bankAccount": {
+        "form": {
+          "accountNumber": "Account Number",
+          "country": "Country",
+          "currency": "Currency",
+          "accountHolderName": "Account Holder Name",
+          "accountHolderType": "Account Holder Type",
+          "routingNumber": "Routing Number",
+          "accountHolderTypeOptions": {
+            "individual": "Individual",
+            "company": "Company"
+          },
+          "errors": {
+            "accountNumberError": "Account number is required and must be between 8 and 17 characters.",
+            "accountHolderNameError": "Account holder name is required.",
+            "accountHolderTypeError": "Account holder type is required.",
+            "routingNumberError": "Routing number is required."
+          }
+        },
+        "title": "Bank Account",
+        "description": "Add a bank account to receive payouts. Payouts typically take 2-7 business days to arrive in your bank account after they are initiated, depending on your bank and country. Instant payouts are also available for eligible accounts, which can arrive within minutes but may incur additional fees.",
+        "learnMore": "Learn more about payouts"
+      },
+      "type": "Payout Type",
+      "payoutTo": "Payout To",
+      "addBankAccount": "Add Bank Account",
+      "instant": {
+        "title": "Instant",
+        "description": "You can pay up to - which is transferred instantly."
+      },
       "modal": {
         "cancelTitle": "Cancel Payout",
         "cancelMessage": "Are you sure you want to cancel this payout?"
@@ -302,7 +332,10 @@
         },
         "paymentMethod": {
           "amountAuthorized": "Amount Authorized",
+          "paymentFee": "Payment Fee",
+          "platformFee": "Platform Fee",
           "fee": "Fee",
+          "nett": "Nett Amount",
           "brand": "Brand",
           "last4": "Last 4 Digits",
           "expiry": "Expiry",

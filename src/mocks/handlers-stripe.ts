@@ -1,19 +1,29 @@
+import { faker } from "@faker-js/faker";
 import { http, HttpResponse } from "msw";
 import { v4 as uuidv4 } from "uuid";
 
-import type { CreateRefundBody } from "@/types";
+import type { CreateRefundBody, CreateStripeBankAccountBody } from "@/types";
 import {
+  createStripeBankAccount,
   createStripeRefund,
+  type StripeBankAccount,
   type StripeCharge,
   type StripeRefund,
 } from "scripts/mocksStripe";
 
 import data from "../routes/data-stripe.json";
 
-const [charges, refunds]: [
+const [bankAccounts, charges, refunds]: [
+  Map<string, StripeBankAccount>,
   Map<string, StripeCharge>,
   Map<string, StripeRefund>,
 ] = [
+  new Map(
+    data.bankAccounts.map((bankAccount) => [
+      bankAccount.id,
+      bankAccount as unknown as StripeBankAccount,
+    ]),
+  ),
   new Map(
     data.charges.map((charge) => [
       charge.id,
@@ -29,6 +39,46 @@ const [charges, refunds]: [
 ];
 
 export const handlersStripe = [
+  http.get("/v1/customers/:customerId/bank_accounts", ({ request }) => {
+    const [limitParam] = [new URL(request.url).searchParams.get("limit")];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+    return HttpResponse.json({
+      object: "list",
+      url: "/v1/bank_accounts",
+      has_more: false,
+      data: Array.from(bankAccounts.values()).slice(0, limit),
+    });
+  }),
+
+  http.post<never, CreateStripeBankAccountBody>(
+    "/v1/customers/:customerId/sources",
+    async ({ request }) => {
+      const body = await request.json();
+
+      const id = uuidv4();
+
+      const refund = {
+        ...createStripeBankAccount(),
+        account_holder_name: body.source.account_holder_name,
+        account_holder_type: body.source.account_holder_type,
+        bank_name: "TEST BANK",
+        country: body.source.country,
+        currency: body.source.currency,
+        customer: `cus_${faker.string.alphanumeric(14)}`,
+        fingerprint: faker.string.alphanumeric(16),
+        last4: faker.finance.accountNumber(4),
+        metadata: {},
+        routing_number: faker.finance.routingNumber(),
+        status: "verified",
+      } as StripeBankAccount;
+
+      bankAccounts.set(id, refund);
+
+      return HttpResponse.json(refund);
+    },
+  ),
+
   http.post<never, CreateRefundBody>("/v1/refunds", async ({ request }) => {
     const body = await request.json();
 

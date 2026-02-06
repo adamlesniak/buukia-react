@@ -1,12 +1,21 @@
-import { memo, useCallback } from "react";
+import getSymbolFromCurrency from "currency-symbol-map";
+import { memo, useCallback, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import z from "zod";
 
-import type { CreatePayoutBody, PayoutFormValues } from "@/types";
+import { useCreateBankAccount } from "@/api/stripe/bankAccounts";
+import { SETTINGS } from "@/constants";
+import BankAccountModal from "@/containers/BankAccountModal";
+import type {
+  CreatePayoutBody,
+  CreateStripeBankAccountBody,
+  PayoutFormValues,
+} from "@/types";
 import { centsToFixed, priceToCents } from "@/utils";
 import { validateResolver } from "@/validators/validator";
+import type { StripeBankAccount } from "scripts/mocksStripe";
 
 import { Button } from "../Button";
 import {
@@ -50,6 +59,7 @@ const PayoutTypeContentDescription = styled.div`
 
 type PayoutFormProps = {
   values: PayoutFormValues;
+  bankAccounts: StripeBankAccount[];
   maxValue?: number;
   isLoading: boolean;
   onSubmit: (data: CreatePayoutBody) => void;
@@ -57,6 +67,9 @@ type PayoutFormProps = {
 
 export const PayoutForm = memo((props: PayoutFormProps) => {
   const { t } = useTranslation();
+  const [showModal, setShowModal] = useState(false);
+
+  const createBankAccount = useCreateBankAccount();
 
   const {
     control,
@@ -99,6 +112,11 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
     props.onSubmit(body);
   };
 
+  const bankAccountSubmit = async (data: CreateStripeBankAccountBody) => {
+    setShowModal(false);
+    createBankAccount.mutate({ ...data, customer_id: "current-customer" });
+  };
+
   const watchedAmount = useWatch({
     control,
     name: "amount",
@@ -113,40 +131,40 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
     <>
       <Form data-testid="payout-form" onSubmit={handleSubmit(onSubmit)}>
         <PayoutItem>
-          <p>Payout Type</p>
+          <p>{t("transactions.payouts.type")}</p>
           <PayoutTypeItem>
             <PayoutTypeContent>
               <input type="radio" checked readOnly />
               <PayoutTypeContentDescription>
-                <LargeText>Instant</LargeText>
-                <small>
-                  You can pay up to - which is transferred instantly.
-                </small>
+                <LargeText>{t("transactions.payouts.instant.title")}</LargeText>
+                <small>{t("transactions.payouts.instant.description")}</small>
               </PayoutTypeContentDescription>
             </PayoutTypeContent>
           </PayoutTypeItem>
         </PayoutItem>
 
         <PayoutItem>
-          <p>Payout To</p>
-          <PayoutTypeItem>
-            <PayoutTypeContent>
-              <input type="radio" checked readOnly />
-              <PayoutTypeContentDescription>
-                <LargeText>TEST BANK ACCOUNT</LargeText>
-                <small>**** 6789</small>
-              </PayoutTypeContentDescription>
-            </PayoutTypeContent>
+          <p>{t("transactions.payouts.payoutTo")}</p>
+          <PayoutTypeItem style={{ marginBottom: "8px" }}>
+            {props.bankAccounts.map((bankAccount) => (
+              <PayoutTypeContent>
+                <input type="radio" checked readOnly />
+                <PayoutTypeContentDescription>
+                  <LargeText>{bankAccount.account_holder_name}</LargeText>
+                  <small>**** {bankAccount.last4}</small>
+                </PayoutTypeContentDescription>
+              </PayoutTypeContent>
+            ))}
           </PayoutTypeItem>
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "12px",
-              marginTop: "8px",
-            }}
+          <Button
+            variant="transparent"
+            size="sm"
+            tabIndex={0}
+            type="button"
+            onClick={() => setShowModal(true)}
           >
-            <div>Add Bank Account</div>
-          </div>
+            {t("transactions.payouts.addBankAccount")}
+          </Button>
         </PayoutItem>
 
         <Field>
@@ -173,7 +191,7 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
                 data-testid="payout-amount-input"
                 placeholder={t("transactions.payouts.detail.amount")}
               >
-                €
+                {getSymbolFromCurrency(SETTINGS.currency)}
               </Input>
             )}
           />
@@ -208,13 +226,26 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
               feeRate: "1",
             })}
           </span>
-          <b>€{calculatePayoutFee().toFixed(2)}</b>
+          <b>
+            {getSymbolFromCurrency(SETTINGS.currency)}
+            {calculatePayoutFee().toFixed(2)}
+          </b>
         </FormSummaryItem>
 
         <Button disabled={props.isLoading} size="sm" tabIndex={0} type="submit">
           {t("common.submit")}
         </Button>
       </Form>
+      {showModal && (
+        <BankAccountModal
+          onSubmit={bankAccountSubmit}
+          error={createBankAccount.error}
+          confirmText={t("common.submit")}
+          description={t("transactions.payouts.bankAccount.description")}
+          title={t("transactions.payouts.bankAccount.title")}
+          close={setShowModal}
+        />
+      )}
     </>
   );
 });

@@ -42,7 +42,7 @@ export interface CreateRefundBody {
   payment_intent: string | null;
   metadata: {
     description: string;
-  }
+  };
 }
 export interface CreateAssistantBody {
   firstName: string;
@@ -64,6 +64,18 @@ export interface CreatePayoutBody {
 
 export interface UpdatePayoutBody extends CreatePayoutBody {
   id: string;
+}
+
+export interface CreateStripeBankAccountBody {
+  source: {
+    account_number: string;
+    country: string;
+    currency: string;
+    object: "bank_account";
+    account_holder_name: string;
+    account_holder_type: "individual" | "company";
+    routing_number: string;
+  };
 }
 
 export type PayoutFormValues = {

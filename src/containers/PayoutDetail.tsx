@@ -10,6 +10,7 @@ import {
   usePayout,
   usePayoutsStats,
   useCancelPayout,
+  useBankAccounts,
 } from "@/api";
 import { TransactionChip } from "@/components/Chip";
 import {
@@ -21,7 +22,7 @@ import {
 import { ErrorDetail } from "@/components/Error";
 import { PayoutForm } from "@/components/Payouts";
 import { PayoutSummary } from "@/components/Payouts/PayoutSummary";
-import { SETTINGS } from "@/constants";
+import { MAX_PAGINATION, SETTINGS } from "@/constants";
 import type { BuukiaPayout, CreatePayoutBody, PayoutFormValues } from "@/types";
 import { centsToFixed, PayoutStatus } from "@/utils";
 
@@ -87,6 +88,15 @@ export default function PayoutDetail() {
     isLoading: payoutStatsLoading,
     error: payoutStatsError,
   } = usePayoutsStats();
+  const {
+    data: bankAccountsData,
+    isLoading: bankAccountsLoading,
+    error: bankAccountsError,
+  } = useBankAccounts({
+    limit: MAX_PAGINATION,
+    query: "",
+    customerId: "current-customer",
+  });
 
   const formValues: PayoutFormValues = useMemo(
     () => ({
@@ -96,8 +106,8 @@ export default function PayoutDetail() {
     [payout?.id],
   );
 
-  const isError = payoutError || payoutStatsError;
-  const isLoading = payoutLoading || payoutStatsLoading;
+  const isError = payoutError || bankAccountsError || payoutStatsError;
+  const isLoading = payoutLoading || bankAccountsLoading || payoutStatsLoading;
 
   const onCancelPayout = useCallback(
     (confirm: boolean) => {
@@ -172,6 +182,7 @@ export default function PayoutDetail() {
                 onSubmit={submit}
                 isLoading={isLoading}
                 maxValue={payoutStats?.totalAmount}
+                bankAccounts={bankAccountsData?.data || []}
               />
             </>
           )}

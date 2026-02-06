@@ -16,7 +16,9 @@ export enum AssistantDetailNavigation {
 }
 
 export const SETTINGS = {
+  country: "ES",
   currency: "EUR",
+  platformFee: 2,
   payouts: {
     paymentProvider: "stripe",
     sourceType: "bank_account",
