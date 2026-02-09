@@ -102,8 +102,10 @@ export default function PayoutDetail() {
     () => ({
       amount: centsToFixed(payout?.amount || 0),
       description: payout?.description || "",
+      bankAccountId: bankAccountsData?.data?.[0]?.id || "",
+      method: "instant",
     }),
-    [payout?.id],
+    [payout?.id, bankAccountsData?.data],
   );
 
   const isError = payoutError || bankAccountsError || payoutStatsError;

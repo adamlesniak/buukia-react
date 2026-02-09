@@ -25,6 +25,8 @@ describe("PayoutForm", () => {
     amount: "12323",
     description: "testDescription",
     statementDescription: "testStatementDescription",
+    bankAccountId: "testBankAccountId",
+    method: "instant",
   };
 
   it("should show name field", async () => {
@@ -32,7 +34,12 @@ describe("PayoutForm", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <PayoutForm onSubmit={() => {}} values={testProps} isLoading={false} />
+        <PayoutForm
+          bankAccounts={[]}
+          onSubmit={() => {}}
+          values={testProps}
+          isLoading={false}
+        />
       </QueryClientProvider>,
     );
 
@@ -52,7 +59,12 @@ describe("PayoutForm", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <PayoutForm onSubmit={() => {}} values={testProps} isLoading={false} />
+        <PayoutForm
+          bankAccounts={[]}
+          onSubmit={() => {}}
+          values={testProps}
+          isLoading={false}
+        />
       </QueryClientProvider>,
     );
 
@@ -63,10 +75,9 @@ describe("PayoutForm", () => {
       expect(
         screen.queryByTestId("payout-description-input"),
       ).not.toBeDisabled();
-      expect(
-        screen
-          .queryByTestId("payout-description-input"),
-      ).toHaveValue(testProps.description);
+      expect(screen.queryByTestId("payout-description-input")).toHaveValue(
+        testProps.description,
+      );
     });
   });
 
@@ -80,7 +91,10 @@ describe("PayoutForm", () => {
           values={{
             amount: "0",
             description: "testDescription",
+            bankAccountId: "testBankAccountId",
+            method: "instant",
           }}
+          bankAccounts={[]}
           isLoading={false}
         />
       </QueryClientProvider>,

@@ -60,6 +60,8 @@ export interface UpdateAssistantBody extends CreateAssistantBody {
 export interface CreatePayoutBody {
   amount: number;
   description: string;
+  method: "instant" | "standard";
+  destination: string;
 }
 
 export interface UpdatePayoutBody extends CreatePayoutBody {
@@ -81,6 +83,8 @@ export interface CreateStripeBankAccountBody {
 export type PayoutFormValues = {
   amount: string;
   description: string;
+  bankAccountId: string;
+  method: string;
 };
 
 export type AssistantFormValues = {

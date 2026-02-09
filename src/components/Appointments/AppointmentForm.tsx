@@ -251,6 +251,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                     aria-label={t("common.search")}
                     autoComplete="off"
                     tabIndex={0}
+                    noBorder={true}
                     onChange={($event) => {
                       servicesChangeDebounce($event.target.value);
                       $event.preventDefault();

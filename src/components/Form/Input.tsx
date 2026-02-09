@@ -1,10 +1,12 @@
 import type { DetailedHTMLProps, InputHTMLAttributes } from "react";
 import styled from "styled-components";
 
-const StyledInputContainer = styled.div`
+const StyledInputContainer = styled.div<{
+  $noBorder: boolean;
+}>`
   display: flex;
   flex-direction: row;
-  border: 1px solid #e0e0e0;
+  border: ${(props) => (props.$noBorder ? "0px;" : "1px solid #e0e0e0;")};
   margin: 4px 0px;
   font-size: 14px;
   height: 35px;
@@ -36,6 +38,7 @@ const StyledInput = styled.input`
 
 type InputProps = {
   children?: React.ReactNode;
+  noBorder?: boolean;
 };
 
 export function Input(
@@ -43,8 +46,10 @@ export function Input(
     DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
 ) {
   return (
-    <StyledInputContainer>
-      {props.children && <StyledInputPrefix>{props.children}</StyledInputPrefix>}
+    <StyledInputContainer $noBorder={props.noBorder || false}>
+      {props.children && (
+        <StyledInputPrefix>{props.children}</StyledInputPrefix>
+      )}
       <StyledInput {...props} children={undefined} />
     </StyledInputContainer>
   );

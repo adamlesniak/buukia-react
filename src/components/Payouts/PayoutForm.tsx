@@ -37,13 +37,20 @@ const PayoutTypeItem = styled.div`
   font-weight: bold;
   border: 2px solid #e0e0e0;
   border-radius: 4px;
-  padding: 8px;
   cursor: pointer;
+  padding-left: 12px;
+  padding-right: 12px;
 `;
 
 const PayoutTypeContent = styled.div`
   flex-direction: row;
   display: flex;
+
+  label {
+    flex: 1;
+    cursor: pointer;
+    padding: 12px;
+  }
 `;
 
 const PayoutTypeContentDescription = styled.div`
@@ -52,7 +59,6 @@ const PayoutTypeContentDescription = styled.div`
     padding: 0px;
     margin: 0px;
   }
-  padding: 12px;
   flex-direction: column;
   display: flex;
 `;
@@ -81,6 +87,8 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
     resolver: validateResolver<{
       amount: string;
       description: string;
+      bankAccountId: string;
+      method: string;
     }>(
       z.object({
         amount: z.codec(
@@ -95,11 +103,15 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
           },
         ),
         description: z.string(),
+        bankAccountId: z.string().min(1),
+        method: z.string().min(1),
       }),
     ),
     values: {
       description: props.values.description,
       amount: props.values.amount,
+      bankAccountId: "",
+      method: "instant",
     },
   });
 
@@ -107,6 +119,8 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
     const body: CreatePayoutBody = {
       amount: priceToCents(parseFloat(data.amount)),
       description: data.description,
+      destination: data.bankAccountId,
+      method: data.method as "instant" | "standard",
     };
 
     props.onSubmit(body);
@@ -134,29 +148,54 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
           <p>{t("transactions.payouts.type")}</p>
           <PayoutTypeItem>
             <PayoutTypeContent>
-              <input type="radio" checked readOnly />
-              <PayoutTypeContentDescription>
-                <LargeText>{t("transactions.payouts.instant.title")}</LargeText>
-                <small>{t("transactions.payouts.instant.description")}</small>
-              </PayoutTypeContentDescription>
+              <input
+                type="radio"
+                id="instant"
+                value="instant"
+                {...register("method")}
+              />
+              <label htmlFor={"instant"}>
+                <PayoutTypeContentDescription>
+                  <LargeText>
+                    {t("transactions.payouts.instant.title")}
+                  </LargeText>
+                  <small>{t("transactions.payouts.instant.description")}</small>
+                </PayoutTypeContentDescription>
+              </label>
             </PayoutTypeContent>
           </PayoutTypeItem>
         </PayoutItem>
 
         <PayoutItem>
           <p>{t("transactions.payouts.payoutTo")}</p>
-          <PayoutTypeItem style={{ marginBottom: "8px" }}>
-            {props.bankAccounts.map((bankAccount) => (
+          {props.bankAccounts.map((bankAccount) => (
+            <PayoutTypeItem style={{ marginBottom: "8px" }}>
               <PayoutTypeContent>
-                <input type="radio" checked readOnly />
-                <PayoutTypeContentDescription>
-                  <LargeText>{bankAccount.account_holder_name}</LargeText>
-                  <small>**** {bankAccount.last4}</small>
-                </PayoutTypeContentDescription>
+                <input
+                  type="radio"
+                  id={bankAccount.id}
+                  value={bankAccount.id}
+                  {...register("bankAccountId")}
+                />
+                <label htmlFor={bankAccount.id}>
+                  <PayoutTypeContentDescription>
+                    <LargeText>{bankAccount.account_holder_name}</LargeText>
+                    <small>**** {bankAccount.last4}</small>
+                  </PayoutTypeContentDescription>
+                </label>
               </PayoutTypeContent>
-            ))}
-          </PayoutTypeItem>
+            </PayoutTypeItem>
+          ))}
+          {errors.bankAccountId && (
+            <FieldError role="alert">
+              {t("transactions.payouts.form.errors.bankAccountIdError", {
+                minValue: 0.5,
+                maxValue: centsToFixed(props.maxValue ?? 999900),
+              })}
+            </FieldError>
+          )}
           <Button
+            style={{ marginTop: "8px" }}
             variant="transparent"
             size="sm"
             tabIndex={0}
@@ -182,9 +221,7 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
                     parseFloat($event.target.value).toFixed(2).toString(),
                   );
                 }}
-                onChange={($event) =>
-                  onChange($event.target.value.replace(/[^0-9\.]/g, ""))
-                }
+                onChange={($event) => onChange($event.target.value.replace(/[^0-9\.]/g, ""))}
                 value={value}
                 id="payout-amount-input"
                 type="text"

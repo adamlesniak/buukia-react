@@ -31,7 +31,7 @@ describe("ServiceForm", () => {
       },
     ],
     duration: "45",
-    price: 123,
+    price: "123",
     description: "testDescription",
   };
 
@@ -188,7 +188,7 @@ describe("ServiceForm", () => {
             name: "",
             category: [],
             duration: "",
-            price: 0,
+            price: "0",
             description: "",
           }}
           isLoading={false}

@@ -12,6 +12,7 @@ import {
   Input,
   Label,
   Select,
+  TextArea,
 } from "@/components/Form";
 import { Modal, Overlay } from "@/components/Modal";
 import type { CreateRefundBody } from "@/types";
@@ -172,6 +173,28 @@ export default function RefundModal(props: RefundModalProps) {
                 {errors.reason && (
                   <FieldError role="alert">
                     {t("transactions.payments.modal.form.errors.reasonError")}
+                  </FieldError>
+                )}
+              </Field>
+
+              <Field>
+                <Label
+                  id={"refund-description-label"}
+                  htmlFor="refund-description-input"
+                >
+                  {t("transactions.payments.modal.description")}
+                </Label>
+                <TextArea
+                  {...register("description")}
+                  id="refund-description-input"
+                  data-testid="refund-description-input"
+                  placeholder={t("transactions.payments.modal.description")}
+                />
+                {errors.description && (
+                  <FieldError role="alert">
+                    {t(
+                      "transactions.payments.modal.form.errors.descriptionError",
+                    )}
                   </FieldError>
                 )}
               </Field>

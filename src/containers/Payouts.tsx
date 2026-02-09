@@ -40,7 +40,6 @@ const PayoutsHeading = styled.div`
 
 const LargeText = styled.span`
   font-size: 18px;
-  font-weight: bold;
 `;
 
 const ExtraLargeText = styled.span<{ weight?: string }>`

@@ -9,9 +9,12 @@ import {
   usePayout,
   usePayoutsStats,
   useCancelPayout,
+  useBankAccounts,
 } from "@/api";
 import type { BuukiaPayout } from "@/types";
 import { centsToFixed, PayoutStatus } from "@/utils";
+
+import data from "../routes/data-stripe.json";
 
 // Mock the API hooks
 vi.mock("@/api", async () => ({
@@ -19,6 +22,7 @@ vi.mock("@/api", async () => ({
   useCancelPayout: vi.fn(),
   usePayout: vi.fn(),
   usePayoutsStats: vi.fn(),
+  useBankAccounts: vi.fn(),
 }));
 
 vi.mock("react-i18next", () => ({
@@ -77,6 +81,9 @@ const mockUseCreatePayout = useCreatePayout as unknown as ReturnType<
 const mockUseCancelPayout = useCancelPayout as unknown as ReturnType<
   typeof vi.fn
 >;
+const mockUseBankAccounts = useBankAccounts as unknown as ReturnType<
+  typeof vi.fn
+>;
 
 // Import the component after mocking
 const PayoutDetail = await import("./PayoutDetail");
@@ -121,6 +128,16 @@ describe("PayoutDetail", () => {
       refetch: vi.fn(),
       isRefetching: false,
     });
+    mockUseBankAccounts.mockReturnValue({
+      data: {
+        object: "list",
+        url: "/v1/payouts",
+        has_more: false,
+        data: data.bankAccounts,
+      },
+      error: null,
+      isLoading: false,
+    });
     mockUsePayout.mockReturnValue({
       data: mockPayout,
       error: null,
@@ -160,6 +177,60 @@ describe("PayoutDetail", () => {
 
       expect(mockNavigate).toHaveBeenCalledWith({
         to: `/transactions/payouts`,
+      });
+    });
+
+    describe("Form", () => {
+      it("should submit form with correct values", async () => {
+        mockUseParams.mockReturnValue({
+          payoutId: undefined,
+        });
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <PayoutDetail.default />
+          </QueryClientProvider>,
+        );
+
+        expect(
+          screen.getByText("transactions.payouts.type"),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText("transactions.payouts.instant.title"),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByText("transactions.payouts.instant.description"),
+        ).toBeInTheDocument();
+
+        const amountInput = screen.getByLabelText(
+          "transactions.payouts.detail.amount",
+        ) as HTMLInputElement;
+        const payoutInput = screen.getByText(
+          data.bankAccounts[0].account_holder_name,
+        ) as HTMLInputElement;
+        const descriptionInput = screen.getByLabelText(
+          "transactions.payouts.detail.description",
+        ) as HTMLInputElement;
+
+        await user.click(payoutInput);
+        await user.clear(amountInput);
+        await user.type(amountInput, "10");
+        await user.type(descriptionInput, "Test description");
+        const submitButton = screen.getByRole("button", {
+          name: "common.submit",
+        });
+
+        await user.click(submitButton);
+
+        expect(mockMutate).toHaveBeenCalledWith(
+          {
+            amount: 1000,
+            description: "Test description",
+            destination: data.bankAccounts[0].id,
+            method: "instant",
+          },
+          expect.any(Object),
+        );
       });
     });
 
@@ -350,7 +421,7 @@ describe("PayoutDetail", () => {
         ).toBeInTheDocument();
       });
 
-      it("should remove service following by confirmation dialog", async () => {
+      it("should cancel payout following by confirmation dialog", async () => {
         mockUsePayout.mockReturnValue({
           data: {
             ...mockPayout,
@@ -398,7 +469,7 @@ describe("PayoutDetail", () => {
         });
       });
 
-      it("should not remove service following by confirmation dialog", async () => {
+      it("should not cancel payout following by confirmation dialog", async () => {
         mockUsePayout.mockReturnValue({
           data: {
             ...mockPayout,

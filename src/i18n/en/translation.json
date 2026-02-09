@@ -227,7 +227,8 @@
       },
       "form": {
         "errors": {
-          "amountError": "Amount is required and must be between {{minValue}} and {{maxValue}}."
+          "amountError": "Amount is required and must be between {{minValue}} and {{maxValue}}.",
+          "bankAccountIdError": "Bank account is required."
         }
       },
       "addPayout": "Add Payout",
@@ -380,6 +381,7 @@
         "refundDescription": "Refunds typically take 5-10 business days to appear on a customer's statement, and while there are no fees to process a refund, original transaction fees are not returned.",
         "amount": "Amount",
         "reason": "Reason",
+        "description": "Description",
         "reasonOptions": {
           "duplicate": "Duplicate",
           "fraudulent": "Fraudulent",

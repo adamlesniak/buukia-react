@@ -116,6 +116,9 @@ describe("Payouts", () => {
 
     await waitFor(() => {
       expect(
+        screen.queryByText(`transactions.payouts.addPayout`),
+      ).toBeInTheDocument();
+      expect(
         screen.queryByText("transactions.payouts.title"),
       ).toBeInTheDocument();
       expect(
