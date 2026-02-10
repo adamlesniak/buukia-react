@@ -130,6 +130,12 @@ export interface StripeCharge {
   receipt_email: null;
   receipt_number: null;
   receipt_url: string;
+  refunds?: {
+    object: "list";
+    data: StripeRefund[];
+    has_more: boolean;
+    url: string;
+  };
   refunded: boolean;
   review: null;
   shipping: null;

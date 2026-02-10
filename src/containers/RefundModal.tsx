@@ -83,7 +83,7 @@ export default function RefundModal(props: RefundModalProps) {
 
   const onSubmit = (data: RefundModalFormValues) => {
     const body: CreateRefundBody = {
-      amount: priceToCents(parseFloat(data.amount)),
+      amount: Math.round(priceToCents(Number(data.amount))),
       charge: props.charge.id,
       reason: data.reason as StripeRefundReason,
       payment_intent: null,

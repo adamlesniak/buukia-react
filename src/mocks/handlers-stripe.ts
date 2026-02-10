@@ -95,6 +95,21 @@ export const handlersStripe = [
 
     refunds.set(id, refund);
 
+    if (refund.charge) {
+      const charge = charges.get(refund.charge);
+
+      charges.set(refund.charge, {
+        ...charge,
+        refunded: true,
+        refunds: {
+          object: "list",
+          data: [...(charge?.refunds?.data ?? []), refund],
+          has_more: false,
+          url: `/v1/charges/${refund.charge}/refunds`,
+        },
+      } as StripeCharge);
+    }
+
     return HttpResponse.json(refund);
   }),
 
@@ -120,5 +135,20 @@ export const handlersStripe = [
       has_more: false,
       data: Array.from(charges.values()).slice(0, limit),
     });
+  }),
+
+  http.get("/v1/charges/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = charges.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Charge not found" },
+        { status: 404 },
+      );
+    }
   }),
 ];

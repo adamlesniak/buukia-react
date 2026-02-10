@@ -19,7 +19,7 @@ import {
 } from "@/components/Table";
 import { ExtraLargeText, LargeText } from "@/components/Typography";
 import { MAX_PAGINATION, SETTINGS } from "@/constants";
-import { centsToFixed, PaymentStatus } from "@/utils";
+import { centsToFixed, getChargeStatus } from "@/utils";
 
 const PaymentsHeading = styled.div`
   display: flex;
@@ -93,7 +93,9 @@ export default function Payments() {
                 {t("transactions.payments.cards.averagePayment")}
               </LargeText>
               <ExtraLargeText>
-                <LargeText style={{ marginRight: "8px" }}>{getSymbolFromCurrency(SETTINGS.currency)}</LargeText>
+                <LargeText style={{ marginRight: "8px" }}>
+                  {getSymbolFromCurrency(SETTINGS.currency)}
+                </LargeText>
                 {centsToFixed(paymentsStats.averagePayment)}
               </ExtraLargeText>
             </Card>
@@ -177,14 +179,10 @@ export default function Payments() {
                     {centsToFixed(charge.amount)}
                   </TableRowItem>
                   <TableRowItem>
-                    <TransactionChip
-                      status={
-                        charge.disputed ? PaymentStatus.Disputed : charge.status
-                      }
-                    >
-                      {charge.disputed
-                        ? t("transactions.payments.common.disputed")
-                        : charge.status}
+                    <TransactionChip status={getChargeStatus(charge)}>
+                      {t(
+                        `transactions.payments.common.${getChargeStatus(charge)}`,
+                      )}
                     </TransactionChip>
                   </TableRowItem>
                 </TableRow>

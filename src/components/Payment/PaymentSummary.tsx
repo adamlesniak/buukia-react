@@ -12,9 +12,10 @@ import RefundModal from "@/containers/RefundModal";
 import { CVCCheckStatus, type CreateRefundBody } from "@/types";
 import {
   centsToFixed,
+  getChargeStatus,
+  getRefundable,
   getStripeFeeAmount,
   getTimelineFromCharge,
-  PaymentStatus,
   priceToCents,
 } from "@/utils";
 import { type StripeCharge } from "scripts/mocksStripe";
@@ -72,7 +73,9 @@ const PaymentSummaryListItem = styled.li<{ variant?: "standard" | "nested" }>`
   justify-content: space-between;
   padding: 8px 0px;
 
-  ${({ variant }) => variant === "nested" && `
+  ${({ variant }) =>
+    variant === "nested" &&
+    `
     font-size: 14px;
     margin-left: 8px;
 
@@ -191,15 +194,11 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
             <PaymentSummaryListItemValue data-testid="summary-item-status">
               <TransactionChip
                 data-testid="summary-item-status"
-                status={
-                  props.charge.dispute
-                    ? PaymentStatus.Disputed
-                    : props.charge.status
-                }
+                status={getChargeStatus(props.charge)}
               >
-                {props.charge.dispute
-                  ? t("transactions.payments.common.disputed")
-                  : t(`common.status.${props.charge.status}`)}
+                {t(
+                  `transactions.payments.common.${getChargeStatus(props.charge)}`,
+                )}
               </TransactionChip>
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
@@ -298,7 +297,10 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
             <PaymentSummaryListItemValue data-testid="nett-amount">
               {[
                 getSymbolFromCurrency(props.charge.currency),
-                (parseFloat(centsToFixed(props.charge.amount_captured)) - parseFloat(fee())).toFixed(2),
+                (
+                  parseFloat(centsToFixed(props.charge.amount_captured)) -
+                  parseFloat(fee())
+                ).toFixed(2),
               ].join("")}
             </PaymentSummaryListItemValue>
           </PaymentSummaryListItem>
@@ -382,7 +384,7 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
         </PaymentTimelineContainer>
       )}
 
-      {
+      {getRefundable(props.charge) && (
         <PaymentActions>
           <div>
             <Button
@@ -395,7 +397,7 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
             </Button>
           </div>
         </PaymentActions>
-      }
+      )}
 
       {showModal &&
         createPortal(

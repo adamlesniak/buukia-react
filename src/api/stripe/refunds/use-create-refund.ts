@@ -2,7 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { MAX_PAGINATION } from "@/constants";
 import type { CreateRefundBody } from "@/types";
-import type { StripeRefund } from "scripts/mocksStripe";
+import type { StripeCharge, StripeRefund } from "scripts/mocksStripe";
+
+import { chargeQueryKeys } from "../charges/charges-query-keys";
 
 import { refundQueryKeys } from "./refunds-query-keys";
 
@@ -19,7 +21,7 @@ export function useCreateRefund() {
         body: JSON.stringify(data),
       });
 
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error(response.statusText || "Failed to create refund");
       }
 
@@ -56,9 +58,14 @@ export function useCreateRefund() {
 
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({
-        queryKey: [...refundQueryKeys.all, MAX_PAGINATION, ""],
-      });
+      await Promise.all([
+        queryClient.cancelQueries({
+          queryKey: [...refundQueryKeys.all, MAX_PAGINATION, ""],
+        }),
+        queryClient.cancelQueries({
+          queryKey: [...chargeQueryKeys.all, MAX_PAGINATION, ""],
+        }),
+      ]);
 
       // Snapshot the previous value
       const previousItems = queryClient.getQueryData<StripeRefund[]>([
@@ -72,22 +79,81 @@ export function useCreateRefund() {
         [...refundQueryKeys.all, MAX_PAGINATION, ""],
         (old: StripeRefund[]) => [item, ...(old || [])],
       );
+      queryClient.setQueryData(
+        [...chargeQueryKeys.all, MAX_PAGINATION, ""],
+        (charges: {
+          object: "list";
+          url: string;
+          has_more: boolean;
+          data: StripeCharge[];
+        }) => ({
+          object: "list",
+          url: charges.url,
+          has_more: charges.has_more,
+          data: charges.data.map((charge) => {
+            const optimisticCharge = {
+              ...charge,
+              refunded:
+                newRefund.amount === charge.amount ? true : charge.refunded,
+              refunds:
+                charge.id === newRefund.charge
+                  ? {
+                      object: "list",
+                      data: [...(charge.refunds?.data ?? []), item],
+                      has_more: false,
+                      url: `/v1/charges/${newRefund.charge}/refunds`,
+                    }
+                  : charge.refunds,
+            };
+
+            if (newRefund.charge === charge.id) {
+              queryClient.setQueryData(
+                chargeQueryKeys.detail(newRefund.charge),
+                optimisticCharge,
+              );
+            }
+
+            return optimisticCharge;
+          }),
+        }),
+      );
 
       // Return a context object with the snapshotted value
       return { previousItems };
     },
     onSuccess: (data) => {
       queryClient.setQueryData(refundQueryKeys.detail(data.id), data);
-      queryClient.setQueryData<StripeRefund[]>(
+      queryClient.setQueryData<{
+        object: "list";
+        url: string;
+        has_more: boolean;
+        data: StripeRefund[];
+      }>(
         [...refundQueryKeys.all, MAX_PAGINATION, ""],
-        (old: StripeRefund[] | undefined) =>
-          [...(old || [])].map((item) => {
-            if (item.id === "current-refund") {
-              return data;
-            }
+        (
+          old:
+            | {
+                object: "list";
+                url: string;
+                has_more: boolean;
+                data: StripeRefund[];
+              }
+            | undefined,
+        ) =>
+          old
+            ? {
+                object: "list",
+                url: old.url,
+                has_more: old.has_more,
+                data: old.data.map((item) => {
+                  if (item.id === "current-refund") {
+                    return data;
+                  }
 
-            return item;
-          }),
+                  return item;
+                }),
+              }
+            : undefined,
       );
     },
     onError: (_error, _variables, context) => {

@@ -13,7 +13,11 @@ export const Card = styled.div<{ $layout?: "row" | "column" }>`
   margin-top: 0px;
   margin-bottom: 0px;
 
-  h1, h2, h3, h4, h5 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     margin-top: 0px;
   }
 `;
@@ -22,6 +26,7 @@ export const CardBody = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 24px;
+  justify-content: center;
 
   h1,
   h2,

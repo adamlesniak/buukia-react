@@ -229,7 +229,49 @@ export enum PaymentStatus {
   Pending = "pending",
   Failed = "failed",
   Disputed = "disputed",
+  Refunded = "refunded",
+  PartiallyRefunded = "partially_refunded",
 }
+
+export const getChargeStatus = (charge: StripeCharge): PaymentStatus => {
+  if (charge.refunded) {
+    return PaymentStatus.Refunded;
+  }
+
+  if (charge.refunds && charge.refunds?.data.length > 0) {
+    return PaymentStatus.PartiallyRefunded;
+  }
+
+  if (charge.disputed) {
+    return PaymentStatus.Disputed;
+  }
+
+  if (charge.paid) {
+    return PaymentStatus.Succeeded;
+  }
+
+  if (charge.status === "pending") {
+    return PaymentStatus.Pending;
+  }
+
+  return PaymentStatus.Failed;
+};
+
+export const getRefundable = (charge: StripeCharge): boolean => {
+  if (charge.refunded) {
+    return false;
+  }
+
+  if (charge.refunds && charge.refunds?.data.length > 0) {
+    return false;
+  }
+
+  if (charge.status === PaymentStatus.Succeeded) {
+    return true;
+  }
+
+  return false;
+};
 
 export const getColorStatus = (status: PayoutStatus | PaymentStatus) => {
   switch (status) {

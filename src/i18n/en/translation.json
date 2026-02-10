@@ -253,6 +253,8 @@
         "reason": "Reason",
         "fee": "Fee",
         "disputed": "Disputed",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
         "disputedAs": {
           "warning_needs_response": "Disputed Warning - Needs Response",
           "warning_under_review": "Disputed Warning - Under Review",
@@ -267,7 +269,9 @@
         "disputedFor": "Disputed for",
         "disputeLost": "Dispute lost",
         "disputeWon": "Dispute won",
-        "started": "Started"
+        "started": "Started",
+        "refunded": "Refunded",
+        "partiallyRefunded": "Partially Refunded"
       },
       "disputes": {
         "13.6": "A cardholder claims they were due a refund or credit, but it wasn’t issued or processed correctly. This typically happens when a business agrees to a refund but doesn’t complete it, or when a return or cancellation is processed, but the credit doesn’t appear on the cardholder’s statement within a reasonable timeframe.",
