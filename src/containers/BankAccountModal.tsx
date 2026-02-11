@@ -15,11 +15,11 @@ import {
 } from "@/components/Form";
 import { Modal, Overlay } from "@/components/Modal";
 import { SETTINGS } from "@/constants";
-import type { CreateStripeBankAccountBody } from "@/types";
-import { bankAccountFormSchema, validateResolver } from "@/validators";
 import {
+  type CreateStripeBankAccountBody,
   StripeAccountHolderType,
-} from "scripts/mocksStripe";
+} from "@/types";
+import { bankAccountFormSchema, validateResolver } from "@/validators";
 
 const ActionsButtons = styled.div`
   display: flex;

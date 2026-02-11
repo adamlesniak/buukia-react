@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
-import { getColorStatus } from "@/utils";
-
+import { getColorStatus, PaymentStatus, PayoutStatus } from "@/utils";
 
 export const Chip = styled.div`
   border: 1px solid #523d3d;
@@ -12,7 +11,9 @@ export const Chip = styled.div`
   margin-right: 4px;
 `;
 
-export const TransactionChip = styled(Chip)<{ status: string }>`
+export const TransactionChip = styled(Chip)<{
+  status: PaymentStatus | PayoutStatus;
+}>`
   border: 1px solid ${(props) => getColorStatus(props.status)};
   text-transform: capitalize;
   color: ${(props) => getColorStatus(props.status)};

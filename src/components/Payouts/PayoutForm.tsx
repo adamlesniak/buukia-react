@@ -12,10 +12,10 @@ import type {
   CreatePayoutBody,
   CreateStripeBankAccountBody,
   PayoutFormValues,
+  StripeBankAccount,
 } from "@/types";
 import { centsToFixed, priceToCents } from "@/utils";
 import { validateResolver } from "@/validators/validator";
-import type { StripeBankAccount } from "scripts/mocksStripe";
 
 import { Button } from "../Button";
 import {
@@ -221,7 +221,9 @@ export const PayoutForm = memo((props: PayoutFormProps) => {
                     parseFloat($event.target.value).toFixed(2).toString(),
                   );
                 }}
-                onChange={($event) => onChange($event.target.value.replace(/[^0-9\.]/g, ""))}
+                onChange={($event) =>
+                  onChange($event.target.value.replace(/[^0-9\.]/g, ""))
+                }
                 value={value}
                 id="payout-amount-input"
                 type="text"

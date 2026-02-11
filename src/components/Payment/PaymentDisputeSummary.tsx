@@ -3,8 +3,8 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
+import { StripeDisputeStatus, type StripeDispute } from "@/types";
 import { centsToFixed, PaymentStatus } from "@/utils";
-import { StripeDisputeStatus, type StripeDispute } from "scripts/mocksStripe";
 
 import { TransactionChip } from "../Chip";
 

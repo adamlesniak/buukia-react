@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { MAX_PAGINATION } from "@/constants";
-import type { CreateRefundBody } from "@/types";
-import type { StripeCharge, StripeRefund } from "scripts/mocksStripe";
+import type { CreateRefundBody, StripeCharge, StripeRefund } from "@/types";
 
 import { chargeQueryKeys } from "../charges/charges-query-keys";
 

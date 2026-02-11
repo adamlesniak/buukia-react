@@ -29,6 +29,7 @@ const mockAppointments: BuukiaAppointment[] = [
       firstName: "testFirstName",
       lastName: "testLastName",
     },
+    payments: [],
     services: [
       {
         id: "service1",

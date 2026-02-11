@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { MAX_PAGINATION } from "@/constants";
-import type { StripeBankAccount, StripePagination } from "scripts/mocksStripe";
+import { type StripeBankAccount, type StripePagination } from "@/types";
 
 import { bankAccountQueryKeys } from "./bank-accounts-query-keys";
 

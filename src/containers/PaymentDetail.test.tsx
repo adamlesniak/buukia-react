@@ -6,8 +6,9 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { format } from "date-fns/format";
 
 import { useCharge, useCreateRefund } from "@/api";
+import { type StripeCharge } from "@/types";
 import { centsToFixed, getTimelineFromCharge } from "@/utils";
-import { createStripeDispute, type StripeCharge } from "scripts/mocksStripe";
+import { createStripeDispute } from "scripts/mocksStripe";
 
 import data from "../routes/data-stripe.json";
 
@@ -78,6 +79,7 @@ describe("PaymentDetail", () => {
 
     mockNavigate.mockClear();
     mockMutate.mockClear();
+    mockUseCharge.mockClear();
 
     // Mock route params
     mockUseParams.mockReturnValue({
@@ -183,7 +185,7 @@ describe("PaymentDetail", () => {
         screen.queryByText("transactions.payments.summary.status"),
       ).toBeInTheDocument();
       expect(
-        screen.queryByText(`common.status.${mockCharge.status}`),
+        screen.queryByText(`transactions.payments.common.${mockCharge.status}`),
       ).toBeInTheDocument();
       expect(
         screen.queryByText("transactions.payments.summary.paymentMethod.card"),
@@ -318,7 +320,7 @@ describe("PaymentDetail", () => {
       mockUseCharge.mockReturnValue({
         data: {
           ...mockCharge,
-          dispute: true,
+          disputed: true,
         },
       });
 
@@ -467,6 +469,16 @@ describe("PaymentDetail", () => {
       });
 
       it('should show modal with title "Refund payment" when clicking refund button', async () => {
+        mockUseCharge.mockReturnValue({
+          data: {
+            ...mockCharge,
+            amount: 8760,
+            amount_captured: 8760,
+            dispute: false,
+            status: "succeeded",
+          },
+        });
+
         render(
           <QueryClientProvider client={queryClient}>
             <PaymentDetail.default />
@@ -488,6 +500,16 @@ describe("PaymentDetail", () => {
       });
 
       it("should show modal anmd submit form using sample data", async () => {
+        mockUseCharge.mockReturnValue({
+          data: {
+            ...mockCharge,
+            amount: 8760,
+            amount_captured: 8760,
+            dispute: false,
+            status: "succeeded",
+          },
+        });
+
         render(
           <QueryClientProvider client={queryClient}>
             <PaymentDetail.default />
@@ -497,12 +519,14 @@ describe("PaymentDetail", () => {
         const refundButton = screen.queryByText(
           "transactions.payments.actions.refund",
         );
+        console.log("refundButton", refundButton);
 
         await user.click(refundButton!);
 
         const amountInput = screen.getByTestId(
           "refund-amount-input",
         ) as HTMLInputElement;
+        console.log("amountInput", amountInput);
         const reasonInput = screen.getByTestId(
           "refund-reason-input",
         ) as HTMLSelectElement;
@@ -515,12 +539,12 @@ describe("PaymentDetail", () => {
 
         await user.click(screen.getByTestId("confirm-refund-button")!);
 
-        expect(amountInput).toHaveValue("88.88");
+        expect(amountInput).toHaveValue("87.60");
         expect(reasonInput).toHaveValue("duplicate");
         expect(descriptionInput).toHaveValue("Test refund description");
         expect(mockMutate).toHaveBeenCalledWith({
           charge: mockCharge.id,
-          amount: mockCharge.amount,
+          amount: 8760,
           reason: "duplicate",
           payment_intent: null,
           metadata: {

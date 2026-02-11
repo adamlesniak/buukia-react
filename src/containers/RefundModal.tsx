@@ -15,10 +15,13 @@ import {
   TextArea,
 } from "@/components/Form";
 import { Modal, Overlay } from "@/components/Modal";
-import type { CreateRefundBody } from "@/types";
+import {
+  type CreateRefundBody,
+  type StripeCharge,
+  StripeRefundReason,
+} from "@/types";
 import { centsToFixed, priceToCents } from "@/utils";
 import { refundFormSchema, validateResolver } from "@/validators";
-import { StripeRefundReason, type StripeCharge } from "scripts/mocksStripe";
 
 const ActionsButtons = styled.div`
   display: flex;

@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import queryString from "query-string";
 
 import { STALE_TIME } from "@/constants";
-import type { StripeCharge } from "scripts/mocksStripe";
+import { type StripeCharge } from "@/types";
 
 import { chargeQueryKeys } from "./charges-query-keys";
 

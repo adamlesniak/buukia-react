@@ -220,7 +220,9 @@ describe("ServiceDetail", () => {
       expect(categoryInputElement?.querySelector("input")).toHaveValue(
         JSON.stringify([data.categories[0]]),
       );
-      expect(priceInputElement).toHaveValue(centsToFixed(mockService.price));
+      expect(priceInputElement).toHaveValue(
+        centsToFixed(mockService.price).toString(),
+      );
       expect(durationInputElement).toHaveValue(mockService.duration);
       expect(serviceDescriptionInputElement).toHaveValue(
         mockService.description,

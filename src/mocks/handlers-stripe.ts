@@ -2,13 +2,16 @@ import { faker } from "@faker-js/faker";
 import { http, HttpResponse } from "msw";
 import { v4 as uuidv4 } from "uuid";
 
-import type { CreateRefundBody, CreateStripeBankAccountBody } from "@/types";
+import type {
+  CreateRefundBody,
+  CreateStripeBankAccountBody,
+  StripeBankAccount,
+  StripeCharge,
+  StripeRefund,
+} from "@/types";
 import {
   createStripeBankAccount,
   createStripeRefund,
-  type StripeBankAccount,
-  type StripeCharge,
-  type StripeRefund,
 } from "scripts/mocksStripe";
 
 import data from "../routes/data-stripe.json";

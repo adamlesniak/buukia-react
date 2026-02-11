@@ -8,8 +8,8 @@ import type {
   BuukiaCategory,
   BuukiaClient,
   BuukiaService,
+  StripeCharge,
 } from "@/types";
-import type { StripeCharge } from "scripts/mocksStripe";
 
 export const isoDateMatchDate = (date1: string, date2: string) => {
   const [date1Parsed, date2Parsed] = [parseISO(date1), parseISO(date2)];

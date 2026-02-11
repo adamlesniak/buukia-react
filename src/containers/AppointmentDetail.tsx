@@ -210,7 +210,11 @@ export default function AppointmentDetail() {
         appointment?.time ? new Date(appointment.time) : new Date(),
         "PPpp",
       ),
-      services: appointment?.services || [],
+      services:
+        appointment?.services.map((service) => ({
+          ...service,
+          price: service.price.toString(),
+        })) || [],
     }),
     [appointment?.id, assistant?.id],
   );
@@ -232,7 +236,13 @@ export default function AppointmentDetail() {
           {!isError && (
             <AppointmentForm
               appointmentId={appointment?.id || ""}
-              values={formValues}
+              values={{
+                ...formValues,
+                services: formValues.services.map((service) => ({
+                  ...service,
+                  price: service.price.toString(),
+                })),
+              }}
               assistantId={appointment?.assistant?.id || ""}
               services={services}
               clients={clients}

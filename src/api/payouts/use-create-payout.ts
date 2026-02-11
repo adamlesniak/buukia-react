@@ -21,7 +21,6 @@ export function useCreatePayout() {
       return response.json();
     },
     onMutate: async (newItem: CreatePayoutBody) => {
-
       const item = {
         id: "current-payout",
         amount: newItem.amount,
@@ -34,6 +33,12 @@ export function useCreatePayout() {
         createdAt: new Date().toISOString(),
         arrivalDate: "",
         type: "card",
+        statement_description: "",
+        destination: "",
+        fee: {
+          rate: 0,
+          amount: 0,
+        },
       } as BuukiaPayout;
 
       // Cancel any outgoing refetches

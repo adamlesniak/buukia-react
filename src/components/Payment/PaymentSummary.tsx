@@ -9,7 +9,11 @@ import styled from "styled-components";
 
 import { SETTINGS } from "@/constants";
 import RefundModal from "@/containers/RefundModal";
-import { CVCCheckStatus, type CreateRefundBody } from "@/types";
+import {
+  CVCCheckStatus,
+  type CreateRefundBody,
+  type StripeCharge,
+} from "@/types";
 import {
   centsToFixed,
   getChargeStatus,
@@ -18,7 +22,6 @@ import {
   getTimelineFromCharge,
   priceToCents,
 } from "@/utils";
-import { type StripeCharge } from "scripts/mocksStripe";
 
 import { Button } from "../Button";
 import { TransactionChip } from "../Chip";
@@ -148,7 +151,7 @@ export const PaymentSummary = memo((props: PaymentSummaryProps) => {
     const stripeFee = getStripeFeeAmount(props.charge.amount_captured);
     const platformFee = priceToCents(SETTINGS.platformFee);
 
-    return parseFloat(centsToFixed(stripeFee + platformFee)).toFixed(2);
+    return centsToFixed(stripeFee + platformFee);
   }, [props.charge.amount_captured]);
 
   const onSubmit = (data: CreateRefundBody) => {
