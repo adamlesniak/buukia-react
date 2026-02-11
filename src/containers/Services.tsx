@@ -1,8 +1,9 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
+import getSymbolFromCurrency from "currency-symbol-map";
 import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import {  useServices } from "@/api";
+import { useServices } from "@/api";
 import { Button } from "@/components/Button";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
 import {
@@ -20,8 +21,9 @@ import {
   TableRow,
   TableRowItem,
 } from "@/components/Table";
-import { MAX_PAGINATION } from "@/constants";
+import { MAX_PAGINATION, SETTINGS } from "@/constants";
 import { centsToFixed } from "@/utils";
+
 
 export default function Services() {
   const { t } = useTranslation();
@@ -113,7 +115,12 @@ export default function Services() {
                       <TableRowItem>{service.name}</TableRowItem>
                       <TableRowItem>{service.category.name}</TableRowItem>
                       <TableRowItem>{service.duration}</TableRowItem>
-                      <TableRowItem>€{centsToFixed(service.price)}</TableRowItem>
+                      <TableRowItem>
+                        {[
+                          getSymbolFromCurrency(SETTINGS.currency),
+                          centsToFixed(service.price),
+                        ].join("")}
+                      </TableRowItem>
                     </TableRow>
                   ))}
                 </TableBody>

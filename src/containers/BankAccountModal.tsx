@@ -99,7 +99,6 @@ export default function BankAccountModal(props: BankAccountModalProps) {
         routing_number: data.routingNumber,
       },
     };
-    console.log("body", body);
     props.onSubmit(body);
   };
 

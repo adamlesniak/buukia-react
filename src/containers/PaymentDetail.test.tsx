@@ -519,14 +519,12 @@ describe("PaymentDetail", () => {
         const refundButton = screen.queryByText(
           "transactions.payments.actions.refund",
         );
-        console.log("refundButton", refundButton);
 
         await user.click(refundButton!);
 
         const amountInput = screen.getByTestId(
           "refund-amount-input",
         ) as HTMLInputElement;
-        console.log("amountInput", amountInput);
         const reasonInput = screen.getByTestId(
           "refund-reason-input",
         ) as HTMLSelectElement;

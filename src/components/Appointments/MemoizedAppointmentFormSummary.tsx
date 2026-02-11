@@ -1,6 +1,8 @@
+import getSymbolFromCurrency from "currency-symbol-map";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { SETTINGS } from "@/constants";
 import { centsToFixed } from "@/utils";
 
 import { Button } from "../Button";
@@ -25,7 +27,12 @@ export const MemoizedAppointmentFormSummary = memo(
         </FormSummaryItem>
         <FormSummaryItem data-testid="form-price">
           <span>{t("appointments.detail.totalPrice")}</span>
-          <b>€{centsToFixed(props.servicesPriceSum)}</b>
+          <b>
+            {[
+              getSymbolFromCurrency(SETTINGS.currency),
+              centsToFixed(props.servicesPriceSum),
+            ].join("")}
+          </b>
         </FormSummaryItem>
         <Button disabled={props.disabled} size="sm" tabIndex={0} type="submit">
           {t("common.submit")}

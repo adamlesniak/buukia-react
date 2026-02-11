@@ -1,8 +1,10 @@
+import getSymbolFromCurrency from "currency-symbol-map";
 import { memo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { SETTINGS } from "@/constants";
 import { ManageCategoriesFormModal } from "@/containers/ManageCategoriesFormModal";
 import type {
   BuukiaCategory,
@@ -55,7 +57,6 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
 
   const onSubmit = (data: ServiceFormValues | NewCategoryFormValues) => {
     if ("category" in data) {
-      console.log('data.price', data.price);
       const body: CreateServiceBody = {
         name: data.name,
         category: data.category ? data.category[0] : { id: "", name: "" }, // Adjusted for single select
@@ -157,7 +158,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
                 data-testid="service-price-input"
                 placeholder={t("common.loading")}
               >
-                €
+                {getSymbolFromCurrency(SETTINGS.currency)}
               </Input>
             )}
           />

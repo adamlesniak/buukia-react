@@ -19,7 +19,7 @@ import {
   TableRow,
   TableRowItem,
 } from "@/components/Table";
-import { MAX_PAGINATION } from "@/constants";
+import { MAX_PAGINATION, SETTINGS } from "@/constants";
 import { centsToFixed, getColorStatus, PayoutStatus } from "@/utils";
 
 const TransactionChip = styled(Chip)<{ status: PayoutStatus }>`
@@ -109,7 +109,9 @@ export default function Payouts() {
                 {t("transactions.payouts.cards.averagePayout")}
               </LargeText>
               <ExtraLargeText>
-                <LargeText style={{ marginRight: "8px" }}>€</LargeText>
+                <LargeText style={{ marginRight: "8px" }}>
+                  {getSymbolFromCurrency(SETTINGS.currency)}
+                </LargeText>
                 {centsToFixed(stats.averagePayout)}
               </ExtraLargeText>
             </Card>
