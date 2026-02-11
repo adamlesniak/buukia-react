@@ -8,7 +8,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  MemoizedDrawerHeaderH2,
+  MemoizedDrawerHeader,
 } from "@/components/Drawer";
 
 export const DetailNavigationContainer = styled.div`
@@ -17,6 +17,8 @@ export const DetailNavigationContainer = styled.div`
   justify-content: space-between;
   width: 100%;
 `;
+
+export const DetailNavigationTitleContent = styled.div``;
 
 export const DetailNavigationButton = styled(Link)`
   padding: 8px 12px;
@@ -28,6 +30,8 @@ export const DetailNavigationButton = styled(Link)`
   display: flex;
   align-items: center;
   font-size: 16px;
+  color: initial;
+  text-decoration: none;
 
   span {
     margin-left: 12px;
@@ -67,11 +71,10 @@ export default function AssistantDrawer(props: AssistantDrawerProps) {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <MemoizedDrawerHeaderH2
-          onClose={onClose}
-          title={t("assistants.assistant")}
-          label={t("common.closeDrawer")}
-        >
+        <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
+          <DetailNavigationTitleContent>
+            <h2>{t("assistants.assistant")}</h2>
+          </DetailNavigationTitleContent>
           <DetailNavigationContainer>
             <DetailNavigationButton
               activeOptions={{ exact: true }}
@@ -96,7 +99,7 @@ export default function AssistantDrawer(props: AssistantDrawerProps) {
               <SettingsIcon size={18} /> <span>{t("common.settings")}</span>
             </DetailNavigationButton>
           </DetailNavigationContainer>
-        </MemoizedDrawerHeaderH2>
+        </MemoizedDrawerHeader>
         <DrawerContentBody justifyContent={"start"}>
           {props.children}
         </DrawerContentBody>

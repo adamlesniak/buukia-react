@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import queryString from "query-string";
 
-import { STALE_TIME } from "@/constants.ts";
+import { STALE_TIME } from "@/constants";
 import type { BuukiaAppointment } from "@/types";
 
 import { appointmentQueryKeys } from "./appointments-query-keys";

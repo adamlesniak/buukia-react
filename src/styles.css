@@ -12,11 +12,14 @@ code {
 }
 
 a {
-  color: initial;
-  text-decoration: none;
   align-items: center;
-  display: flex;
-  flex: 1;
+}
+
+button {
+  a {
+    color: initial;
+    text-decoration: none;
+  }
 }
 
 button {
@@ -42,4 +45,8 @@ fieldset {
 
 #app {
   overflow-y: scroll;
+}
+
+p {
+  margin: 8px 0px;
 }

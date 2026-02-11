@@ -8,6 +8,7 @@ import type {
   BuukiaCategory,
   BuukiaClient,
   BuukiaService,
+  StripeCharge,
 } from "@/types";
 
 export const isoDateMatchDate = (date1: string, date2: string) => {
@@ -213,3 +214,121 @@ export const getDayName = (dayIndex: number): string =>
     "friday",
     "saturday",
   ][dayIndex];
+
+export enum PayoutStatus {
+  Paid = "paid",
+  Completed = "completed",
+  Pending = "pending",
+  Failed = "failed",
+  Canceled = "canceled",
+  InTransit = "in_transit",
+}
+
+export enum PaymentStatus {
+  Succeeded = "succeeded",
+  Pending = "pending",
+  Failed = "failed",
+  Disputed = "disputed",
+  Refunded = "refunded",
+  PartiallyRefunded = "partially_refunded",
+}
+
+export const getChargeStatus = (charge: StripeCharge): PaymentStatus => {
+  if (charge.refunded) {
+    return PaymentStatus.Refunded;
+  }
+
+  if (charge.refunds && charge.refunds?.data.length > 0) {
+    return PaymentStatus.PartiallyRefunded;
+  }
+
+  if (charge.disputed) {
+    return PaymentStatus.Disputed;
+  }
+
+  if (charge.paid) {
+    return PaymentStatus.Succeeded;
+  }
+
+  if (charge.status === "pending") {
+    return PaymentStatus.Pending;
+  }
+
+  return PaymentStatus.Failed;
+};
+
+export const getRefundable = (charge: StripeCharge): boolean => {
+  if (charge.refunded) {
+    return false;
+  }
+
+  if (charge.refunds && charge.refunds?.data.length > 0) {
+    return false;
+  }
+
+  if (charge.status === PaymentStatus.Succeeded) {
+    return true;
+  }
+
+  return false;
+};
+
+export const getColorStatus = (status: PayoutStatus | PaymentStatus) => {
+  switch (status) {
+    case PaymentStatus.Succeeded:
+    case PayoutStatus.Paid:
+    case PayoutStatus.Completed:
+      return "#4caf50"; // Green
+    case PayoutStatus.Pending:
+      return "#ff9800"; // Orange
+    case PayoutStatus.Failed:
+      return "#f44336"; // Red
+    case PayoutStatus.Canceled:
+      return "#9e9e9e"; // Grey
+    case PayoutStatus.InTransit:
+      return "#2196f3"; // Blue
+    default:
+      return "#523d3d"; // Default color
+  }
+};
+
+export const centsToFixed = (cents: number): string =>
+  (cents / 100).toFixed(2).toString();
+
+export const priceToCents = (price: number): number => price * 100;
+
+export const getTimelineFromCharge = (charge: StripeCharge) => {
+  const items = [];
+
+  if (charge.disputed) {
+    items.push({
+      name: `transactions.payments.common.disputedAs.${charge.dispute?.status}`,
+      date: charge.dispute?.created || 0,
+    });
+  }
+
+  if (charge) {
+    items.push({
+      name: "transactions.payments.common.captured",
+      date: charge.created,
+    });
+  }
+
+  if (charge.paid) {
+    items.push({
+      name: "transactions.payments.common.authorized",
+      date: charge.created,
+    });
+  }
+
+  return items;
+};
+
+export const getStripeFeeAmount = (amount: number): number => {
+  const stripeFeePercentage = 0.015; // 2.9%
+  const stripeFixedFee = 0.25; // $0.30
+
+  const fee = Math.round(amount * stripeFeePercentage + stripeFixedFee);
+
+  return fee;
+};

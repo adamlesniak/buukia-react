@@ -7,6 +7,7 @@ const DrawerContentBodyContainer = styled.div<{
     | "end"
     | "space-between"
     | "space-around";
+  $inline?: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -15,6 +16,7 @@ const DrawerContentBodyContainer = styled.div<{
   flex: 1;
   overflow: hidden;
   z-index: 10;
+  padding-top: ${(props) => (props.$inline ? "0px" : "16px")};
 `;
 
 export type DrawerContentBodyProps = {
@@ -25,11 +27,15 @@ export type DrawerContentBodyProps = {
     | "end"
     | "space-between"
     | "space-around";
+  inline?: boolean;
 };
 
 export function DrawerContentBody(props: DrawerContentBodyProps) {
   return (
-    <DrawerContentBodyContainer $justifyContent={props.justifyContent}>
+    <DrawerContentBodyContainer
+      $justifyContent={props.justifyContent}
+      $inline={props.inline}
+    >
       {props.children}
     </DrawerContentBodyContainer>
   );

@@ -58,6 +58,19 @@ const StyledButton = styled.button<{
       `;
     }
 
+    if (props.$variant === "accent") {
+      return `
+        background: #b79ced;
+        font-weight: bold;
+        color: #FFF;
+        border: 1px solid #f4f4f4;
+
+        &:hover {
+          background-color: #a98fdd;
+        }
+      `;
+    }
+
     return `
       border: 1px solid #f4f4f4;
     `;
@@ -80,7 +93,7 @@ type ButtonProps = {
   type: "button" | "submit" | "reset";
   value?: string;
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "transparent" | "danger";
+  variant?: "primary" | "secondary" | "transparent" | "danger" | "accent";
   size?: "sm" | "md" | "lg";
 };
 

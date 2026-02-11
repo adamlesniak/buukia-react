@@ -27,7 +27,6 @@ export const Modal = styled.div<{
 
   min-height: 520px;
 
-
   ${(props) => {
     if (props.$variant === "center") {
       return `
@@ -39,7 +38,6 @@ export const Modal = styled.div<{
       `;
     }
   }}
-
 `;
 
 export const ModalHeader = styled.div`
@@ -57,4 +55,8 @@ export const ModalBody = styled.div`
   border-top: 2px solid #f4f4f4;
   border-bottom: 2px solid #f4f4f4;
   padding-top: 12px;
+  padding-bottom: 12px;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
 `;

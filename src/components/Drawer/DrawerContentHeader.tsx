@@ -8,7 +8,7 @@ const DrawerContentHeaderContainer = styled.div`
   align-items: center;
   border-bottom: 1px solid #f4f4f4;
   /* padding-bottom: 8px; */
-  margin-bottom: 16px;
+  // margin-bottom: 16px;
 
   h2 {
     margin: 8px 0;

@@ -6,6 +6,7 @@ export * from "./Combobox";
 export * from "./SearchInput";
 export * from "./TextArea";
 export * from "./Select";
+export * from "./IBANInput";
 
 import styled from "styled-components";
 

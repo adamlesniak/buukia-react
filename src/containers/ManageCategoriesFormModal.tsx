@@ -3,14 +3,26 @@ import { memo } from "react";
 import { FocusScope } from "react-aria";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 
 import { Button } from "@/components/Button";
-import { Card, CardDescription } from "@/components/Card";
-import { MemoizedDrawerHeaderH3 } from "@/components/Drawer";
+import { Card, ServiceCardDescription } from "@/components/Card";
+import { MemoizedDrawerHeader } from "@/components/Drawer";
 import { Field, FieldError, Form, Input } from "@/components/Form";
 import { Modal, ModalBody, Overlay } from "@/components/Modal";
 import type { CreateCategoryBody, NewCategoryFormValues } from "@/types";
 import { categoryFormSchema, validateResolver } from "@/validators";
+
+import { DetailNavigationTitleContent } from "./AssistantDrawer";
+
+const SearchContainer = styled.div`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+`;
 
 type ManageCategoriesFormModalProps = {
   categories: { id: string; name: string }[];
@@ -43,11 +55,14 @@ export const ManageCategoriesFormModal = memo(
           data-testid="services-modal"
         >
           <FocusScope autoFocus restoreFocus contain>
-            <MemoizedDrawerHeaderH3
-              title={t("services.manageCategories")}
+            <MemoizedDrawerHeader
               onClose={props.close}
               label={t("common.closeModal")}
-            />
+            >
+              <DetailNavigationTitleContent>
+                {t("services.manageCategories")}
+              </DetailNavigationTitleContent>
+            </MemoizedDrawerHeader>
 
             <Form
               fullHeight={true}
@@ -55,23 +70,17 @@ export const ManageCategoriesFormModal = memo(
               onSubmit={handleSubmit(props.onSubmit)}
             >
               <Field>
-                <div
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "0px",
-                    width: "100%",
-                    display: "flex",
-                  }}
-                >
-                  <Input
-                    {...register("name")}
-                    id="category-name-input"
-                    type="text"
-                    data-testid="category-name-input"
-                    placeholder={t("services.testCategory")}
-                    style={{ flex: 4, borderRadius: "12px 0px 0px 12px" }}
-                  />
+                <SearchContainer>
+                  <div style={{ flex: 3 }}>
+                    <Input
+                      {...register("name")}
+                      id="category-name-input"
+                      type="text"
+                      data-testid="category-name-input"
+                      placeholder={t("services.testCategory")}
+                      style={{ flex: 2, borderRadius: "12px 0px 0px 12px" }}
+                    />
+                  </div>
 
                   <Button
                     size="sm"
@@ -85,7 +94,7 @@ export const ManageCategoriesFormModal = memo(
                   >
                     {t("services.addCategory")}
                   </Button>
-                </div>
+                </SearchContainer>
                 {errors.name && (
                   <FieldError role="alert">
                     {t("common.requiredField")}
@@ -98,7 +107,7 @@ export const ManageCategoriesFormModal = memo(
                   props.categories.length > 0 &&
                   props.categories.map((category) => (
                     <Card data-testid="category-list-item" key={category.id}>
-                      <CardDescription title={`${category.name}`} />
+                      <ServiceCardDescription title={`${category.name}`} />
                       <Button
                         size="sm"
                         tabIndex={0}

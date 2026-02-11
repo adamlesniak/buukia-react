@@ -10,7 +10,10 @@
     "clients": "Clients",
     "staff": "Staff",
     "settings": "Settings",
-    "assistants": "Assistants"
+    "assistants": "Assistants",
+    "sales": "Sales",
+    "payments": "Payments",
+    "transactions": "Transactions"
   },
   "calendar": {
     "teamDayView": "Team Day View",
@@ -88,6 +91,7 @@
       "price": "Price",
       "minutes": "minutes"
     },
+    "deleteService": "Delete Service",
     "form": {
       "errors": {
         "nameError": "Name is required",
@@ -96,6 +100,10 @@
         "descriptionError": "Description is required",
         "categoryError": "Category is required"
       }
+    },
+    "modal": {
+      "deleteTitle": "Delete Service",
+      "deleteMessage": "Are you sure you want to delete this service?\nThis action cannot be undone."
     }
   },
   "appointments": {
@@ -132,12 +140,291 @@
     },
     "modal": {
       "deleteTitle": "Delete Assistant",
-      "deleteMessage": "Are you sure you want to delete this assistant?\nThis action cannot be undone.",
-      "confirmDelete": "Delete",
-      "cancel": "Cancel"
+      "deleteMessage": "Are you sure you want to delete this assistant?\nThis action cannot be undone."
+    }
+  },
+  "transactions": {
+    "title": "Transactions",
+    "loadingError": "Error retrieving transactions. Please try again later.",
+    "payouts": {
+      "bankAccount": {
+        "form": {
+          "accountNumber": "Account Number",
+          "country": "Country",
+          "currency": "Currency",
+          "accountHolderName": "Account Holder Name",
+          "accountHolderType": "Account Holder Type",
+          "routingNumber": "Routing Number",
+          "accountHolderTypeOptions": {
+            "individual": "Individual",
+            "company": "Company"
+          },
+          "errors": {
+            "accountNumberError": "Account number is required and must be between 8 and 17 characters.",
+            "accountHolderNameError": "Account holder name is required.",
+            "accountHolderTypeError": "Account holder type is required.",
+            "routingNumberError": "Routing number is required."
+          }
+        },
+        "title": "Bank Account",
+        "description": "Add a bank account to receive payouts. Payouts typically take 2-7 business days to arrive in your bank account after they are initiated, depending on your bank and country. Instant payouts are also available for eligible accounts, which can arrive within minutes but may incur additional fees.",
+        "learnMore": "Learn more about payouts"
+      },
+      "type": "Payout Type",
+      "payoutTo": "Payout To",
+      "addBankAccount": "Add Bank Account",
+      "instant": {
+        "title": "Instant",
+        "description": "You can pay up to - which is transferred instantly."
+      },
+      "modal": {
+        "cancelTitle": "Cancel Payout",
+        "cancelMessage": "Are you sure you want to cancel this payout?"
+      },
+      "overview": "Overview",
+      "completedAt": "Completed at",
+      "createdAt": "Created at",
+      "actions": {
+        "cancel": "Cancel Payout"
+      },
+      "detail": {
+        "title": "Payout",
+        "id": "ID",
+        "amount": "Amount",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "instantPayoutFee": "Instant Payout Fee ({{feeRate}}%)"
+      },
+      "table": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "status": "Status",
+        "method": "Method",
+        "destination": "Destination"
+      },
+      "summary": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "arrivalDate": "Arrival Date",
+        "description": "Description",
+        "statementDescription": "Statement Description",
+        "status": "Status",
+        "method": "Method",
+        "sourceId": "Payout ID",
+        "provider": "Provider",
+        "destination": "Destination",
+        "instantPayoutFee": "Instant Payout Fee ({{feeRate}}%)"
+      },
+      "method": {
+        "bank_account": "Bank Account",
+        "card": "Card"
+      },
+      "form": {
+        "errors": {
+          "amountError": "Amount is required and must be between {{minValue}} and {{maxValue}}.",
+          "bankAccountIdError": "Bank account is required."
+        }
+      },
+      "addPayout": "Add Payout",
+      "title": "Payouts",
+      "noPayoutsFound": "No payouts found.",
+      "loadingError": "Error retrieving payouts. Please try again later.",
+      "cards": {
+        "total": "Total",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "sum": "Sum of Payouts",
+        "totalCount": "Total Count",
+        "averagePayment": "Average Payment",
+        "averagePayout": "Average Payout"
+      }
+    },
+    "payments": {
+      "description": "A simple description about refund.",
+      "common": {
+        "status": "Status",
+        "reason": "Reason",
+        "fee": "Fee",
+        "disputed": "Disputed",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "disputedAs": {
+          "warning_needs_response": "Disputed Warning - Needs Response",
+          "warning_under_review": "Disputed Warning - Under Review",
+          "warning_closed": "Dispute Warning - Closed",
+          "needs_response": "Dispute Needs Response",
+          "under_review": "Dispute Under Review",
+          "won": "Dispute won",
+          "lost": "Dispute lost"
+        },
+        "captured": "Captured",
+        "authorized": "Authorized",
+        "disputedFor": "Disputed for",
+        "disputeLost": "Dispute lost",
+        "disputeWon": "Dispute won",
+        "started": "Started",
+        "refunded": "Refunded",
+        "partiallyRefunded": "Partially Refunded"
+      },
+      "disputes": {
+        "13.6": "A cardholder claims they were due a refund or credit, but it wasn’t issued or processed correctly. This typically happens when a business agrees to a refund but doesn’t complete it, or when a return or cancellation is processed, but the credit doesn’t appear on the cardholder’s statement within a reasonable timeframe.",
+        "13.7": "A cardholder claims they cancelled a purchase (either for goods or services) but were still charged. This can happen when a subscription isn’t correctly canceled, a refund isn’t processed after a cancellation, or a customer misunderstands cancellation terms.",
+        "12.6.1": "The cardholder claims that a single transaction was processed more than once using the same payment credential on the same transaction date, and for the same transaction amount.",
+        "12.6.2": "A cardholder claims they were charged for a transaction they had already paid for using a different payment method. For example: cash, check, another credit or debit card, store credit, or a third-party payment service like PayPal.",
+        "10.3": "The cardholder claims they didn’t authorize a transaction that took place in a card-present environment (an in-person transaction where the card was physically used). This typically means the customer is alleging fraud, often due to stolen or counterfeit cards, unauthorized use, or skimming attacks.",
+        "10.4": "The cardholder claims they didn’t authorize a transaction that took place in a card-not-present (CNP) environment, such as online, over the phone, or through a mobile app. These disputes typically occur due to stolen card information, account takeovers, or unauthorized recurring charges.",
+        "12.2": "You processed a debit when you were supposed to process a credit (vice versa), or a credit was processed when you were supposed to process a reversal to correct a transaction that was processed in error.",
+        "12.5": "A cardholder contends that the transaction amount on their statement is incorrect. This can occur when the charge appears higher (or lower) than what was agreed upon or expected, due to pricing errors, tax miscalculations, currency conversion issues, or other processing mistakes.",
+        "13.1": "The cardholder claims that merchandise or services that they ordered weren’t received by the expected date (or merchandise was unavailable for pick-up).",
+        "13.3": "A cardholder claims that the goods or services they received were materially different from what was advertised, were damaged or defective, or otherwise didn’t meet their reasonable expectations based on the merchant’s description.",
+        "13.4": "A cardholder claims that the merchandise or services delivered were misrepresented. Meaning, the product or service didn’t match the description, features, or quality that was promised by the merchant. This covers cases where the advertised attributes differ significantly from the actual offering.",
+        "13.5": "A cardholder claims that the merchandise or services delivered were misrepresented. Meaning, the product or service didn’t match the description, features, or quality that was promised by the merchant. This covers cases where the advertised attributes differ significantly from the actual offering.",
+        "13.2": "A cardholder claims they were charged for a recurring transaction after canceling their subscription or payment agreement. This often happens when the cancellation request wasn’t processed correctly, the customer misunderstood the cancellation policy, or the charge was part of a billing cycle they overlooked."
+      },
+      "reason": {
+        "duplicate": "Duplicate",
+        "fraudulent": "Fraudulent",
+        "subscription_canceled": "Subscription Canceled",
+        "product_unacceptable": "Product Unacceptable",
+        "product_not_received": "Product Not Received",
+        "unrecognized": "Unrecognized",
+        "credit_not_processed": "Credit Not Processed",
+        "incorrect_account_details": "Incorrect Account Details",
+        "insufficient_funds": "Insufficient Funds",
+        "bank_cannot_process": "Bank Cannot Process",
+        "debit_not_authorized": "Debit Not Authorized",
+        "chargeback": "Chargeback",
+        "general": "General",
+        "customer_initiated": "Customer Initiated"
+      },
+      "status": {
+        "warning_needs_response": "Warning - Needs Response",
+        "warning_under_review": "Warning - Under Review",
+        "warning_closed": "Warning - Closed",
+        "needs_response": "Needs Response",
+        "under_review": "Under Review",
+        "won": "Won",
+        "lost": "Lost"
+      },
+      "actions": {
+        "refund": "Refund Payment",
+        "dispute": "Dispute Payment"
+      },
+      "summary": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method",
+        "sourceId": "Payment ID",
+        "provider": "Provider",
+        "billingDetails": "Billing Details",
+        "billing": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "taxId": "Tax ID"
+        },
+        "paymentMethod": {
+          "amountAuthorized": "Amount Authorized",
+          "paymentFee": "Payment Fee",
+          "platformFee": "Platform Fee",
+          "fee": "Fee",
+          "nett": "Nett Amount",
+          "brand": "Brand",
+          "last4": "Last 4 Digits",
+          "expiry": "Expiry",
+          "expMonth": "Expiry Month",
+          "expYear": "Expiry Year",
+          "country": "Country",
+          "fingerprint": "Fingerprint",
+          "card": "Card",
+          "type": "Type",
+          "checks": {
+            "cvcCheck": "CVC Check",
+            "addressLine1Check": "Address Line 1 Check",
+            "addressPostalCodeCheck": "Address Postal Code Check"
+          }
+        }
+      },
+      "detail": {
+        "title": "Payment",
+        "id": "ID",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method",
+        "clientName": "Client Name",
+        "sourceId": "Source ID",
+        "provider": "Provider"
+      },
+      "refund": "Refund",
+      "table": {
+        "id": "ID",
+        "currency": "Currency",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "method": "Method"
+      },
+      "modal": {
+        "refundTitle": "Refund Payment",
+        "refundMessage": "Are you sure you want to refund this payment?",
+        "refundDescription": "Refunds typically take 5-10 business days to appear on a customer's statement, and while there are no fees to process a refund, original transaction fees are not returned.",
+        "amount": "Amount",
+        "reason": "Reason",
+        "description": "Description",
+        "reasonOptions": {
+          "duplicate": "Duplicate",
+          "fraudulent": "Fraudulent",
+          "requested_by_customer": "Requested by Customer"
+        },
+        "form": {
+          "errors": {
+            "amountError": "Amount is required",
+            "reasonError": "Reason is required",
+            "descriptionError": "Description is required"
+          }
+        }
+      },
+      "title": "Payments",
+      "noPaymentsFound": "No payments found.",
+      "loadingError": "Error retrieving payments. Please try again later.",
+      "cards": {
+        "total": "Total",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "sum": "Sum of Payments",
+        "totalCount": "Total Count",
+        "averagePayment": "Average Payment"
+      }
+    },
+    "detail": {
+      "paymentId": "Payment ID",
+      "clientName": "Client Name",
+      "amountPaid": "Amount Paid",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "paymentStatus": "Payment Status"
     }
   },
   "common": {
+    "timeline": "Timeline",
+    "by": "by",
+    "actions": "Actions",
     "confirm": "Confirmation",
     "delete": "Delete",
     "detail": "Detail",
@@ -160,6 +447,9 @@
     "requiredField": "This field is required",
     "moreItems": "and {{count}} more items",
     "copyTo": "Copy to",
+    "payouts": "Payouts",
+    "transactions": "Transactions",
+    "payments": "Payments",
     "daysOfWeek": {
       "sunday": "Sun",
       "monday": "Mon",
@@ -168,6 +458,17 @@
       "thursday": "Thu",
       "friday": "Fri",
       "saturday": "Sat"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "completed": "Completed",
+      "succeeded": "succeeded",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "in_transit": "In Transit",
+      "disputed": "Disputed",
+      "canceled": "Canceled"
     }
   }
 }

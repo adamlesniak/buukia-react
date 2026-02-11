@@ -9,6 +9,8 @@ export const SidebarMenuItem = styled(Link)`
   display: flex;
   align-items: center;
   font-size: 14px;
+  color: initial;
+  text-decoration: none;
 
   span {
     margin: 0px 10px;

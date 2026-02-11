@@ -10,13 +10,29 @@ describe("ConfirmationModal", () => {
   });
 
   it("should render correctly and handle actions", () => {
-    render(<ConfirmationModal.default close={mockClose} />);
+    render(
+      <ConfirmationModal.default
+        title="settings.modal.deleteTitle"
+        description="confirmation-modal-description"
+        close={mockClose}
+        confirmText="common.delete"
+        type="danger"
+      />,
+    );
 
     expect(screen.getByText("settings.modal.deleteTitle")).toBeInTheDocument();
   });
 
   it("should render description", () => {
-    render(<ConfirmationModal.default close={mockClose} />);
+    render(
+      <ConfirmationModal.default
+        title="settings.modal.deleteTitle"
+        description="confirmation-modal-description"
+        close={mockClose}
+        confirmText="common.delete"
+        type="danger"
+      />,
+    );
 
     expect(
       screen.getByTestId("confirmation-modal-description"),
@@ -24,7 +40,15 @@ describe("ConfirmationModal", () => {
   });
 
   it("should call close with false when selecting cancel button", () => {
-    render(<ConfirmationModal.default close={mockClose} />);
+    render(
+      <ConfirmationModal.default
+        title="settings.modal.deleteTitle"
+        description="confirmation-modal-description"
+        close={mockClose}
+        confirmText="common.delete"
+        type="danger"
+      />,
+    );
 
     screen.getByText("common.cancel").click();
 
@@ -32,7 +56,15 @@ describe("ConfirmationModal", () => {
   });
 
   it("should call close with true when selecting delete button", () => {
-    render(<ConfirmationModal.default close={mockClose} />);
+    render(
+      <ConfirmationModal.default
+        title="settings.modal.deleteTitle"
+        description="confirmation-modal-description"
+        close={mockClose}
+        confirmText="common.delete"
+        type="danger"
+      />,
+    );
 
     screen.getByText("common.delete").click();
 

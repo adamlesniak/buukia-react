@@ -16,7 +16,7 @@ import {
   clientQueryKeys,
 } from "@/api";
 import { AppointmentForm } from "@/components/Appointments/AppointmentForm";
-import { MAX_PAGINATION } from "@/constants.ts";
+import { MAX_PAGINATION } from "@/constants";
 import type {
   AppointmentFormValues,
   BuukiaAppointment,
@@ -31,9 +31,11 @@ import {
   Drawer,
   DrawerContent,
   DrawerContentBody,
-  MemoizedDrawerHeaderH2,
+  MemoizedDrawerHeader,
 } from "../components/Drawer";
 import { ErrorDetail } from "../components/Error";
+
+import { DetailNavigationTitleContent } from "./AssistantDrawer";
 
 export default function AppointmentDetail() {
   const { t } = useTranslation();
@@ -85,6 +87,7 @@ export default function AppointmentDetail() {
           client: null as any,
           services: [],
           assistant,
+          payments: [],
         } as BuukiaAppointment,
         isLoading: false,
         error: undefined,
@@ -207,7 +210,11 @@ export default function AppointmentDetail() {
         appointment?.time ? new Date(appointment.time) : new Date(),
         "PPpp",
       ),
-      services: appointment?.services || [],
+      services:
+        appointment?.services.map((service) => ({
+          ...service,
+          price: service.price.toString(),
+        })) || [],
     }),
     [appointment?.id, assistant?.id],
   );
@@ -215,11 +222,11 @@ export default function AppointmentDetail() {
   return (
     <Drawer onOverlayClick={onClose} drawer="right">
       <DrawerContent>
-        <MemoizedDrawerHeaderH2
-          onClose={onClose}
-          title={t("appointments.appointment")}
-          label={t("common.closeDrawer")}
-        />
+        <MemoizedDrawerHeader onClose={onClose} label={t("common.closeDrawer")}>
+          <DetailNavigationTitleContent>
+            <h2>{t("appointments.appointment")}</h2>
+          </DetailNavigationTitleContent>
+        </MemoizedDrawerHeader>
         <DrawerContentBody>
           {isError && (
             <ErrorDetail
@@ -229,7 +236,13 @@ export default function AppointmentDetail() {
           {!isError && (
             <AppointmentForm
               appointmentId={appointment?.id || ""}
-              values={formValues}
+              values={{
+                ...formValues,
+                services: formValues.services.map((service) => ({
+                  ...service,
+                  price: service.price.toString(),
+                })),
+              }}
               assistantId={appointment?.assistant?.id || ""}
               services={services}
               clients={clients}

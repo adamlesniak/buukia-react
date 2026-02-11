@@ -52,6 +52,7 @@ vi.mock("@tanstack/react-router", () => ({
   Outlet: () => <div data-testid="outlet" />,
   lazyRouteComponent: vi.fn(),
   useRouterState: mockRouterState,
+  Link: vi.fn(),
 }));
 
 // Create test data
@@ -61,6 +62,7 @@ const mockAppointment: BuukiaAppointment = {
   assistant: createAssistant(data.assistants[0]),
   client: createClient(data.clients[0]),
   services: [createService(data.services[0])],
+  payments: [],
 };
 const mockServices: BuukiaService[] = [createService(data.services[0])];
 const mockClients: BuukiaClient[] = [createClient(data.clients[0])];

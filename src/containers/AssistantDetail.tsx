@@ -12,7 +12,7 @@ import {
 } from "@/api";
 import { AssistantForm } from "@/components/Assistants";
 import { ErrorDetail } from "@/components/Error/ErrorDetail";
-import { MAX_PAGINATION } from "@/constants.ts";
+import { MAX_PAGINATION } from "@/constants";
 import type {
   BuukiaAssistant,
   CreateAssistantBody,

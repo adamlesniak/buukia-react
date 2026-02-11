@@ -5,6 +5,7 @@ export const SearchInput = styled.div`
   flex-direction: row;
   font-size: 14px;
   border: 1px solid #e0e0e0;
+  align-items: center;
 
   svg {
     padding: 8px;

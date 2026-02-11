@@ -6,12 +6,13 @@ import {
   useCategories,
   useCreateCategory,
   useCreateService,
+  useDeleteService,
   useService,
   useUpdateCategory,
   useUpdateService,
 } from "@/api";
 import type { BuukiaCategory, BuukiaService } from "@/types";
-import { createCategory } from "@/utils";
+import { centsToFixed, createCategory } from "@/utils";
 
 import data from "../routes/data.json";
 
@@ -19,6 +20,7 @@ import data from "../routes/data.json";
 vi.mock("@/api", async () => ({
   useCreateService: vi.fn(),
   useService: vi.fn(),
+  useDeleteService: vi.fn(),
   useUpdateService: vi.fn(),
   useCategories: vi.fn(),
   useCreateCategory: vi.fn(),
@@ -36,6 +38,7 @@ const mockUseParams = vi.fn();
 const mockMutate = vi.fn().mockImplementation((_data, { onSuccess }) => {
   onSuccess();
 });
+const mockMutateDelete = vi.fn();
 const mockRouterState = vi.fn().mockReturnValue("daily");
 
 vi.mock("@tanstack/react-router", () => ({
@@ -48,6 +51,7 @@ vi.mock("@tanstack/react-router", () => ({
   Outlet: () => <div data-testid="outlet" />,
   lazyRouteComponent: vi.fn(),
   useRouterState: mockRouterState,
+  Link: vi.fn(),
 }));
 
 // Create test data
@@ -56,7 +60,7 @@ const mockService: BuukiaService = {
   name: "Service Name",
   description: "Service Description",
   duration: "60",
-  price: 100,
+  price: 10000,
   category: data.categories[0],
 };
 const mockCategories: BuukiaCategory[] = [createCategory(data.categories[0])];
@@ -67,6 +71,9 @@ const mockUseCreateService = useCreateService as unknown as ReturnType<
   typeof vi.fn
 >;
 const mockUseUpdateService = useUpdateService as unknown as ReturnType<
+  typeof vi.fn
+>;
+const mockUseDeleteService = useDeleteService as unknown as ReturnType<
   typeof vi.fn
 >;
 const mockUseCreateCategory = useCreateCategory as unknown as ReturnType<
@@ -98,6 +105,7 @@ describe("ServiceDetail", () => {
 
     mockNavigate.mockClear();
     mockMutate.mockClear();
+    mockMutateDelete.mockClear();
     mockRouterState.mockClear();
     mockUseService.mockClear();
     mockUseCategories.mockClear();
@@ -124,6 +132,9 @@ describe("ServiceDetail", () => {
       mutate: mockMutate,
     });
     mockUseCreateService.mockReturnValue({
+      mutate: mockMutate,
+    });
+    mockUseDeleteService.mockReturnValue({
       mutate: mockMutate,
     });
     mockUseCreateCategory.mockReturnValue({
@@ -209,7 +220,9 @@ describe("ServiceDetail", () => {
       expect(categoryInputElement?.querySelector("input")).toHaveValue(
         JSON.stringify([data.categories[0]]),
       );
-      expect(priceInputElement).toHaveValue(mockService.price.toString());
+      expect(priceInputElement).toHaveValue(
+        centsToFixed(mockService.price).toString(),
+      );
       expect(durationInputElement).toHaveValue(mockService.duration);
       expect(serviceDescriptionInputElement).toHaveValue(
         mockService.description,
@@ -241,7 +254,7 @@ describe("ServiceDetail", () => {
           description: "Service Description",
           duration: "60",
           name: "Service Name",
-          price: 100,
+          price: 10000,
         },
         {
           onSuccess: expect.any(Function),
@@ -283,6 +296,68 @@ describe("ServiceDetail", () => {
       const error = await screen.queryByText("Category error");
 
       expect(error).toBeInTheDocument();
+    });
+
+    it("should remove service following by confirmation dialog", async () => {
+      mockUseDeleteService.mockReturnValue({
+        mutate: mockMutateDelete,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceDetail.default />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByText("services.deleteService"));
+
+      expect(
+        screen.getByText("services.modal.deleteTitle"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("services.modal.deleteMessage"),
+      ).toBeInTheDocument();
+
+      await user.click(screen.getByText("common.delete"));
+
+      expect(
+        screen.queryByText("services.modal.deleteTitle"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("services.modal.deleteMessage"),
+      ).not.toBeInTheDocument();
+      expect(mockMutateDelete).toHaveBeenCalledWith("serviceId");
+    });
+
+    it("should not remove service following by confirmation dialog", async () => {
+      mockUseDeleteService.mockReturnValue({
+        mutate: mockMutateDelete,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ServiceDetail.default />
+        </QueryClientProvider>,
+      );
+
+      await user.click(screen.getByText("services.deleteService"));
+
+      expect(
+        screen.getByText("services.modal.deleteTitle"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("services.modal.deleteMessage"),
+      ).toBeInTheDocument();
+
+      await user.click(screen.getByText("common.cancel"));
+
+      expect(
+        screen.queryByText("services.modal.deleteTitle"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("services.modal.deleteMessage"),
+      ).not.toBeInTheDocument();
+      expect(mockMutateDelete).not.toHaveBeenCalledWith("testAssistantId");
     });
   });
 });

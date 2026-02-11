@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { HttpResponse, http } from "msw";
 import { v4 as uuidv4 } from "uuid";
 
@@ -6,15 +7,19 @@ import type {
   BuukiaAssistant,
   BuukiaCategory,
   BuukiaClient,
+  BuukiaPayment,
+  BuukiaPayout,
   BuukiaService,
   CreateAppointmentBody,
   CreateAssistantBody,
+  CreatePayoutBody,
   CreateServiceBody,
   UpdateAppointmentBody,
   UpdateAssistantBody,
   UpdateCategoryBody,
   UpdateServiceBody,
 } from "@/types";
+import { PayoutStatus } from "@/utils";
 
 import data from "../routes/data.json";
 
@@ -24,13 +29,35 @@ import data from "../routes/data.json";
 // /api/payments
 // /api/settings
 
-const [assistants, clients, services, appointments, categories]: [
+const [
+  payments,
+  payouts,
+  assistants,
+  clients,
+  services,
+  appointments,
+  categories,
+]: [
+  Map<string, BuukiaPayment>,
+  Map<string, BuukiaPayout>,
   Map<string, BuukiaAssistant>,
   Map<string, BuukiaClient>,
   Map<string, BuukiaService>,
   Map<string, BuukiaAppointment>,
   Map<string, BuukiaCategory>,
 ] = [
+  new Map(
+    data.payments.map((payment) => [
+      payment.id,
+      payment as unknown as BuukiaPayment,
+    ]),
+  ),
+  new Map(
+    data.payouts.map((payout) => [
+      payout.id,
+      payout as unknown as BuukiaPayout,
+    ]),
+  ),
   new Map(data.assistants.map((assistant) => [assistant.id, assistant])),
   new Map(data.clients.map((client) => [client.id, client])),
   new Map(
@@ -58,6 +85,138 @@ const [assistants, clients, services, appointments, categories]: [
 ];
 
 export const handlers = [
+  http.get("/api/payments/stats", () => {
+    return HttpResponse.json({
+      totalPayments: Array.from(payments.values()).length,
+      totalAmount: Array.from(payments.values()).reduce(
+        (sum, payment) => sum + payment.amount,
+        0,
+      ),
+      averagePayment:
+        Array.from(payments.values()).reduce(
+          (sum, payment) => sum + payment.amount,
+          0,
+        ) / Array.from(payments.values()).length,
+      failed: 0,
+    });
+  }),
+
+  http.get("/api/payments", ({ request }) => {
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+    return HttpResponse.json(
+      Array.from(payments.values())
+        .filter((payment) =>
+          payment.description
+            .toLowerCase()
+            .includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
+  }),
+
+  http.get("/api/payouts/stats", () => {
+    return HttpResponse.json({
+      totalPayouts: Array.from(payouts.values()).length,
+      totalAmount: Array.from(payouts.values()).reduce(
+        (sum, payout) => sum + payout.amount,
+        0,
+      ),
+      averagePayout:
+        Array.from(payouts.values()).reduce(
+          (sum, payout) => sum + payout.amount,
+          0,
+        ) / Array.from(payouts.values()).length,
+      failed: 0,
+    });
+  }),
+
+  http.get("/api/payouts", ({ request }) => {
+    const [limitParam, query] = [
+      new URL(request.url).searchParams.get("limit"),
+      new URL(request.url).searchParams.get("query"),
+    ];
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
+    return HttpResponse.json(
+      Array.from(payouts.values())
+        .filter((payout) =>
+          payout.description.toLowerCase().includes(query?.toLowerCase() || ""),
+        )
+        .slice(0, limit),
+    );
+  }),
+
+  http.get("/api/payouts/:id", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = payouts.get(id);
+
+    if (item) {
+      return HttpResponse.json(item);
+    } else {
+      return HttpResponse.json(
+        { message: "Payout not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post("/api/payouts/:id/cancel", (req) => {
+    const { id } = req.params as { id: string };
+
+    const item = payouts.get(id);
+
+    if (item) {
+      const newItem: BuukiaPayout = {
+        ...item,
+        status: PayoutStatus.Canceled,
+      };
+
+      payouts.set(id, newItem);
+
+      return HttpResponse.json(newItem);
+    } else {
+      return HttpResponse.json(
+        { message: "Payout not found" },
+        { status: 404 },
+      );
+    }
+  }),
+
+  http.post<never, CreatePayoutBody>("/api/payouts", async ({ request }) => {
+    const body = await request.json();
+
+    const id = uuidv4();
+
+    const payout = {
+      id,
+      amount: body.amount,
+      currency: "EUR",
+      arrivalDate: "",
+      createdAt: new Date().toISOString(),
+      description: body.description,
+      provider: "stripe",
+      sourceId: `po_${faker.string.alphanumeric(24)}`,
+      status: "pending",
+      type: "bank_account",
+      fee: {
+        rate: 0.01,
+        amount: Math.round(body.amount * 0.01),
+      },
+      statement_description: 'BUUKIA',
+      destination: `ba_${faker.string.alphanumeric(24)}`,
+    } as BuukiaPayout;
+
+    payouts.set(id, payout);
+
+    return HttpResponse.json(payout);
+  }),
+
   http.get("/api/assistants", ({ request }) => {
     const [limitParam, query] = [
       new URL(request.url).searchParams.get("limit"),
@@ -463,6 +622,7 @@ export const handlers = [
         services: body.serviceIds
           .map((serviceId) => services.get(serviceId))
           .filter((service): service is BuukiaService => service !== undefined),
+        payments: [],
       } as BuukiaAppointment;
       appointments.set(body.id, appointment);
 

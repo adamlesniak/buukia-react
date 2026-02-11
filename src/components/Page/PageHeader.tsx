@@ -8,8 +8,8 @@ export const PageHeaderIcon = styled.div`
 export const PageHeaderItem = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  justify-content: start;
+  align-items: start;
 
   h2 {
     margin: 0.2em 0px;

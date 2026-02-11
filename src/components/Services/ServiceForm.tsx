@@ -1,8 +1,10 @@
+import getSymbolFromCurrency from "currency-symbol-map";
 import { memo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { SETTINGS } from "@/constants";
 import { ManageCategoriesFormModal } from "@/containers/ManageCategoriesFormModal";
 import type {
   BuukiaCategory,
@@ -19,7 +21,6 @@ import {
   Field,
   FieldError,
   Form,
-  FormSummary,
   Input,
   Label,
   Select,
@@ -43,6 +44,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Omit<ServiceFormValues, "id">>({
     values: {
@@ -59,7 +61,7 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
         name: data.name,
         category: data.category ? data.category[0] : { id: "", name: "" }, // Adjusted for single select
         duration: data.duration,
-        price: data.price,
+        price: parseFloat(data.price) * 100,
         description: data.description,
       };
 
@@ -139,24 +141,25 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           <Controller
             name="price"
             control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, value } }) => (
               <Input
-                onBlur={onBlur}
-                onChange={($event) => {
-                  const maybeNumber = parseInt($event.target.value);
-
-                  if (isNaN(maybeNumber)) {
-                    return;
-                  }
-
-                  return onChange(maybeNumber);
+                onBlur={($event) => {
+                  setValue(
+                    "price",
+                    parseFloat($event.target.value).toFixed(2).toString(),
+                  );
                 }}
+                onChange={($event) =>
+                  onChange($event.target.value.replace(/[^0-9\.]/g, ""))
+                }
                 value={value}
                 id="service-price-input"
                 type="text"
                 data-testid="service-price-input"
                 placeholder={t("common.loading")}
-              />
+              >
+                {getSymbolFromCurrency(SETTINGS.currency)}
+              </Input>
             )}
           />
           {errors.price && (
@@ -212,16 +215,9 @@ export const ServiceForm = memo((props: ServiceFormProps) => {
           )}
         </Field>
 
-        <FormSummary>
-          <Button
-            disabled={props.isLoading}
-            size="sm"
-            tabIndex={0}
-            type="submit"
-          >
-            {t("common.submit")}
-          </Button>
-        </FormSummary>
+        <Button disabled={props.isLoading} size="sm" tabIndex={0} type="submit">
+          {t("common.submit")}
+        </Button>
       </Form>
 
       {showModal &&

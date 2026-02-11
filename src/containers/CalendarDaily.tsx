@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useAppointments, useAssistants } from "@/api";
 import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
-import { MAX_ASSISTANTS, MAX_PAGINATION, ViewType } from "@/constants.ts";
+import { MAX_ASSISTANTS, MAX_PAGINATION, ViewType } from "@/constants";
 
 // TODO: Handle error and pagination
 export default function CalendarDaily() {

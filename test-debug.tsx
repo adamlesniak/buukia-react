@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { ViewType } from "@/constants.ts";
+import { ViewType } from "@/constants";
 import type { BuukiaAppointment } from "@/types";
 
 import { CalendarBody } from "./src/components/Calendar/CalendarBody";
@@ -29,6 +29,7 @@ const mockAppointments: BuukiaAppointment[] = [
       firstName: "testFirstName",
       lastName: "testLastName",
     },
+    payments: [],
     services: [
       {
         id: "service1",

@@ -6,8 +6,10 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { DetailNavigationTitleContent } from "@/containers/AssistantDrawer";
 import {
   type BuukiaAppointment,
+  type BuukiaCategory,
   type BuukiaClient,
   type BuukiaService,
   type CreateAppointmentBody,
@@ -15,7 +17,7 @@ import {
 import { appointmentFormSchema, validateResolver } from "@/validators";
 
 import { Button } from "../Button";
-import { MemoizedDrawerHeaderH3 } from "../Drawer";
+import { MemoizedDrawerHeader } from "../Drawer";
 import { Field, FieldError, Form, Input, Label } from "../Form";
 import { SearchInput } from "../Form/SearchInput";
 import { Overlay, Modal, ModalBody } from "../Modal";
@@ -29,7 +31,14 @@ type AppointmentFormValues = {
   assistantName: string;
   client: BuukiaClient[];
   time: string;
-  services: BuukiaService[];
+  services: {
+    id: string;
+    description: string;
+    category: BuukiaCategory;
+    duration: string;
+    name: string;
+    price: string;
+  }[];
 };
 
 type AppointmentFormProps = {
@@ -63,6 +72,10 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
     resolver: validateResolver(appointmentFormSchema),
     values: {
       ...props.values,
+      services: props.values.services.map((service) => ({
+        ...service,
+        price: service.price.toString(),
+      })),
     },
   });
 
@@ -78,7 +91,8 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
       [currentServices],
     ),
     useMemo(
-      () => currentServices.reduce((sum, next) => sum + next.price, 0),
+      () =>
+        currentServices.reduce((sum, next) => sum + parseFloat(next.price), 0),
       [currentServices],
     ),
     useMemo(
@@ -120,11 +134,15 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
   // }
 
   const serviceAdd = (service: BuukiaService) => {
-    setValue("services", [...currentServices, service], {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
+    setValue(
+      "services",
+      [...currentServices, { ...service, price: service.price.toString() }],
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      },
+    );
   };
 
   const serviceRemove = (serviceId: string) => {
@@ -144,16 +162,19 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
     setShowModal(false);
   }, [props.appointmentId]);
 
-  const onSubmit = (data: AppointmentFormValues) => {
-    const body: CreateAppointmentBody = {
-      assistantId: props.assistantId,
-      clientId: data.client.length > 0 ? data.client[0].id : "",
-      time: new Date(data.time).toISOString(),
-      serviceIds: data.services.map((service) => service.id),
-    };
+  const onSubmit = useCallback(
+    (data: AppointmentFormValues) => {
+      const body: CreateAppointmentBody = {
+        assistantId: props.assistantId,
+        clientId: data.client.length > 0 ? data.client[0].id : "",
+        time: new Date(data.time).toISOString(),
+        serviceIds: data.services.map((service) => service.id),
+      };
 
-    props.onSubmit(body);
-  };
+      props.onSubmit(body);
+    },
+    [props.assistantId, props.onSubmit],
+  );
 
   return (
     <>
@@ -199,7 +220,10 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
           {currentServices.map((service) => (
             <MemoizedServiceCard
               key={service.id}
-              service={service}
+              service={{
+                ...service,
+                price: parseFloat(service.price),
+              }}
               servicesIds={servicesIds}
               servicesDurationSum={servicesDurationSum}
               appointmentId={props.appointmentId}
@@ -229,11 +253,14 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
               data-testid="services-modal"
             >
               <FocusScope autoFocus restoreFocus contain>
-                <MemoizedDrawerHeaderH3
-                  title={t("appointments.detail.services")}
+                <MemoizedDrawerHeader
                   onClose={modalClose}
                   label={t("common.closeModal")}
-                />
+                >
+                  <DetailNavigationTitleContent>
+                    <h3>{t("appointments.detail.services")}</h3>
+                  </DetailNavigationTitleContent>
+                </MemoizedDrawerHeader>
                 <SearchInput data-testid="search" style={{ marginBottom: 8 }}>
                   {props.servicesRefetching ? (
                     <LoaderCircle size={20} />
@@ -247,6 +274,7 @@ export const AppointmentForm = memo((props: AppointmentFormProps) => {
                     aria-label={t("common.search")}
                     autoComplete="off"
                     tabIndex={0}
+                    noBorder={true}
                     onChange={($event) => {
                       servicesChangeDebounce($event.target.value);
                       $event.preventDefault();
