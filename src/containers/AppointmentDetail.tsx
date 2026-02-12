@@ -88,9 +88,10 @@ export default function AppointmentDetail() {
           services: [],
           assistant,
           payments: [],
-        } as BuukiaAppointment,
-        isLoading: false,
-        error: undefined,
+          stats: {},
+          isLoading: false,
+          error: undefined,
+        },
       }
     : useAppointment(appointmentId);
   const {
@@ -109,7 +110,11 @@ export default function AppointmentDetail() {
   } = useClients({ limit: MAX_PAGINATION, query: clientsQuery });
 
   const { start, end } = getWeekStartEndDate(
-    new Date(Number(isNew ? time : date)).toISOString(),
+    new Date(
+      Number(
+        isNew ? time : date || getUnixTime(appointment?.time || new Date()),
+      ),
+    ).toISOString(),
   );
 
   const todaysAppointments = useMemo(
@@ -133,11 +138,15 @@ export default function AppointmentDetail() {
   const onClose = () => {
     if (selected.includes("daily")) {
       navigate({ to: `/appointments/daily/${date}` });
-    } else {
+    } else if (selected.includes("weekly")) {
       navigate({
         to: `/appointments/weekly/${date}/${assistantId}`,
       });
     }
+
+    navigate({
+      to: `/dashboard`,
+    });
   };
 
   const submit = useCallback(
@@ -151,7 +160,11 @@ export default function AppointmentDetail() {
       }
 
       return updateAppointment.mutate(
-        { ...data, id: appointmentId } as UpdateAppointmentBody,
+        {
+          ...data,
+          id: appointmentId,
+          dashboard: !selected.includes("daily") && !selected.includes("weekly"),
+        } as UpdateAppointmentBody,
         {
           onSuccess: () => {
             onClose();

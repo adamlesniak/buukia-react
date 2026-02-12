@@ -58,8 +58,8 @@ export function Sidebar() {
           </SidebarMenuDropdown>
         </SidebarMenuButtonWrapper>
         <SidebarMenuItem
-          to={"/"}
-          activeOptions={{ exact: true }}
+          to={"/dashboard"}
+          activeOptions={{ exact: false }}
           key={t("nav.dashboard")}
         >
           <LayoutDashboard size={24} />

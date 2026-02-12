@@ -11,14 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AssistantsRouteImport } from './routes/assistants'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as ErrorIndexRouteImport } from './routes/error/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
 import { Route as TransactionsPayoutsRouteImport } from './routes/transactions/payouts'
 import { Route as TransactionsPaymentsRouteImport } from './routes/transactions/payments'
 import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
+import { Route as DashboardAppointmentIdRouteImport } from './routes/dashboard/$appointmentId'
 import { Route as TransactionsSettingsIndexRouteImport } from './routes/transactions/settings/index'
 import { Route as ServicesNewIndexRouteImport } from './routes/services/new/index'
 import { Route as AssistantsNewIndexRouteImport } from './routes/assistants/new/index'
@@ -44,14 +45,14 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssistantsRoute = AssistantsRouteImport.update({
   id: '/assistants',
   path: '/assistants',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
@@ -83,6 +84,11 @@ const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
   id: '/$serviceId',
   path: '/$serviceId',
   getParentRoute: () => ServicesRoute,
+} as any)
+const DashboardAppointmentIdRoute = DashboardAppointmentIdRouteImport.update({
+  id: '/$appointmentId',
+  path: '/$appointmentId',
+  getParentRoute: () => DashboardRoute,
 } as any)
 const TransactionsSettingsIndexRoute =
   TransactionsSettingsIndexRouteImport.update({
@@ -167,10 +173,11 @@ const AppointmentsDailyDateNewAssistantIdTimeRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
   '/transactions': typeof TransactionsRouteWithChildren
+  '/dashboard/$appointmentId': typeof DashboardAppointmentIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/transactions/payouts': typeof TransactionsPayoutsRouteWithChildren
@@ -193,9 +200,10 @@ export interface FileRoutesByFullPath {
   '/appointments/weekly/$date/$assistantId/new/$time': typeof AppointmentsWeeklyDateAssistantIdNewTimeRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/dashboard/$appointmentId': typeof DashboardAppointmentIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/transactions/payouts': typeof TransactionsPayoutsRouteWithChildren
@@ -219,10 +227,11 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
   '/transactions': typeof TransactionsRouteWithChildren
+  '/dashboard/$appointmentId': typeof DashboardAppointmentIdRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/transactions/payouts': typeof TransactionsPayoutsRouteWithChildren
@@ -247,10 +256,11 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/assistants'
+    | '/dashboard'
     | '/services'
     | '/transactions'
+    | '/dashboard/$appointmentId'
     | '/services/$serviceId'
     | '/transactions/payments'
     | '/transactions/payouts'
@@ -273,9 +283,10 @@ export interface FileRouteTypes {
     | '/appointments/weekly/$date/$assistantId/new/$time'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/assistants'
+    | '/dashboard'
     | '/services'
+    | '/dashboard/$appointmentId'
     | '/services/$serviceId'
     | '/transactions/payments'
     | '/transactions/payouts'
@@ -298,10 +309,11 @@ export interface FileRouteTypes {
     | '/appointments/weekly/$date/$assistantId/new/$time'
   id:
     | '__root__'
-    | '/'
     | '/assistants'
+    | '/dashboard'
     | '/services'
     | '/transactions'
+    | '/dashboard/$appointmentId'
     | '/services/$serviceId'
     | '/transactions/payments'
     | '/transactions/payouts'
@@ -325,8 +337,8 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AssistantsRoute: typeof AssistantsRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
   TransactionsRoute: typeof TransactionsRouteWithChildren
   AppointmentsIndexRoute: typeof AppointmentsIndexRoute
@@ -351,18 +363,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/assistants': {
       id: '/assistants'
       path: '/assistants'
       fullPath: '/assistants'
       preLoaderRoute: typeof AssistantsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/transactions/': {
@@ -406,6 +418,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/services/$serviceId'
       preLoaderRoute: typeof ServicesServiceIdRouteImport
       parentRoute: typeof ServicesRoute
+    }
+    '/dashboard/$appointmentId': {
+      id: '/dashboard/$appointmentId'
+      path: '/$appointmentId'
+      fullPath: '/dashboard/$appointmentId'
+      preLoaderRoute: typeof DashboardAppointmentIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/transactions/settings/': {
       id: '/transactions/settings/'
@@ -524,6 +543,18 @@ const AssistantsRouteWithChildren = AssistantsRoute._addFileChildren(
   AssistantsRouteChildren,
 )
 
+interface DashboardRouteChildren {
+  DashboardAppointmentIdRoute: typeof DashboardAppointmentIdRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAppointmentIdRoute: DashboardAppointmentIdRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 interface ServicesRouteChildren {
   ServicesServiceIdRoute: typeof ServicesServiceIdRoute
   ServicesNewIndexRoute: typeof ServicesNewIndexRoute
@@ -616,8 +647,8 @@ const AppointmentsWeeklyDateAssistantIdRouteWithChildren =
   )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AssistantsRoute: AssistantsRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,
   TransactionsRoute: TransactionsRouteWithChildren,
   AppointmentsIndexRoute: AppointmentsIndexRoute,

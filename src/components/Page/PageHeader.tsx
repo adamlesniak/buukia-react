@@ -20,10 +20,16 @@ export const PageHeaderItem = styled.div`
   }
 `;
 
+export const PageHeaderItemText = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const PageHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 `;
 
 type PageHeaderProps = {

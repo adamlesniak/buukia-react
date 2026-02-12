@@ -5,10 +5,8 @@
 export const appointmentQueryKeys = {
   all: ["appointments"],
   details: () => [...appointmentQueryKeys.all, "detail"],
-  detail: (id: string) => [
-    ...appointmentQueryKeys.details(),
-    id,
-  ],
+  dashboard: () => [...appointmentQueryKeys.all, "dashboard"],
+  detail: (id: string) => [...appointmentQueryKeys.details(), id],
   pagination: (page: number) => [
     ...appointmentQueryKeys.all,
     "pagination",
