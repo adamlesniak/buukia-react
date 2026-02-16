@@ -128,7 +128,7 @@ export default function CalendarDaily() {
       })),
     [assistants],
   );
-
+  console.log('columns', columns);
   const isError = assistantsError || appointmentsError;
   const isLoading = assistantsLoading || appointmentsLoading;
 

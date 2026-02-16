@@ -319,7 +319,7 @@ const [assistants, clients, categories, payments, payouts]: [
   BuukiaPayment[],
   BuukiaPayout[],
 ] = [
-  Array.from({ length: 4 }).map(() => createAssistant()),
+  Array.from({ length: 7 }).map(() => createAssistant()),
   Array.from({ length: 20 }).map(() => createClient()),
   serviceCategories,
   Array.from({ length: 10 }).map(() => createPayment()),

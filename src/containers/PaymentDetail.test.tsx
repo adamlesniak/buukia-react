@@ -483,7 +483,7 @@ describe("PaymentDetail", () => {
         mockUseCharge.mockReturnValue({
           data: {
             ...mockCharge,
-            refunded: false,
+            refunded: true,
           },
           error: null,
           isLoading: false,
@@ -499,7 +499,7 @@ describe("PaymentDetail", () => {
 
         expect(
           screen.queryByText("transactions.payments.actions.refund"),
-        ).toBeInTheDocument();
+        ).not.toBeInTheDocument();
       });
 
       it('should show modal with title "Refund payment" when clicking refund button', async () => {

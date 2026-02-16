@@ -2,6 +2,7 @@ import { Outlet, useNavigate } from "@tanstack/react-router";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { addDays, format, startOfDay, startOfMinute } from "date-fns";
 import { useTranslation } from "react-i18next";
+import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 
 import { useAppointments } from "@/api";
@@ -50,7 +51,7 @@ export default function Dashboard() {
   const {
     data: appointments = [],
     // error: appointmentsError,
-    // isLoading: appointmentsLoading,
+    isLoading: appointmentsLoading,
     // refetch: refetchServices,
     // isRefetching: appointmentsIsRefetching,
   } = useAppointments({
@@ -71,6 +72,9 @@ export default function Dashboard() {
     },
     [0, 0],
   );
+
+  const isLoading = appointmentsLoading;
+
   return (
     <PageContainer>
       <PageHeader style={{ marginBottom: 8 }}>
@@ -92,7 +96,8 @@ export default function Dashboard() {
               <LargeText style={{ marginRight: "8px" }}>
                 {getSymbolFromCurrency(SETTINGS.currency)}
               </LargeText>
-              {centsToFixed(paymentsSum)}
+              {!isLoading && centsToFixed(paymentsSum)}
+              {isLoading && <Skeleton count={1} width={140} />}
             </ExtraLargeText>
           </Card>
           <Card
@@ -107,7 +112,8 @@ export default function Dashboard() {
               <LargeText style={{ marginRight: "8px" }}>
                 {getSymbolFromCurrency(SETTINGS.currency)}
               </LargeText>
-              {centsToFixed(paymentsSum / appointments.length)}
+              {!isLoading && centsToFixed(paymentsSum / appointments.length)}
+              {isLoading && <Skeleton count={1} width={140} />}
             </ExtraLargeText>
           </Card>
           <Card
@@ -116,7 +122,10 @@ export default function Dashboard() {
             data-testid="card-totalCount"
           >
             <LargeText>{t("transactions.payments.cards.totalCount")}</LargeText>
-            <ExtraLargeText>{appointments.length}</ExtraLargeText>
+            <ExtraLargeText>
+              {!isLoading && appointments.length}
+              {isLoading && <Skeleton count={1} width={140} />}
+            </ExtraLargeText>
           </Card>
           <Card
             style={{ flex: 1 }}
@@ -127,7 +136,8 @@ export default function Dashboard() {
               {t("transactions.payments.cards.totalDuration")}
             </LargeText>
             <ExtraLargeText>
-              {[durationSum, t("common.mins")].join(" ")}
+              {!isLoading && [durationSum, t("common.mins")].join(" ")}
+              {isLoading && <Skeleton count={1} width={140} />}
             </ExtraLargeText>
           </Card>
         </DashboardHeading>
@@ -155,7 +165,7 @@ export default function Dashboard() {
                     {t("appointments.table.duration")}
                   </TableHeaderItem>
                   <TableHeaderItem>
-                    {t("appointments.table.price")}{" "}
+                    {t("appointments.table.price")}
                   </TableHeaderItem>
                 </TableRow>
               </TableHeader>
