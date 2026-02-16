@@ -13,7 +13,8 @@
     "assistants": "Assistants",
     "sales": "Sales",
     "payments": "Payments",
-    "transactions": "Transactions"
+    "transactions": "Transactions",
+    "account": "Account"
   },
   "calendar": {
     "teamDayView": "Team Day View",
@@ -246,6 +247,7 @@
       "noPayoutsFound": "No payouts found.",
       "loadingError": "Error retrieving payouts. Please try again later.",
       "cards": {
+        "availableToPayout": "Available to payout",
         "total": "Total",
         "completed": "Completed",
         "pending": "Pending",

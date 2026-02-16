@@ -5,6 +5,7 @@ import {
   ClipboardClock,
   LayoutDashboard,
   UserRound,
+  Settings,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -91,11 +92,19 @@ export function Sidebar() {
         </SidebarMenuItem>
         <SidebarMenuItem
           to={`/transactions`}
-          activeOptions={{ exact: false}}
+          activeOptions={{ exact: false }}
           key={t("nav.transactions")}
         >
           <Banknote size={24} />
           <span>{t("nav.transactions")}</span>
+        </SidebarMenuItem>
+        <SidebarMenuItem
+          to={`/account`}
+          activeOptions={{ exact: false }}
+          key={t("nav.account")}
+        >
+          <Settings size={24} />
+          <span>{t("nav.account")}</span>
         </SidebarMenuItem>
       </SidebarTop>
 
