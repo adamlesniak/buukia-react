@@ -48,6 +48,7 @@ vi.mock("@tanstack/react-router", () => ({
 const mockCharge = {
   ...data.charges[0],
   amount: 8888,
+  status: 'succeeded',
   dispute: createStripeDispute(),
 } as StripeCharge;
 
