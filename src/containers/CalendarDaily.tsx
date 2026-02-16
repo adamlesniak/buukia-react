@@ -54,6 +54,7 @@ export default function CalendarDaily() {
   } = useAppointments({
     startDate: new Date(weeksDate).toISOString(),
     endDate: new Date(nextWeekStart).toISOString(),
+    limit: 100,
   });
   const startDate = useMemo(
     () => addMinutes(addHours(todaysDate, 8), 0),

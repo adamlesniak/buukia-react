@@ -12,13 +12,9 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppointments } from "@/api";
-import {
-  Calendar,
-  CalendarBody,
-  CalendarHeader,
-} from "@/components/Calendar";
+import { Calendar, CalendarBody, CalendarHeader } from "@/components/Calendar";
 import { ErrorContainer, ErrorDetail } from "@/components/Error";
-import { ViewType } from "@/constants";
+import { MAX_PAGINATION, ViewType } from "@/constants";
 
 export default function CalendarWeekly() {
   const { t } = useTranslation();
@@ -51,6 +47,7 @@ export default function CalendarWeekly() {
   } = useAppointments({
     startDate: new Date(weeksDate).toISOString(),
     endDate: new Date(nextWeekStart).toISOString(),
+    limit: MAX_PAGINATION,
   });
 
   const isError = appointmentsError;

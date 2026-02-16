@@ -63,6 +63,12 @@ const mockAppointment: BuukiaAppointment = {
   client: createClient(data.clients[0]),
   services: [createService(data.services[0])],
   payments: [],
+  stats: {
+    services: {
+      price: 0,
+      duration: 0,
+    },
+  },
 };
 const mockServices: BuukiaService[] = [createService(data.services[0])];
 const mockClients: BuukiaClient[] = [createClient(data.clients[0])];
@@ -279,6 +285,7 @@ describe("AppointmentDetail", () => {
       expect(mockMutate).toHaveBeenCalledWith(
         {
           id: mockAppointment.id,
+          dashboard: false,
           assistantId: mockAppointment.assistant.id,
           clientId: mockAppointment.client.id,
           serviceIds: mockAppointment.services.map((service) => service.id),
@@ -313,6 +320,7 @@ describe("AppointmentDetail", () => {
       expect(mockMutate).toHaveBeenCalledWith(
         {
           id: mockAppointment.id,
+          dashboard: false,
           assistantId: mockAppointment.assistant.id,
           clientId: mockAppointment.client.id,
           serviceIds: mockAppointment.services.map((service) => service.id),

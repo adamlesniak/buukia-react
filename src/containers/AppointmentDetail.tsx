@@ -56,6 +56,8 @@ export default function AppointmentDetail() {
     select: (state) => state.location.href,
   });
   const isNew = !appointmentId;
+  const isDashboard =
+    !selected.includes("daily") && !selected.includes("weekly");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [clientsQuery, setClientsQuery] = useState("");
@@ -88,7 +90,13 @@ export default function AppointmentDetail() {
           services: [],
           assistant,
           payments: [],
-        } as BuukiaAppointment,
+          stats: {
+            services: {
+              price: 0,
+              duration: 0,
+            },
+          },
+        },
         isLoading: false,
         error: undefined,
       }
@@ -109,7 +117,11 @@ export default function AppointmentDetail() {
   } = useClients({ limit: MAX_PAGINATION, query: clientsQuery });
 
   const { start, end } = getWeekStartEndDate(
-    new Date(Number(isNew ? time : date)).toISOString(),
+    new Date(
+      Number(
+        isNew ? time : date || getUnixTime(appointment?.time || new Date()),
+      ),
+    ).toISOString(),
   );
 
   const todaysAppointments = useMemo(
@@ -117,26 +129,35 @@ export default function AppointmentDetail() {
       queryClient
         .getQueryData<
           BuukiaAppointment[]
-        >([...appointmentQueryKeys.all, new Date(start).toISOString(), new Date(end).toISOString()])
+        >(isDashboard ? appointmentQueryKeys.dashboard() : [...appointmentQueryKeys.all, new Date(start).toISOString(), new Date(end).toISOString()])
         ?.filter(
           (item) =>
+            item.time &&
             isoDateMatchDate(
               item.time,
               isNew
                 ? new Date(Number(time)).toISOString()
                 : (appointment?.time as string),
-            ) && appointment?.assistant?.id === item.assistant.id,
+            ) &&
+            appointment?.assistant?.id === item.assistant.id,
         ) || [],
     [appointment?.assistant?.id, time],
   );
 
   const onClose = () => {
-    if (selected.includes("daily")) {
-      navigate({ to: `/appointments/daily/${date}` });
-    } else {
-      navigate({
-        to: `/appointments/weekly/${date}/${assistantId}`,
-      });
+    switch (true) {
+      case selected.includes("daily"):
+        navigate({ to: `/appointments/daily/${date}` });
+        break;
+      case selected.includes("weekly"):
+        navigate({
+          to: `/appointments/weekly/${date}/${assistantId}`,
+        });
+        break;
+      default:
+        navigate({
+          to: `/dashboard`,
+        });
     }
   };
 
@@ -151,7 +172,11 @@ export default function AppointmentDetail() {
       }
 
       return updateAppointment.mutate(
-        { ...data, id: appointmentId } as UpdateAppointmentBody,
+        {
+          ...data,
+          id: appointmentId,
+          dashboard: isDashboard,
+        } as UpdateAppointmentBody,
         {
           onSuccess: () => {
             onClose();

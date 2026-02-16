@@ -44,6 +44,12 @@ export function useCreateAppointment() {
           name: "",
           holidays: "",
         },
+        stats: {
+          services: {
+            duration: 0,
+            price: 0,
+          },
+        },
         payments: [],
         time: newAppointment.time,
         client: queryClient.getQueryData<BuukiaClient>(

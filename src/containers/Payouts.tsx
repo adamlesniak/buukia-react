@@ -3,6 +3,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { format } from "date-fns";
 import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 
 import { usePayouts, usePayoutsStats } from "@/api";
@@ -51,13 +52,12 @@ export default function Payouts() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [payoutsQuery, _setServicesQuery] = useState("");
 
   const {
     data: payouts = [],
     error: payoutsError,
-    // isLoading: payoutsLoading,
+    isLoading: payoutsLoading,
     // refetch: refetchServices,
     // isRefetching: payoutsIsRefetching,
   } = usePayouts({ limit: MAX_PAGINATION, query: "" });
@@ -75,7 +75,7 @@ export default function Payouts() {
   } = usePayoutsStats();
 
   const isError = payoutsError || payoutsStatsError;
-  // const isLoading = payoutsLoading || payoutStatsLoading;
+  const isLoading = payoutsLoading;
 
   return (
     <>
@@ -97,7 +97,8 @@ export default function Payouts() {
                 <LargeText style={{ marginRight: "8px" }}>
                   {getSymbolFromCurrency("EUR")}
                 </LargeText>
-                {centsToFixed(stats.totalAmount)}
+                {!isLoading && centsToFixed(stats.totalAmount)}
+                {isLoading && <Skeleton count={1} width={140} />}
               </ExtraLargeText>
             </Card>
             <Card
@@ -112,7 +113,8 @@ export default function Payouts() {
                 <LargeText style={{ marginRight: "8px" }}>
                   {getSymbolFromCurrency(SETTINGS.currency)}
                 </LargeText>
-                {centsToFixed(stats.averagePayout)}
+                {!isLoading && centsToFixed(stats.averagePayout)}
+                {isLoading && <Skeleton count={1} width={140} />}
               </ExtraLargeText>
             </Card>
             <Card
@@ -123,7 +125,13 @@ export default function Payouts() {
               <LargeText>
                 {t("transactions.payouts.cards.totalCount")}
               </LargeText>
-              <ExtraLargeText>{stats.totalPayouts}</ExtraLargeText>
+              <ExtraLargeText>
+                {isLoading ? (
+                  <Skeleton count={1} width={140} />
+                ) : (
+                  stats.totalPayouts
+                )}
+              </ExtraLargeText>
             </Card>
 
             <Card
@@ -132,7 +140,9 @@ export default function Payouts() {
               data-testid="category-list-item"
             >
               <LargeText>{t("transactions.payouts.cards.failed")}</LargeText>
-              <ExtraLargeText>{stats.failed}</ExtraLargeText>
+              <ExtraLargeText>
+                {isLoading ? <Skeleton count={1} width={140} /> : stats.failed}
+              </ExtraLargeText>
             </Card>
           </PayoutsHeading>
 
@@ -147,7 +157,9 @@ export default function Payouts() {
             <div>
               <h2>{t("transactions.payouts.title")}</h2>
               <small>
-                {[payouts.length, t("common.items").toLowerCase()].join(" ")}
+                {!isLoading &&
+                  [payouts.length, t("common.items").toLowerCase()].join(" ")}
+                {isLoading && <Skeleton count={1} width={20} />}
               </small>
             </div>
 

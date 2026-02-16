@@ -107,8 +107,18 @@
     }
   },
   "appointments": {
+    "noAppointmentsFound": "No appointments found.",
+    "upcomingAppointments": "Upcoming appointments",
     "newAppointment": "New Appointment",
     "appointment": "Appointment",
+    "table": {
+      "date": "Date",
+      "assistant": "Assistant",
+      "client": "Client",
+      "name": "Name",
+      "price": "Price",
+      "duration": "Duration"
+    },
     "detail": {
       "assistantName": "Assistant Name",
       "time": "Time",
@@ -409,7 +419,8 @@
         "failed": "Failed",
         "sum": "Sum of Payments",
         "totalCount": "Total Count",
-        "averagePayment": "Average Payment"
+        "averagePayment": "Average Payment",
+        "totalDuration": "Total Duration"
       }
     },
     "detail": {
@@ -422,6 +433,13 @@
     }
   },
   "common": {
+    "price": "Price",
+    "minutes": "minutes",
+    "mins": "mins",
+    "daily": "Today",
+    "weekly": "Next 7 days",
+    "monthly": "Next 30 days",
+    "hello": "Hello",
     "timeline": "Timeline",
     "by": "by",
     "actions": "Actions",

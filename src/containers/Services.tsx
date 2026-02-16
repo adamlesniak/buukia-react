@@ -29,7 +29,7 @@ export default function Services() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   // const [servicesQuery, _setServicesQuery] = useState("");
 
   const {

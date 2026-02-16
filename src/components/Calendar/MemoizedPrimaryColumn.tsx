@@ -35,7 +35,7 @@ export const MemoizedPrimaryColumn = memo(
     );
 
     return (
-      <CalendarBodyColumn key={"primary"}>
+      <CalendarBodyColumn style={{ maxWidth: "190px" }} key={"primary"}>
         <CalendarBodyColumnHeader></CalendarBodyColumnHeader>
         {rows}
       </CalendarBodyColumn>

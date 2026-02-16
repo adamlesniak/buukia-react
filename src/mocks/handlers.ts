@@ -208,7 +208,7 @@ export const handlers = [
         rate: 0.01,
         amount: Math.round(body.amount * 0.01),
       },
-      statement_description: 'BUUKIA',
+      statement_description: "BUUKIA",
       destination: `ba_${faker.string.alphanumeric(24)}`,
     } as BuukiaPayout;
 
@@ -503,10 +503,11 @@ export const handlers = [
   http.get("/api/appointments", async ({ request }) => {
     const url = new URL(request.url);
 
-    const [assistantId, startDate, endDate] = [
+    const [assistantId, startDate, endDate, sort] = [
       url.searchParams.get("assistantId"),
       url.searchParams.get("startDate"),
       url.searchParams.get("endDate"),
+      url.searchParams.get("sort"),
     ];
 
     const filteredAppointments = Array.from(appointments.values()).filter(
@@ -537,7 +538,9 @@ export const handlers = [
 
     return HttpResponse.json(
       filteredAppointments.sort((a, b) => {
-        return new Date(a.time).getTime() - new Date(b.time).getTime();
+        return sort === "desc"
+          ? new Date(b.time).getTime() - new Date(a.time).getTime()
+          : new Date(a.time).getTime() - new Date(b.time).getTime();
       }),
     );
   }),
@@ -623,6 +626,22 @@ export const handlers = [
           .map((serviceId) => services.get(serviceId))
           .filter((service): service is BuukiaService => service !== undefined),
         payments: [],
+        stats: {
+          services: {
+            price: body.serviceIds
+              .map((serviceId) => services.get(serviceId))
+              .filter(
+                (service): service is BuukiaService => service !== undefined,
+              )
+              .reduce((sum, service) => sum + service.price, 0),
+            duration: body.serviceIds
+              .map((serviceId) => services.get(serviceId))
+              .filter(
+                (service): service is BuukiaService => service !== undefined,
+              )
+              .reduce((sum, service) => sum + parseInt(service.duration), 0),
+          },
+        },
       } as BuukiaAppointment;
       appointments.set(body.id, appointment);
 

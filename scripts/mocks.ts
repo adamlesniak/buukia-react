@@ -136,6 +136,16 @@ export const createClient = (): BuukiaClient => {
 };
 
 export const createAppointment = (): BuukiaAppointment => {
+  const servicesMap = [
+    ...new Map(
+      Array.from({ length: faker.number.int({ min: 1, max: 2 }) }).map(() => {
+        const service: BuukiaService =
+          services[faker.number.int({ min: 0, max: services.length - 1 })];
+        return [service.id, service];
+      }),
+    ).values(),
+  ];
+
   return {
     id: faker.string.uuid(),
     assistant: createAssistant(),
@@ -146,20 +156,23 @@ export const createAppointment = (): BuukiaAppointment => {
       }),
       { nearestTo: 15 },
     ).toISOString(),
+    stats: {
+      services: {
+        price: [...servicesMap].reduce(
+          (sum, service) => sum + service.price,
+          0,
+        ),
+        duration: [...servicesMap].reduce(
+          (sum, service) => sum + parseInt(service.duration),
+          0,
+        ),
+      },
+    },
     client: createClient(),
-    services: [
-      ...new Map(
-        Array.from({ length: faker.number.int({ min: 1, max: 2 }) }).map(() => {
-          const service =
-            services[faker.number.int({ min: 0, max: services.length - 1 })];
-          return [service.id, service];
-        }),
-      ).values(),
-    ],
+    services: [...servicesMap],
     payments: [],
   };
 };
-
 
 export const createPayment = (): BuukiaPayment => {
   const amount = faker.number.int({ min: 20 * 100, max: 200 * 100 });
@@ -306,7 +319,7 @@ const [assistants, clients, categories, payments, payouts]: [
   BuukiaPayment[],
   BuukiaPayout[],
 ] = [
-  Array.from({ length: 4 }).map(() => createAssistant()),
+  Array.from({ length: 7 }).map(() => createAssistant()),
   Array.from({ length: 20 }).map(() => createClient()),
   serviceCategories,
   Array.from({ length: 10 }).map(() => createPayment()),

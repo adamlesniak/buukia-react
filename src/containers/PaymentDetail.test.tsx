@@ -48,6 +48,7 @@ vi.mock("@tanstack/react-router", () => ({
 const mockCharge = {
   ...data.charges[0],
   amount: 8888,
+  status: 'succeeded',
   dispute: createStripeDispute(),
 } as StripeCharge;
 
@@ -184,9 +185,9 @@ describe("PaymentDetail", () => {
       expect(
         screen.queryByText("transactions.payments.summary.status"),
       ).toBeInTheDocument();
-      expect(
-        screen.queryByText(`transactions.payments.common.${mockCharge.status}`),
-      ).toBeInTheDocument();
+      expect(screen.queryAllByTestId(`summary-item-status`)[0]).toHaveTextContent(
+        `transactions.payments.common.${mockCharge.status}`,
+      );
       expect(
         screen.queryByText("transactions.payments.summary.paymentMethod.card"),
       ).toBeInTheDocument();
@@ -457,6 +458,17 @@ describe("PaymentDetail", () => {
 
     describe("actions and modals", () => {
       it("should show refund button", () => {
+        mockUseCharge.mockReturnValue({
+          data: {
+            ...mockCharge,
+            status: "succeeded",
+          },
+          error: null,
+          isLoading: false,
+          refetch: vi.fn(),
+          isRefetching: false,
+        });
+
         render(
           <QueryClientProvider client={queryClient}>
             <PaymentDetail.default />
@@ -466,6 +478,29 @@ describe("PaymentDetail", () => {
         expect(
           screen.queryByText("transactions.payments.actions.refund"),
         ).toBeInTheDocument();
+      });
+
+      it("should not show refund button", () => {
+        mockUseCharge.mockReturnValue({
+          data: {
+            ...mockCharge,
+            refunded: true,
+          },
+          error: null,
+          isLoading: false,
+          refetch: vi.fn(),
+          isRefetching: false,
+        });
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <PaymentDetail.default />
+          </QueryClientProvider>,
+        );
+
+        expect(
+          screen.queryByText("transactions.payments.actions.refund"),
+        ).not.toBeInTheDocument();
       });
 
       it('should show modal with title "Refund payment" when clicking refund button', async () => {

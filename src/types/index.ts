@@ -9,6 +9,7 @@ export interface CreateAppointmentBody {
 
 export interface UpdateAppointmentBody {
   id: string;
+  dashboard: boolean;
   assistantId: string;
   clientId: string;
   time: string;
@@ -275,6 +276,12 @@ export type BuukiaAppointment = {
   time: string;
   client: BuukiaClient;
   services: BuukiaService[];
+  stats: {
+    services: {
+      price: number;
+      duration: number;
+    };
+  };
   payments: BuukiaPayment[];
 };
 
@@ -351,8 +358,6 @@ export type Availability = {
   // exceptions: AvailabilityException[];
   // holidays: string[];
 };
-
-
 
 export interface StripePagination<T> {
   object: "list";
@@ -630,4 +635,9 @@ export interface StripePayout {
   statement_descriptor: string | null;
   status: string;
   type: string;
+}
+
+export enum SortOrder {
+  Asc = "asc",
+  Desc = "desc",
 }

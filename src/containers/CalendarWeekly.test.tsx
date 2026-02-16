@@ -50,6 +50,12 @@ const mockAppointments: BuukiaAppointment[] = [
     client: createClient(data.clients[0]),
     services: [createService(data.services[0])],
     payments: [],
+    stats: {
+      services: {
+        price: 0,
+        duration: 0,
+      },
+    },
   },
 ];
 

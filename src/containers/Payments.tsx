@@ -2,6 +2,7 @@ import { Outlet, useNavigate } from "@tanstack/react-router";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 
 import { usePaymentsStats, useCharges } from "@/api";
@@ -34,7 +35,6 @@ export default function Payments() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [paymentsQuery, _setServicesQuery] = useState("");
 
   const {
@@ -55,11 +55,12 @@ export default function Payments() {
       failed: 0,
     },
     error: paymentsStatsError,
-    // isLoading: paymentsLoading,
+    isLoading: paymentsLoading,
     // refetch: refetchServices,
     // isRefetching: paymentsIsRefetching,
   } = usePaymentsStats();
   const isError = chargesError || paymentsStatsError;
+  const isLoading = paymentsLoading;
 
   return (
     <>
@@ -81,7 +82,8 @@ export default function Payments() {
                 <LargeText style={{ marginRight: "8px" }}>
                   {getSymbolFromCurrency(SETTINGS.currency)}
                 </LargeText>
-                {centsToFixed(paymentsStats.totalAmount)}
+                {!isLoading && centsToFixed(paymentsStats.totalAmount)}
+                {isLoading && <Skeleton count={1} width={140} />}
               </ExtraLargeText>
             </Card>
             <Card
@@ -96,7 +98,8 @@ export default function Payments() {
                 <LargeText style={{ marginRight: "8px" }}>
                   {getSymbolFromCurrency(SETTINGS.currency)}
                 </LargeText>
-                {centsToFixed(paymentsStats.averagePayment)}
+                {!isLoading && centsToFixed(paymentsStats.averagePayment)}
+                {isLoading && <Skeleton count={1} width={140} />}
               </ExtraLargeText>
             </Card>
             <Card
@@ -107,7 +110,13 @@ export default function Payments() {
               <LargeText>
                 {t("transactions.payments.cards.totalCount")}
               </LargeText>
-              <ExtraLargeText>{paymentsStats.totalPayments}</ExtraLargeText>
+              <ExtraLargeText>
+                {isLoading ? (
+                  <Skeleton count={1} width={140} />
+                ) : (
+                  paymentsStats.totalPayments
+                )}
+              </ExtraLargeText>
             </Card>
 
             <Card
@@ -116,7 +125,14 @@ export default function Payments() {
               data-testid="category-list-item"
             >
               <LargeText>{t("transactions.payments.cards.failed")}</LargeText>
-              <ExtraLargeText>{paymentsStats.failed}</ExtraLargeText>
+              <ExtraLargeText>
+                {" "}
+                {isLoading ? (
+                  <Skeleton count={1} width={140} />
+                ) : (
+                  paymentsStats.failed
+                )}
+              </ExtraLargeText>
             </Card>
           </PaymentsHeading>
 
@@ -125,7 +141,9 @@ export default function Payments() {
             <div>
               <h2>{t("transactions.payments.title")}</h2>
               <small>
-                {[charges.length, t("common.items").toLowerCase()].join(" ")}
+                {!isLoading &&
+                  [charges.length, t("common.items").toLowerCase()].join(" ")}
+                {isLoading && <Skeleton count={1} width={20} />}
               </small>
             </div>
           </PageHeaderItem>

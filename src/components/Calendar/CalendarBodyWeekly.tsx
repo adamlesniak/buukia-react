@@ -76,6 +76,7 @@ export const CalendarBodyWeekly = memo((props: CalendarBodyWeeklyProps) => {
               const matchedAppointment = props.items.find(
                 (appointment) =>
                   appointment &&
+                  appointment?.time &&
                   isoDateMatchDateTime(
                     appointment?.time,
                     slot.time.toISOString(),
