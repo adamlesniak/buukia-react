@@ -111,7 +111,7 @@ export default function Dashboard() {
               <LargeText style={{ marginRight: "8px" }}>
                 {getSymbolFromCurrency(SETTINGS.currency)}
               </LargeText>
-              {!isLoading && centsToFixed(paymentsSum / appointments.length)}
+              {!isLoading && centsToFixed(appointments.length ? paymentsSum / appointments.length : 0)}
               {isLoading && <Skeleton count={1} width={140} />}
             </ExtraLargeText>
           </Card>

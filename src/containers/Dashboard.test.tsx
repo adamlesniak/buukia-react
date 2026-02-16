@@ -131,7 +131,7 @@ describe("Dashboard", () => {
     expect(
       await screen.findByText(format(new Date("2025-12-14"), "eeee, io MMMM")),
     ).toBeInTheDocument();
-    expect(await screen.findByText(`${["common.hello", "Adam"].join(" ")},`));
+    expect(await screen.findByText(`${["common.hello", "Adam"].join(" ")},`)).toBeInTheDocument();
   });
 
   it("should display stats cards for appointments", async () => {

@@ -140,14 +140,21 @@ export function useUpdateAppointment() {
       const { start, end } = getWeekStartEndDate(variables.time);
 
       if (context) {
-        queryClient.setQueryData(
-          [
-            ...appointmentQueryKeys.all,
-            new Date(start).toISOString(),
-            new Date(end).toISOString(),
-          ],
-          context.previousItems,
-        );
+        if (variables.dashboard) {
+          queryClient.setQueryData<BuukiaAppointment[]>(
+            appointmentQueryKeys.dashboard(),
+            context.previousItems,
+          );
+        } else {
+          queryClient.setQueryData(
+            [
+              ...appointmentQueryKeys.all,
+              new Date(start).toISOString(),
+              new Date(end).toISOString(),
+            ],
+            context.previousItems,
+          );
+        }
       }
     },
   });

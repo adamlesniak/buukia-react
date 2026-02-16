@@ -90,10 +90,15 @@ export default function AppointmentDetail() {
           services: [],
           assistant,
           payments: [],
-          stats: {},
-          isLoading: false,
-          error: undefined,
+          stats: {
+            services: {
+              price: 0,
+              duration: 0,
+            },
+          },
         },
+        isLoading: false,
+        error: undefined,
       }
     : useAppointment(appointmentId);
   const {

@@ -539,8 +539,8 @@ export const handlers = [
     return HttpResponse.json(
       filteredAppointments.sort((a, b) => {
         return sort === "desc"
-          ? new Date(a.time).getTime() - new Date(b.time).getTime()
-          : new Date(b.time).getTime() - new Date(a.time).getTime();
+          ? new Date(b.time).getTime() - new Date(a.time).getTime()
+          : new Date(a.time).getTime() - new Date(b.time).getTime();
       }),
     );
   }),
