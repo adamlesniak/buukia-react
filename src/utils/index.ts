@@ -1,5 +1,11 @@
 import type { QueryClient } from "@tanstack/query-core";
-import { addDays, getUnixTime, parseISO, startOfWeek } from "date-fns";
+import {
+  addDays,
+  differenceInMinutes,
+  getUnixTime,
+  parseISO,
+  startOfWeek,
+} from "date-fns";
 
 import { appointmentQueryKeys } from "@/api/appointments/appointments-query-keys";
 import type {
@@ -332,3 +338,6 @@ export const getStripeFeeAmount = (amount: number): number => {
 
   return fee;
 };
+
+export const isWithinDay = (startDate: string, endDate: string) =>
+  differenceInMinutes(new Date(endDate), new Date(startDate)) <= 24 * 60;

@@ -51,7 +51,7 @@ export default function Payouts() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   // const [payoutsQuery, _setServicesQuery] = useState("");
 
   const {

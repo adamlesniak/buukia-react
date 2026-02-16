@@ -28,7 +28,7 @@ export default function Assistants() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   // const [assistantsQuery, _setServicesQuery] = useState("");
 
   const {

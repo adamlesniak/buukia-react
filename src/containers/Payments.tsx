@@ -34,7 +34,7 @@ export default function Payments() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   // const [paymentsQuery, _setServicesQuery] = useState("");
 
   const {

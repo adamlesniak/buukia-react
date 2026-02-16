@@ -13,6 +13,7 @@ import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AssistantsRouteImport } from './routes/assistants'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as ErrorIndexRouteImport } from './routes/error/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
@@ -53,6 +54,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const AssistantsRoute = AssistantsRouteImport.update({
   id: '/assistants',
   path: '/assistants',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
@@ -173,6 +179,7 @@ const AppointmentsDailyDateNewAssistantIdTimeRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
@@ -200,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/appointments/weekly/$date/$assistantId/new/$time': typeof AppointmentsWeeklyDateAssistantIdNewTimeRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
@@ -227,6 +235,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/assistants': typeof AssistantsRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
@@ -256,6 +265,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/assistants'
     | '/dashboard'
     | '/services'
@@ -283,6 +293,7 @@ export interface FileRouteTypes {
     | '/appointments/weekly/$date/$assistantId/new/$time'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/assistants'
     | '/dashboard'
     | '/services'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/appointments/weekly/$date/$assistantId/new/$time'
   id:
     | '__root__'
+    | '/'
     | '/assistants'
     | '/dashboard'
     | '/services'
@@ -337,6 +349,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AssistantsRoute: typeof AssistantsRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
@@ -375,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/assistants'
       fullPath: '/assistants'
       preLoaderRoute: typeof AssistantsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/transactions/': {
@@ -647,6 +667,7 @@ const AppointmentsWeeklyDateAssistantIdRouteWithChildren =
   )
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AssistantsRoute: AssistantsRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,

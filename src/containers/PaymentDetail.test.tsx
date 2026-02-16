@@ -457,6 +457,40 @@ describe("PaymentDetail", () => {
 
     describe("actions and modals", () => {
       it("should show refund button", () => {
+        mockUseCharge.mockReturnValue({
+          data: {
+            ...mockCharge,
+            status: "succeeded",
+          },
+          error: null,
+          isLoading: false,
+          refetch: vi.fn(),
+          isRefetching: false,
+        });
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <PaymentDetail.default />
+          </QueryClientProvider>,
+        );
+
+        expect(
+          screen.queryByText("transactions.payments.actions.refund"),
+        ).toBeInTheDocument();
+      });
+
+      it("should not show refund button", () => {
+        mockUseCharge.mockReturnValue({
+          data: {
+            ...mockCharge,
+            refunded: false,
+          },
+          error: null,
+          isLoading: false,
+          refetch: vi.fn(),
+          isRefetching: false,
+        });
+
         render(
           <QueryClientProvider client={queryClient}>
             <PaymentDetail.default />

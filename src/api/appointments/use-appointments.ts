@@ -1,8 +1,10 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { differenceInMinutes } from "date-fns";
 import queryString from "query-string";
 
 import { STALE_TIME } from "@/constants";
 import type { BuukiaAppointment, SortOrder } from "@/types";
+import { isWithinDay } from "@/utils";
 
 import { appointmentQueryKeys } from "./appointments-query-keys";
 
@@ -20,7 +22,9 @@ export const useAppointments = (params: useAppointmentsParams) => {
   const { isLoading, error, data, isFetching, refetch } = useQuery<
     BuukiaAppointment[]
   >({
-    queryKey: [...appointmentQueryKeys.all, params.startDate, params.endDate],
+    queryKey: isWithinDay(params.startDate, params.endDate)
+      ? appointmentQueryKeys.dashboard()
+      : [...appointmentQueryKeys.all, params.startDate, params.endDate],
     queryFn: async () => {
       const response = await fetch(
         `/api/appointments?${queryString.stringify({ ...params, sortOrder: params.sort ? params.sort : "desc" })}`,
@@ -30,6 +34,16 @@ export const useAppointments = (params: useAppointmentsParams) => {
 
       for (const item of result) {
         queryClient.setQueryData(appointmentQueryKeys.detail(item.id), item);
+      }
+
+      if (
+        differenceInMinutes(
+          new Date(params.endDate),
+          new Date(params.startDate),
+        ) <=
+        24 * 60
+      ) {
+        queryClient.setQueryData(appointmentQueryKeys.dashboard(), result);
       }
 
       return result;

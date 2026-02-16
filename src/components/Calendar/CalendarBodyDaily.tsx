@@ -46,6 +46,7 @@ export const CalendarBodyDaily = (props: CalendarBodyDailyProps) => {
             const matchedAppointment = props.items.find((appointment) => {
               return (
                 appointment &&
+                appointment?.time &&
                 isoDateMatchDateTime(
                   appointment?.time,
                   slot.time.toISOString(),
