@@ -27,7 +27,7 @@ export const useAppointments = (params: useAppointmentsParams) => {
       : [...appointmentQueryKeys.all, params.startDate, params.endDate],
     queryFn: async () => {
       const response = await fetch(
-        `/api/appointments?${queryString.stringify({ ...params, sortOrder: params.sort ? params.sort : "desc" })}`,
+        `/api/appointments?${queryString.stringify({ ...params, sort: params.sort ?? "desc" })}`,
       );
 
       const result = await response.json();

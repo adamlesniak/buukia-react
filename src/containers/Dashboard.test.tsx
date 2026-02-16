@@ -173,17 +173,17 @@ describe("Dashboard", () => {
 
     appointments.forEach((appointment) => {
       expect(
-        screen.queryAllByText(format(new Date(appointment.time), "Pp")),
-      ).toBeDefined();
-      expect(screen.queryAllByText(appointment.client.name)).toBeDefined();
-      expect(screen.queryAllByText(appointment.assistant.name)).toBeDefined();
+        screen.getAllByText(format(new Date(appointment.time), "Pp"))[0],
+      ).toBeInTheDocument();
+      expect(screen.getAllByText(appointment.client.name)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(appointment.assistant.name)[0]).toBeInTheDocument();
       expect(
-        screen.queryAllByAltText(
+        screen.getByText(
           [appointment.stats.services.duration, "common.minutes"].join(" "),
         ),
-      );
+      ).toBeInTheDocument();
       expect(
-        screen.queryAllByText(
+        screen.getByText(
           [
             getSymbolFromCurrency(SETTINGS.currency),
             centsToFixed(appointment.stats.services.price),

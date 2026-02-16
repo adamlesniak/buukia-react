@@ -154,18 +154,6 @@ export default function AppointmentDetail() {
           to: `/dashboard`,
         });
     }
-
-    if (selected.includes("daily")) {
-      navigate({ to: `/appointments/daily/${date}` });
-    } else if (selected.includes("weekly")) {
-      navigate({
-        to: `/appointments/weekly/${date}/${assistantId}`,
-      });
-    }
-
-    // navigate({
-    //   to: `/dashboard`,
-    // });
   };
 
   const submit = useCallback(

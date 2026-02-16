@@ -184,9 +184,9 @@ describe("PaymentDetail", () => {
       expect(
         screen.queryByText("transactions.payments.summary.status"),
       ).toBeInTheDocument();
-      expect(
-        screen.queryByText(`transactions.payments.common.${mockCharge.status}`),
-      ).toBeInTheDocument();
+      expect(screen.queryAllByTestId(`summary-item-status`)[0]).toHaveTextContent(
+        `transactions.payments.common.${mockCharge.status}`,
+      );
       expect(
         screen.queryByText("transactions.payments.summary.paymentMethod.card"),
       ).toBeInTheDocument();

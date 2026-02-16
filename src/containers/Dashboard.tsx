@@ -30,7 +30,6 @@ import { centsToFixed } from "@/utils";
 const DashboardHeading = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
   flex-layout: column;
   gap: 12px;
   margin-top: 12px;
