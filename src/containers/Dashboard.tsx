@@ -3,10 +3,10 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { addDays, format, startOfDay, startOfMinute } from "date-fns";
 import { useTranslation } from "react-i18next";
 import Skeleton from "react-loading-skeleton";
-import styled from "styled-components";
 
 import { useAppointments } from "@/api";
 import { Card } from "@/components/Card";
+import { DashboardHeading } from "@/components/Dashboard";
 import {
   PageContainer,
   PageHeader,
@@ -26,14 +26,6 @@ import { ExtraLargeText, LargeText } from "@/components/Typography";
 import { MAX_PAGINATION, SETTINGS } from "@/constants";
 import { SortOrder } from "@/types";
 import { centsToFixed } from "@/utils";
-
-const DashboardHeading = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-layout: column;
-  gap: 12px;
-  margin-top: 12px;
-`;
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -89,7 +81,7 @@ export default function Dashboard() {
 
       <div style={{ flexDirection: "column" }}>
         <DashboardHeading style={{ flex: 1 }}>
-          <Card style={{ flex: 1 }} $layout="column" data-testid="card-total">
+          <Card style={{ flex: 1 }} $layout="column" data-testid="card-total" $borderRadius="all">
             <LargeText>{t("transactions.payments.cards.total")}</LargeText>
             <ExtraLargeText>
               <LargeText style={{ marginRight: "8px" }}>
@@ -103,6 +95,7 @@ export default function Dashboard() {
             style={{ flex: 1 }}
             $layout="column"
             data-testid="card-averagePayment"
+            $borderRadius="all"
           >
             <LargeText>
               {t("transactions.payments.cards.averagePayment")}
@@ -119,6 +112,7 @@ export default function Dashboard() {
             style={{ flex: 1 }}
             $layout="column"
             data-testid="card-totalCount"
+            $borderRadius="all"
           >
             <LargeText>{t("transactions.payments.cards.totalCount")}</LargeText>
             <ExtraLargeText>
@@ -130,6 +124,7 @@ export default function Dashboard() {
             style={{ flex: 1 }}
             $layout="column"
             data-testid="card-totalDuration"
+            $borderRadius="all"
           >
             <LargeText>
               {t("transactions.payments.cards.totalDuration")}

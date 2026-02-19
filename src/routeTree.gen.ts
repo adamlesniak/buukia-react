@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as ErrorIndexRouteImport } from './routes/error/index'
 import { Route as AppointmentsIndexRouteImport } from './routes/appointments/index'
+import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as TransactionsPayoutsRouteImport } from './routes/transactions/payouts'
 import { Route as TransactionsPaymentsRouteImport } from './routes/transactions/payments'
 import { Route as ServicesServiceIdRouteImport } from './routes/services/$serviceId'
@@ -25,6 +26,9 @@ import { Route as TransactionsSettingsIndexRouteImport } from './routes/transact
 import { Route as ServicesNewIndexRouteImport } from './routes/services/new/index'
 import { Route as AssistantsNewIndexRouteImport } from './routes/assistants/new/index'
 import { Route as AssistantsAssistantIdIndexRouteImport } from './routes/assistants/$assistantId/index'
+import { Route as AccountPersonalIndexRouteImport } from './routes/account/personal/index'
+import { Route as AccountBusinessIndexRouteImport } from './routes/account/business/index'
+import { Route as AccountBankIndexRouteImport } from './routes/account/bank/index'
 import { Route as TransactionsPayoutsPayoutIdRouteImport } from './routes/transactions/payouts/$payoutId'
 import { Route as TransactionsPaymentsChargeIdRouteImport } from './routes/transactions/payments/$chargeId'
 import { Route as AssistantsAssistantIdSettingsRouteImport } from './routes/assistants/$assistantId/settings'
@@ -76,6 +80,11 @@ const AppointmentsIndexRoute = AppointmentsIndexRouteImport.update({
   path: '/appointments/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransactionsPayoutsRoute = TransactionsPayoutsRouteImport.update({
   id: '/payouts',
   path: '/payouts',
@@ -118,6 +127,21 @@ const AssistantsAssistantIdIndexRoute =
     path: '/$assistantId/',
     getParentRoute: () => AssistantsRoute,
   } as any)
+const AccountPersonalIndexRoute = AccountPersonalIndexRouteImport.update({
+  id: '/account/personal/',
+  path: '/account/personal/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountBusinessIndexRoute = AccountBusinessIndexRouteImport.update({
+  id: '/account/business/',
+  path: '/account/business/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountBankIndexRoute = AccountBankIndexRouteImport.update({
+  id: '/account/bank/',
+  path: '/account/bank/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransactionsPayoutsPayoutIdRoute =
   TransactionsPayoutsPayoutIdRouteImport.update({
     id: '/$payoutId',
@@ -188,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/transactions/payouts': typeof TransactionsPayoutsRouteWithChildren
+  '/account': typeof AccountIndexRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
@@ -195,6 +220,9 @@ export interface FileRoutesByFullPath {
   '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
   '/transactions/payments/$chargeId': typeof TransactionsPaymentsChargeIdRoute
   '/transactions/payouts/$payoutId': typeof TransactionsPayoutsPayoutIdRoute
+  '/account/bank': typeof AccountBankIndexRoute
+  '/account/business': typeof AccountBusinessIndexRoute
+  '/account/personal': typeof AccountPersonalIndexRoute
   '/assistants/$assistantId': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
@@ -215,6 +243,7 @@ export interface FileRoutesByTo {
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/transactions/payouts': typeof TransactionsPayoutsRouteWithChildren
+  '/account': typeof AccountIndexRoute
   '/appointments': typeof AppointmentsIndexRoute
   '/error': typeof ErrorIndexRoute
   '/transactions': typeof TransactionsIndexRoute
@@ -222,6 +251,9 @@ export interface FileRoutesByTo {
   '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
   '/transactions/payments/$chargeId': typeof TransactionsPaymentsChargeIdRoute
   '/transactions/payouts/$payoutId': typeof TransactionsPayoutsPayoutIdRoute
+  '/account/bank': typeof AccountBankIndexRoute
+  '/account/business': typeof AccountBusinessIndexRoute
+  '/account/personal': typeof AccountPersonalIndexRoute
   '/assistants/$assistantId': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new': typeof AssistantsNewIndexRoute
   '/services/new': typeof ServicesNewIndexRoute
@@ -244,6 +276,7 @@ export interface FileRoutesById {
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/transactions/payments': typeof TransactionsPaymentsRouteWithChildren
   '/transactions/payouts': typeof TransactionsPayoutsRouteWithChildren
+  '/account/': typeof AccountIndexRoute
   '/appointments/': typeof AppointmentsIndexRoute
   '/error/': typeof ErrorIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
@@ -251,6 +284,9 @@ export interface FileRoutesById {
   '/assistants/$assistantId/settings': typeof AssistantsAssistantIdSettingsRoute
   '/transactions/payments/$chargeId': typeof TransactionsPaymentsChargeIdRoute
   '/transactions/payouts/$payoutId': typeof TransactionsPayoutsPayoutIdRoute
+  '/account/bank/': typeof AccountBankIndexRoute
+  '/account/business/': typeof AccountBusinessIndexRoute
+  '/account/personal/': typeof AccountPersonalIndexRoute
   '/assistants/$assistantId/': typeof AssistantsAssistantIdIndexRoute
   '/assistants/new/': typeof AssistantsNewIndexRoute
   '/services/new/': typeof ServicesNewIndexRoute
@@ -274,6 +310,7 @@ export interface FileRouteTypes {
     | '/services/$serviceId'
     | '/transactions/payments'
     | '/transactions/payouts'
+    | '/account'
     | '/appointments'
     | '/error'
     | '/transactions/'
@@ -281,6 +318,9 @@ export interface FileRouteTypes {
     | '/assistants/$assistantId/settings'
     | '/transactions/payments/$chargeId'
     | '/transactions/payouts/$payoutId'
+    | '/account/bank'
+    | '/account/business'
+    | '/account/personal'
     | '/assistants/$assistantId'
     | '/assistants/new'
     | '/services/new'
@@ -301,6 +341,7 @@ export interface FileRouteTypes {
     | '/services/$serviceId'
     | '/transactions/payments'
     | '/transactions/payouts'
+    | '/account'
     | '/appointments'
     | '/error'
     | '/transactions'
@@ -308,6 +349,9 @@ export interface FileRouteTypes {
     | '/assistants/$assistantId/settings'
     | '/transactions/payments/$chargeId'
     | '/transactions/payouts/$payoutId'
+    | '/account/bank'
+    | '/account/business'
+    | '/account/personal'
     | '/assistants/$assistantId'
     | '/assistants/new'
     | '/services/new'
@@ -329,6 +373,7 @@ export interface FileRouteTypes {
     | '/services/$serviceId'
     | '/transactions/payments'
     | '/transactions/payouts'
+    | '/account/'
     | '/appointments/'
     | '/error/'
     | '/transactions/'
@@ -336,6 +381,9 @@ export interface FileRouteTypes {
     | '/assistants/$assistantId/settings'
     | '/transactions/payments/$chargeId'
     | '/transactions/payouts/$payoutId'
+    | '/account/bank/'
+    | '/account/business/'
+    | '/account/personal/'
     | '/assistants/$assistantId/'
     | '/assistants/new/'
     | '/services/new/'
@@ -354,9 +402,13 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
   TransactionsRoute: typeof TransactionsRouteWithChildren
+  AccountIndexRoute: typeof AccountIndexRoute
   AppointmentsIndexRoute: typeof AppointmentsIndexRoute
   ErrorIndexRoute: typeof ErrorIndexRoute
   AppointmentsDailyDateRoute: typeof AppointmentsDailyDateRouteWithChildren
+  AccountBankIndexRoute: typeof AccountBankIndexRoute
+  AccountBusinessIndexRoute: typeof AccountBusinessIndexRoute
+  AccountPersonalIndexRoute: typeof AccountPersonalIndexRoute
   AppointmentsWeeklyDateAssistantIdRoute: typeof AppointmentsWeeklyDateAssistantIdRouteWithChildren
 }
 
@@ -418,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppointmentsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/': {
+      id: '/account/'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transactions/payouts': {
       id: '/transactions/payouts'
       path: '/payouts'
@@ -473,6 +532,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/assistants/$assistantId'
       preLoaderRoute: typeof AssistantsAssistantIdIndexRouteImport
       parentRoute: typeof AssistantsRoute
+    }
+    '/account/personal/': {
+      id: '/account/personal/'
+      path: '/account/personal'
+      fullPath: '/account/personal'
+      preLoaderRoute: typeof AccountPersonalIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/business/': {
+      id: '/account/business/'
+      path: '/account/business'
+      fullPath: '/account/business'
+      preLoaderRoute: typeof AccountBusinessIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/bank/': {
+      id: '/account/bank/'
+      path: '/account/bank'
+      fullPath: '/account/bank'
+      preLoaderRoute: typeof AccountBankIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/transactions/payouts/$payoutId': {
       id: '/transactions/payouts/$payoutId'
@@ -672,9 +752,13 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,
   TransactionsRoute: TransactionsRouteWithChildren,
+  AccountIndexRoute: AccountIndexRoute,
   AppointmentsIndexRoute: AppointmentsIndexRoute,
   ErrorIndexRoute: ErrorIndexRoute,
   AppointmentsDailyDateRoute: AppointmentsDailyDateRouteWithChildren,
+  AccountBankIndexRoute: AccountBankIndexRoute,
+  AccountBusinessIndexRoute: AccountBusinessIndexRoute,
+  AccountPersonalIndexRoute: AccountPersonalIndexRoute,
   AppointmentsWeeklyDateAssistantIdRoute:
     AppointmentsWeeklyDateAssistantIdRouteWithChildren,
 }

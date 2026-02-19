@@ -1,4 +1,14 @@
+export * from "./forms";
+
 import type { PaymentStatus, PayoutStatus } from "@/utils";
+
+export interface UpdateAccountBody {
+  id: string;
+  name: string;
+  email: string;
+  dob: string;
+  phoneNumber: string;
+}
 
 export interface CreateAppointmentBody {
   assistantId: string;

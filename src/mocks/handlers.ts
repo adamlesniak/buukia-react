@@ -85,6 +85,12 @@ const [
 ];
 
 export const handlers = [
+  http.get("/api/account", () => {
+    return HttpResponse.json({
+      address: {},
+    });
+  }),
+
   http.get("/api/payments/stats", () => {
     return HttpResponse.json({
       totalPayments: Array.from(payments.values()).length,

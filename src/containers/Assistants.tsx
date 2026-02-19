@@ -28,8 +28,6 @@ export default function Assistants() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-   
-  // const [assistantsQuery, _setServicesQuery] = useState("");
 
   const {
     data: assistants = [],

@@ -20,7 +20,11 @@ export type MemoizedServiceCardProps = {
 
 export const MemoizedServiceCard = memo((props: MemoizedServiceCardProps) => {
   return (
-    <Card data-testid="services-list-item" key={props.service.id}>
+    <Card
+      data-testid="services-list-item"
+      key={props.service.id}
+      $borderRadius="all"
+    >
       <ServiceCardDescription
         title={`${props.service.name} (${props.service.duration} min)`}
         description={props.service.description}

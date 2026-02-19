@@ -10,9 +10,11 @@ export const PageHeaderItem = styled.div`
   flex-direction: row;
   justify-content: start;
   align-items: start;
+  margin-bottom: 12px;
 
   h2 {
     margin: 0.2em 0px;
+    margin-bottom: 0px;
   }
 
   button {
@@ -29,7 +31,6 @@ const PageHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
 `;
 
 type PageHeaderProps = {

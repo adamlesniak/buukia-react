@@ -106,7 +106,11 @@ export const ManageCategoriesFormModal = memo(
                 {props.categories &&
                   props.categories.length > 0 &&
                   props.categories.map((category) => (
-                    <Card data-testid="category-list-item" key={category.id}>
+                    <Card
+                      data-testid="category-list-item"
+                      key={category.id}
+                      $borderRadius="all"
+                    >
                       <ServiceCardDescription title={`${category.name}`} />
                       <Button
                         size="sm"

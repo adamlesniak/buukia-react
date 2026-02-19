@@ -28,6 +28,7 @@ export default function Transactions() {
                 activeOptions={{ exact: true }}
                 key={t("common.transactions")}
                 to={`/transactions/payments`}
+                icon={true}
               >
                 <FormInputIcon size={18} /> <span>{t("common.payments")}</span>
               </DetailNavigationButton>
@@ -35,6 +36,7 @@ export default function Transactions() {
                 activeOptions={{ exact: true }}
                 key={t("common.payouts")}
                 to={`/transactions/payouts`}
+                icon={true}
               >
                 <SettingsIcon size={18} /> <span>{t("common.payouts")}</span>
               </DetailNavigationButton>

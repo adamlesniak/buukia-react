@@ -75,6 +75,7 @@ export default function Payments() {
             <Card
               style={{ flex: 1 }}
               $layout="column"
+              $borderRadius="all"
               data-testid="category-list-item"
             >
               <LargeText>{t("transactions.payments.cards.total")}</LargeText>
@@ -89,6 +90,7 @@ export default function Payments() {
             <Card
               style={{ flex: 1 }}
               $layout="column"
+              $borderRadius="all"
               data-testid="category-list-item"
             >
               <LargeText>
@@ -105,6 +107,7 @@ export default function Payments() {
             <Card
               style={{ flex: 1 }}
               $layout="column"
+              $borderRadius="all"
               data-testid="category-list-item"
             >
               <LargeText>
@@ -122,6 +125,7 @@ export default function Payments() {
             <Card
               style={{ flex: 1 }}
               $layout="column"
+              $borderRadius="all"
               data-testid="category-list-item"
             >
               <LargeText>{t("transactions.payments.cards.failed")}</LargeText>

@@ -107,6 +107,76 @@
       "deleteMessage": "Are you sure you want to delete this service?\nThis action cannot be undone."
     }
   },
+  "account": {
+    "title": "Account",
+    "avatar": {
+      "title": "Avatar",
+      "description": "Image must be under 500kB",
+      "update": "Update"
+    },
+    "personal": {
+      "action": "Personal",
+      "title": "Personal Information",
+      "details": "Manage and edit personal information such as e-mail, password, phone number to ensure your account is up-to-date."
+    },
+    "business": {
+      "action": "Business",
+      "title": "Business Information",
+      "details": "Edit business information such as name, address, tax information."
+    },
+    "bank": {
+      "action": "Bank",
+      "title": "Bank and payment information",
+      "details": "Manage bank details."
+    },
+    "manageAccount": "Manage personal data and account settings.",
+    "detail": {
+      "form": {
+        "account": {
+          "name": "Name",
+          "email": "Email",
+          "dob": "Date of Birth",
+          "tel": "Mobile",
+          "placeholders": {
+            "name": "Name",
+            "email": "test@example.com",
+            "dob": "DD/MM/YYYY",
+            "tel": "+34 ### ### ####"
+          },
+          "errors": {
+            "name": "Name is required.",
+            "email": "Email is required.",
+            "phone": "Phone is required."
+          }
+        },
+        "business": {
+          "name": "Name",
+          "address": "Address",
+          "taxNumber": "Tax number",
+          "municipality": "Municipality",
+          "tel": "Mobile",
+          "city": "City",
+          "country": "Country",
+          "code": "Code",
+          "placeholders": {
+            "name": "Name",
+            "taxNumber": "Tax number",
+            "address": "Address",
+            "municipality": "Municipality",
+            "code": "01001",
+            "city": "City",
+            "tel": "+34 ### ### ####",
+            "country": "Country"
+          },
+          "errors": {
+            "name": "Name is required.",
+            "email": "Email is required.",
+            "phone": "Phone is required."
+          }
+        }
+      }
+    }
+  },
   "appointments": {
     "noAppointmentsFound": "No appointments found.",
     "upcomingAppointments": "Upcoming appointments",
@@ -435,6 +505,8 @@
     }
   },
   "common": {
+    "general": "General",
+    "documents": "Documents",
     "price": "Price",
     "minutes": "minutes",
     "mins": "mins",

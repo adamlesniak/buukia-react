@@ -91,6 +91,7 @@ export default function Payouts() {
               style={{ flex: 1 }}
               $layout="column"
               data-testid="category-list-item"
+              $borderRadius="all"
             >
               <LargeText>{t("transactions.payouts.cards.total")}</LargeText>
               <ExtraLargeText>
@@ -105,6 +106,7 @@ export default function Payouts() {
               style={{ flex: 1 }}
               $layout="column"
               data-testid="category-list-item"
+              $borderRadius="all"
             >
               <LargeText>
                 {t("transactions.payouts.cards.averagePayout")}
@@ -121,6 +123,7 @@ export default function Payouts() {
               style={{ flex: 1 }}
               $layout="column"
               data-testid="category-list-item"
+              $borderRadius="all"
             >
               <LargeText>
                 {t("transactions.payouts.cards.totalCount")}
@@ -138,6 +141,7 @@ export default function Payouts() {
               style={{ flex: 1 }}
               $layout="column"
               data-testid="category-list-item"
+              $borderRadius="all"
             >
               <LargeText>{t("transactions.payouts.cards.failed")}</LargeText>
               <ExtraLargeText>
