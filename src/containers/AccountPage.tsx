@@ -5,6 +5,7 @@ import {
   SquareUser,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 
 import { PageContainer, PageHeader, PageHeaderItem } from "@/components/Page";
 
@@ -12,6 +13,11 @@ import {
   DetailNavigationButton,
   DetailNavigationContainer,
 } from "./AssistantDrawer";
+
+const DetailNavigationButtonContent = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 type AccountPageProps = {
   children: React.ReactNode;
@@ -68,10 +74,10 @@ export default function AccountPage(props: AccountPageProps) {
               to={"/account/personal"}
               style={{ borderRight: "0px" }}
             >
-              <div style={{ display: "flex" }}>
+              <DetailNavigationButtonContent>
                 <SquareUser size={18} />{" "}
                 <span>{t("account.personal.action")}</span>
-              </div>
+              </DetailNavigationButtonContent>
             </DetailNavigationButton>
             <DetailNavigationButton
               activeOptions={{ exact: true }}
@@ -82,10 +88,10 @@ export default function AccountPage(props: AccountPageProps) {
               to={"/account/business"}
               style={{ borderRight: "0px" }}
             >
-              <div style={{ display: "flex" }}>
+              <DetailNavigationButtonContent>
                 <BriefcaseBusiness size={18} />{" "}
                 <span>{t("account.business.action")}</span>
-              </div>
+              </DetailNavigationButtonContent>
             </DetailNavigationButton>
             <DetailNavigationButton
               activeOptions={{ exact: true }}
@@ -96,10 +102,10 @@ export default function AccountPage(props: AccountPageProps) {
               to={"/account/bank"}
               style={{ borderRight: "0px" }}
             >
-              <div style={{ display: "flex" }}>
+              <DetailNavigationButtonContent>
                 <BuildingIcon size={18} />{" "}
                 <span>{t("account.bank.action")}</span>
-              </div>
+              </DetailNavigationButtonContent>
               <CircleQuestionMark />
             </DetailNavigationButton>
           </DetailNavigationContainer>

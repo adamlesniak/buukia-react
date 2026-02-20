@@ -23,4 +23,5 @@ export const SETTINGS = {
     paymentProvider: "stripe",
     sourceType: "bank_account",
   },
+  countryCode: "0034",
 };

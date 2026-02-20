@@ -146,7 +146,8 @@
           "errors": {
             "name": "Name is required.",
             "email": "Email is required.",
-            "phone": "Phone is required."
+            "tel": "Mobile is required and must be a valid phone number.",
+            "dob": "Date of birth is required and must be a valid date in the format DD/MM/YYYY."
           }
         },
         "business": {
@@ -171,7 +172,8 @@
           "errors": {
             "name": "Name is required.",
             "email": "Email is required.",
-            "phone": "Phone is required."
+            "tel": "Mobile is required and must be a valid phone number.",
+            "dob": "Date of birth is required and must be a valid date in the format DD/MM/YYYY."
           }
         }
       }
