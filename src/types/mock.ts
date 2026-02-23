@@ -1,3 +1,4 @@
+import type { BuukiaAccount } from "./account";
 import type { BuukiaAppointment } from "./appointment";
 import type { BuukiaAssistant } from "./assistant";
 import type { BuukiaCategory } from "./category";
@@ -7,6 +8,7 @@ import type { BuukiaPayout } from "./payout";
 import type { BuukiaService } from "./service";
 
 export type MockData = {
+  accounts: BuukiaAccount[];
   appointments: BuukiaAppointment[];
   assistants: BuukiaAssistant[];
   categories: BuukiaCategory[];

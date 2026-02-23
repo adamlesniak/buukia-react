@@ -86,9 +86,7 @@ const [
 
 export const handlers = [
   http.get("/api/account", () => {
-    return HttpResponse.json({
-      address: {},
-    });
+    return HttpResponse.json(data.accounts[0]);
   }),
 
   http.get("/api/payments/stats", () => {

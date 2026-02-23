@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { SETTINGS } from "@/constants";
-import type { AccountFormValues, UpdateAccountBody } from "@/types";
+import type { AccountPersonalFormValues, UpdateAccountBody } from "@/types";
 import { accountFormSchema } from "@/validators";
 import { validateResolver } from "@/validators/validator";
 
@@ -12,7 +12,6 @@ import { Button } from "../Button";
 import { Card } from "../Card";
 import { Field, FieldError, Fieldset, Input, Label, Form } from "../Form";
 import { PatternFormatInput } from "../Form/PatternFormatInput";
-
 
 const UploadOverlay = styled.div`
   background: rgba(0, 0, 0, 0.1);
@@ -42,7 +41,7 @@ const Thumbnail = styled.label`
 `;
 
 type AccountFormProps = {
-  values: AccountFormValues;
+  values: AccountPersonalFormValues;
   isLoading: boolean;
   onSubmit: (data: UpdateAccountBody) => void;
 };
@@ -50,7 +49,7 @@ type AccountFormProps = {
 export const AccountForm = (props: AccountFormProps) => {
   const { t } = useTranslation();
 
-  const onSubmit = (data: AccountFormValues) =>
+  const onSubmit = (data: AccountPersonalFormValues) =>
     props.onSubmit({ ...data, tel: `${SETTINGS.countryCode}${data.tel}` });
 
   const {
@@ -58,7 +57,7 @@ export const AccountForm = (props: AccountFormProps) => {
     formState: { errors },
     handleSubmit,
     control,
-  } = useForm<AccountFormValues>({
+  } = useForm<AccountPersonalFormValues>({
     values: {
       name: props.values.name,
       email: props.values.email,
@@ -212,7 +211,7 @@ export const AccountForm = (props: AccountFormProps) => {
                         onChange(values.value);
                       }}
                       type="tel"
-                      format="+34 ### ### ####"
+                      format="+34 ### ### ###"
                       id="tel-input"
                       data-testid="tel-input"
                       placeholder={t(

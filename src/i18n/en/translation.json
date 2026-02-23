@@ -109,6 +109,7 @@
   },
   "account": {
     "title": "Account",
+    "loadingError": "Error retrieving account information. Please try again later.",
     "avatar": {
       "title": "Avatar",
       "description": "Image must be under 500kB",

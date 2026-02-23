@@ -8,17 +8,22 @@ export const accountFormSchema = z.object({
     .min(1, { message: "account.detail.form.errors.dob" })
     .refine(
       (value) => {
-        console.log(value);
-        const [day, month, year] = value.split("/").map(Number);
-        const date = new Date(year, month - 1, day);
-        console.log(day, month, year);
+        const [day, month, year] = [
+          value.substr(0, 2),
+          value.substr(2, 2),
+          value.substr(4, 4),
+        ];
+        const date = new Date(Number(year), Number(month) - 1, Number(day));
+
         return (
-          date.getFullYear() === year &&
-          date.getMonth() === month - 1 &&
-          date.getDate() === day
+          date.getFullYear() >= Number(1920) &&
+          date.getMonth() === Number(month) - 1 &&
+          date.getDate() === Number(day)
         );
       },
       { message: "account.detail.form.errors.dobInvalid" },
     ),
-  tel: z.string().min(1, { message: "account.detail.form.errors.tel" }),
+  tel: z
+    .string()
+    .length(9, { message: "account.detail.form.errors.tel" })
 });

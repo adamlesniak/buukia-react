@@ -1,15 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { accountQueryKeys } from "./account-query-keys";
+import type { UpdateAccountBody } from "@/types";
 
-interface UpdateAccountBody {
-  id: string;
-  dashboard: boolean;
-  assistantId: string;
-  clientId: string;
-  time: string;
-  serviceIds: string[];
-}
+import { accountQueryKeys } from "./account-query-keys";
 
 export function useUpdateAccount() {
   const queryClient = useQueryClient();

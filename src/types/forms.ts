@@ -21,7 +21,7 @@ export type BusinessFormValues = {
   tel: string;
 };
 
-export type AccountFormValues = {
+export type AccountPersonalFormValues = {
   name: string;
   email: string;
   dob: string;

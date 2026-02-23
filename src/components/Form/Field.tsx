@@ -4,8 +4,8 @@ import styled from "styled-components";
 const StyledField = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
   margin-bottom: 16px;
+  justify-content: start;
 `;
 
 type FieldProps = {

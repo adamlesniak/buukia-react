@@ -17,6 +17,7 @@ import prettier from "prettier";
 import { PaymentStatus, PayoutStatus } from "@/utils";
 
 import {
+  type BuukiaAccount,
   type BuukiaAppointment,
   type BuukiaAssistant,
   type BuukiaClient,
@@ -312,18 +313,49 @@ export const createPayout = (): BuukiaPayout => {
   };
 };
 
-const [assistants, clients, categories, payments, payouts]: [
+export const createAccount = (): BuukiaAccount => {
+  return {
+    id: faker.string.uuid(),
+    personal: {
+      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
+      email: faker.internet.email(),
+      dob: faker.date
+        .birthdate({ min: 18, max: 65, mode: "age" })
+        .toISOString(),
+      tel: `+34 232323232`,
+      thumbnail: faker.image.avatar(),
+    },
+    business: {
+      name: faker.company.name(),
+      tax: {
+        number: faker.string.alphanumeric(10),
+      },
+      mobile: `+34 232323232`,
+      contact: {
+        address: faker.location.streetAddress(),
+        city: faker.location.city(),
+        municipality: faker.location.state(),
+        postalCode: faker.location.zipCode(),
+        country: faker.location.countryCode(),
+      },
+    },
+  };
+};
+
+const [assistants, clients, categories, payments, payouts, accounts]: [
   BuukiaAssistant[],
   BuukiaClient[],
   BuukiaCategory[],
   BuukiaPayment[],
   BuukiaPayout[],
+  BuukiaAccount[],
 ] = [
   Array.from({ length: 7 }).map(() => createAssistant()),
   Array.from({ length: 20 }).map(() => createClient()),
   serviceCategories,
   Array.from({ length: 10 }).map(() => createPayment()),
   Array.from({ length: 5 }).map(() => createPayout()),
+  Array.from({ length: 5 }).map(() => createAccount()),
 ];
 
 const dayStartDate = addMinutes(addHours(startOfDay(new Date()), 8), 0);
@@ -370,6 +402,7 @@ const [appointments, todaysAppointments]: [
 
 const main = async (): Promise<void> => {
   const data: MockData = {
+    accounts,
     appointments: [...appointments, ...todaysAppointments],
     assistants,
     categories,
